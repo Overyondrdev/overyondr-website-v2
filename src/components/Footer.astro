@@ -1,0 +1,195 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { footerNav, legalNav, site } from '../data/site';
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer surface-forest">
+  <div class="container footer-top">
+    <nav class="footer-nav" aria-label="Footer">
+      {footerNav.map((col) => (
+        <div>
+          <h2 class="footer-heading">{col.heading}</h2>
+          <ul>
+            {col.links.map((l) => (
+              <li>
+                <a href={l.href}>{l.label}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </nav>
+
+    <form class="newsletter" action="/get-started" method="get" data-newsletter>
+      <label for="newsletter-email">
+        <Icon name="mail" size={18} /> For those building more present spaces.
+      </label>
+      <div class="newsletter-row">
+        <input
+          id="newsletter-email"
+          class="input"
+          type="email"
+          name="email"
+          autocomplete="email"
+          placeholder="you@school.org"
+          required
+        />
+        <button class="btn btn-sm" type="submit">
+          Sign Up
+        </button>
+      </div>
+      <p class="newsletter-status" role="status" aria-live="polite"></p>
+      <a class="social" href={site.linkedin} aria-label="Yondr on LinkedIn" rel="noopener" target="_blank">
+        <Icon name="linkedin" size={22} />
+      </a>
+    </form>
+  </div>
+
+  <div class="container wordmark" aria-hidden="true" data-reveal="fade">
+    <Logo title="" />
+  </div>
+
+  <div class="container footer-bottom">
+    <p>© {year} Yondr, Inc. All rights reserved.</p>
+    <p class="locations">{site.locations.join(' · ')}</p>
+    <ul>
+      {legalNav.map((l) => (
+        <li>
+          <a href={l.href}>{l.label}</a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    padding-top: clamp(3.5rem, 6vw, 5.5rem);
+    overflow: hidden;
+  }
+  .footer-top {
+    display: grid;
+    gap: 3rem;
+  }
+  @media (min-width: 900px) {
+    .footer-top {
+      grid-template-columns: 1.4fr 1fr;
+    }
+  }
+  .footer-nav {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    gap: 2rem;
+  }
+  .footer-heading {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    font-weight: 500;
+    color: rgb(243 247 214 / 0.55);
+    margin-bottom: 1rem;
+  }
+  .footer-nav ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 0.65rem;
+  }
+  .footer-nav a {
+    text-decoration: none;
+    background: linear-gradient(var(--lime), var(--lime)) 0 100% / 0 1px no-repeat;
+    transition:
+      background-size 0.35s var(--ease-out),
+      color 0.2s;
+  }
+  .footer-nav a:hover {
+    color: var(--lime);
+    background-size: 100% 1px;
+  }
+  .newsletter {
+    display: grid;
+    gap: 0.85rem;
+    align-content: start;
+  }
+  .newsletter label {
+    display: inline-flex;
+    gap: 0.5rem;
+    align-items: center;
+    font-size: 0.95rem;
+  }
+  .newsletter-row {
+    display: flex;
+    gap: 0.6rem;
+  }
+  .newsletter-row .input {
+    min-height: 3rem;
+  }
+  .newsletter-status {
+    min-height: 1.2em;
+    font-size: 0.9rem;
+    color: var(--lime);
+  }
+  .social {
+    justify-self: start;
+    color: var(--cream);
+    transition: color 0.2s;
+  }
+  .social:hover {
+    color: var(--lime);
+  }
+  .wordmark {
+    margin-top: clamp(3rem, 8vw, 7rem);
+    color: var(--lime);
+  }
+  .wordmark :global(svg) {
+    width: 100%;
+    height: auto;
+  }
+  .footer-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.75rem 2rem;
+    padding-block: 2rem 2.5rem;
+    padding-right: 4.5rem;
+    font-size: 0.9rem;
+  }
+  .locations {
+    color: rgb(243 247 214 / 0.6);
+  }
+  .footer-bottom ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    list-style: none;
+    padding: 0;
+  }
+  .footer-bottom li + li::before {
+    content: '|';
+    margin-right: 0.35rem;
+    opacity: 0.6;
+  }
+  .footer-bottom a {
+    text-decoration: none;
+  }
+  .footer-bottom a:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<script>
+  // Progressive enhancement: until a newsletter provider is connected, confirm in-page.
+  document.querySelectorAll<HTMLFormElement>('[data-newsletter]').forEach((form) => {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const status = form.querySelector('.newsletter-status')!;
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+      status.textContent = 'Thanks! You’re on the list.';
+      form.reset();
+    });
+  });
+</script>

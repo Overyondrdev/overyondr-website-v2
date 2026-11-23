@@ -1,0 +1,234 @@
+---
+// "The Yondr Process": tabbed steps with an image stack and auto-advancing progress bars.
+import Img from './Img.astro';
+import type { Step } from '../data/spaces';
+
+interface Props {
+  title?: string;
+  intro: string;
+  steps: Step[];
+  id: string;
+}
+const { title = 'The Yondr Process', intro, steps, id } = Astro.props;
+---
+
+<section class="process surface-forest section" aria-labelledby={`${id}-title`} data-process>
+  <div class="container process-grid">
+    <div class="process-media">
+      {steps.map((s, i) => (
+        <div class="pm-frame" data-frame={i} data-active={i === 0 ? '' : undefined}>
+          <Img src={s.image} alt={s.alt} sizes="(min-width: 900px) 28vw, 80vw" />
+        </div>
+      ))}
+    </div>
+    <div class="process-copy">
+      <h2 id={`${id}-title`} class="h2 text-accent" data-split>
+        {title}
+      </h2>
+      <p class="process-intro">{intro}</p>
+      <div class="process-tabs" data-tabs role="tablist" aria-label="Steps">
+        {steps.map((s, i) => (
+          <button
+            role="tab"
+            id={`${id}-tab-${i}`}
+            aria-controls={`${id}-panel-${i}`}
+            aria-selected={i === 0 ? 'true' : 'false'}
+            tabindex={i === 0 ? 0 : -1}
+            data-step={i}
+          >
+            <span class="pt-bar">
+              <span />
+            </span>
+            <span class="pt-num">0{i + 1}</span>
+            <span class="pt-title">{s.title}</span>
+          </button>
+        ))}
+      </div>
+      {steps.map((s, i) => (
+        <div
+          class="process-panel"
+          role="tabpanel"
+          id={`${id}-panel-${i}`}
+          aria-labelledby={`${id}-tab-${i}`}
+          hidden={i !== 0}
+        >
+          <h3>{s.title}</h3>
+          <p>{s.text}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .process-grid {
+    display: grid;
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .process-grid {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    }
+  }
+  .process-media {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    max-width: 26rem;
+    width: 100%;
+    justify-self: center;
+  }
+  .pm-frame {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius);
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(6%) scale(0.92);
+    transition:
+      opacity 0.7s var(--ease-out),
+      transform 0.9s var(--ease-out);
+  }
+  .pm-frame[data-active] {
+    opacity: 1;
+    transform: none;
+    z-index: 1;
+  }
+  .pm-frame :global(picture),
+  .pm-frame :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .process-copy {
+    display: grid;
+    gap: 1.5rem;
+  }
+  .process-intro {
+    max-width: 46ch;
+    font-size: var(--step-1);
+  }
+  .process-tabs {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+  .process-tabs button {
+    display: grid;
+    gap: 0.5rem;
+    align-content: start;
+    padding: 0 0 0.25rem;
+    border: 0;
+    background: none;
+    color: inherit;
+    text-align: left;
+    opacity: 0.55;
+    transition: opacity 0.3s;
+  }
+  .process-tabs button[aria-selected='true'],
+  .process-tabs button:hover {
+    opacity: 1;
+  }
+  .pt-bar {
+    position: relative;
+    height: 3px;
+    border-radius: 3px;
+    background: rgb(243 247 214 / 0.25);
+    overflow: hidden;
+  }
+  .pt-bar span {
+    position: absolute;
+    inset: 0;
+    background: var(--lime);
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  [aria-selected='true'] .pt-bar span {
+    transform: scaleX(1);
+  }
+  [data-process].is-auto [aria-selected='true'] .pt-bar span {
+    animation: fill var(--step-dur, 6s) linear both;
+  }
+  @keyframes fill {
+    from {
+      transform: scaleX(0);
+    }
+  }
+  .pt-num {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--lime);
+  }
+  .pt-title {
+    font-weight: 600;
+    font-size: 0.92rem;
+    line-height: 1.25;
+  }
+  .process-panel {
+    min-height: 7rem;
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    background: rgb(243 247 214 / 0.06);
+    box-shadow: inset 0 0 0 1px rgb(243 247 214 / 0.1);
+    animation: panel-in 0.6s var(--ease-out);
+  }
+  @keyframes panel-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+  }
+  .process-panel h3 {
+    font-size: var(--step-1);
+    color: var(--lime);
+    margin-bottom: 0.5rem;
+  }
+  @media (max-width: 600px) {
+    .process-tabs {
+      grid-template-columns: repeat(2, 1fr);
+      row-gap: 1.25rem;
+    }
+  }
+</style>
+
+<script>
+  // Sync image stack with the selected tab; auto-advance while in view (paused on hover/focus, off for reduced motion).
+  document.querySelectorAll<HTMLElement>('[data-process]').forEach((root) => {
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+    const frames = [...root.querySelectorAll<HTMLElement>('[data-frame]')];
+    const show = (i: number) =>
+      frames.forEach((f, j) =>
+        j === i ? f.setAttribute('data-active', '') : f.removeAttribute('data-active'),
+      );
+    const mo = new MutationObserver(() => {
+      const i = tabs.findIndex((t) => t.getAttribute('aria-selected') === 'true');
+      if (i >= 0) show(i);
+    });
+    tabs.forEach((t) => mo.observe(t, { attributes: true, attributeFilter: ['aria-selected'] }));
+
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    let timer: number | undefined;
+    let paused = false;
+    const next = () => {
+      const i = tabs.findIndex((t) => t.getAttribute('aria-selected') === 'true');
+      tabs[(i + 1) % tabs.length].click();
+    };
+    const start = () => {
+      stop();
+      root.classList.add('is-auto');
+      timer = window.setInterval(() => !paused && next(), 6000);
+    };
+    const stop = () => {
+      root.classList.remove('is-auto');
+      clearInterval(timer);
+    };
+    root.addEventListener('pointerenter', () => (paused = true));
+    root.addEventListener('pointerleave', () => (paused = false));
+    root.addEventListener('focusin', () => stop());
+    tabs.forEach((t) => t.addEventListener('click', (e) => e.isTrusted && stop()));
+    new IntersectionObserver(([e]) => (e.isIntersecting ? start() : stop()), { threshold: 0.4 }).observe(
+      root,
+    );
+  });
+</script>

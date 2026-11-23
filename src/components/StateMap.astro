@@ -1,0 +1,85 @@
+---
+// Interactive tile map. States with a guide link to /school-phone-bans/<slug>; `highlight` marks one state.
+import { usTiles } from '../data/usTiles';
+
+interface Props {
+  links: Record<string, string>; // abbr -> href
+  highlight?: string;
+  compact?: boolean;
+  label?: string;
+}
+const {
+  links,
+  highlight,
+  compact = false,
+  label = 'Map of U.S. states with Yondr legislation guides',
+} = Astro.props;
+---
+
+<div class:list={['state-map', { compact }]} role="group" aria-label={label}>
+  {Object.entries(usTiles).map(([abbr, [c, r, name]]) => {
+    const href = links[abbr];
+    const cls = ['tile', href && 'has-guide', highlight === abbr && 'is-current'];
+    const style = `grid-column:${c + 1};grid-row:${r + 1}`;
+    return href && !compact ? (
+      <a class:list={cls} href={href} style={style} aria-label={`${name}: read the guide`} title={name}>
+        {abbr}
+      </a>
+    ) : (
+      <span class:list={cls} style={style} title={name} aria-hidden={compact ? 'true' : undefined}>
+        {abbr}
+        {!compact && <span class="visually-hidden">{name}</span>}
+      </span>
+    );
+  })}
+</div>
+
+<style>
+  .state-map {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-rows: repeat(8, auto);
+    gap: clamp(3px, 0.5vw, 6px);
+    width: 100%;
+    max-width: 44rem;
+  }
+  .tile {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 1;
+    border-radius: clamp(3px, 0.6vw, 8px);
+    background: rgb(243 247 214 / 0.08);
+    color: rgb(243 247 214 / 0.5);
+    font-size: clamp(0.55rem, 0.4rem + 0.5vw, 0.85rem);
+    font-weight: 700;
+    text-decoration: none;
+    transition:
+      transform 0.3s var(--ease-out),
+      background 0.3s,
+      color 0.3s;
+  }
+  .has-guide {
+    background: var(--lime);
+    color: var(--forest);
+  }
+  a.tile:hover,
+  a.tile:focus-visible {
+    transform: scale(1.15);
+    background: var(--white);
+    z-index: 1;
+  }
+  .is-current {
+    background: var(--lime);
+    color: var(--forest);
+    box-shadow:
+      0 0 0 3px var(--forest),
+      0 0 0 5px var(--lime);
+    transform: scale(1.1);
+  }
+  .compact .tile {
+    font-size: clamp(0.45rem, 0.3rem + 0.4vw, 0.7rem);
+  }
+  .compact .has-guide:not(.is-current) {
+    background: rgb(220 255 107 / 0.35);
+  }
+</style>

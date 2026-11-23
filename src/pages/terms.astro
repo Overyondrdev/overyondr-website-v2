@@ -1,0 +1,15 @@
+---
+import { getEntry, render } from 'astro:content';
+import Legal from '../layouts/Legal.astro';
+
+const entry = (await getEntry('legal', 'terms'))!;
+const { Content } = await render(entry);
+---
+
+<Legal
+  title={entry.data.title}
+  description={`Yondr ${entry.data.title.toLowerCase()} for overyondr.com.`}
+  updated={entry.data.updated}
+>
+  <Content />
+</Legal>

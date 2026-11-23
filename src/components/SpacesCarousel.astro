@@ -1,0 +1,94 @@
+---
+// Horizontal, snap-scrolling cards for the three phone-free spaces.
+import Icon from './Icon.astro';
+import CarouselNav from './CarouselNav.astro';
+import { spaces } from '../data/spaces';
+
+interface Props {
+  /** "name" shows Education / Live Events / Commercial; "card" shows Off To Learn etc. */
+  heading?: 'name' | 'card';
+}
+const { heading = 'name' } = Astro.props;
+---
+
+<div class="spaces" data-carousel>
+  <CarouselNav label="space" class="spaces-nav" />
+  <ul class="spaces-track" data-track>
+    {spaces.map((s, i) => (
+      <li data-tilt="6" class:list={['space-card', `tone-${i % 3}`]}>
+        <h3>{heading === 'name' ? s.name : s.card.title}</h3>
+        <p>{s.card.text}</p>
+        <a href={`/spaces/${s.slug}`} class="link-arrow card-link">
+          {heading === 'name' ? 'Explore' : s.card.cta} <Icon name="arrow-right" />
+        </a>
+      </li>
+    ))}
+  </ul>
+</div>
+
+<style>
+  .spaces {
+    display: grid;
+    gap: 1.25rem;
+    min-width: 0;
+  }
+  .spaces-nav {
+    justify-self: end;
+  }
+  .spaces-track {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: min(82%, 21rem);
+    gap: 1rem;
+    list-style: none;
+    padding: 0 0 0.5rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+  }
+  .spaces-track::-webkit-scrollbar {
+    display: none;
+  }
+  .space-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-height: 19rem;
+    padding: clamp(1.5rem, 2.5vw, 2rem);
+    border-radius: var(--radius);
+    scroll-snap-align: start;
+    transition:
+      transform 0.5s var(--ease-out),
+      background 0.4s;
+  }
+  .tone-0 {
+    background: var(--lime);
+    color: var(--forest);
+  }
+  .tone-1 {
+    background: var(--charcoal);
+    color: var(--cream);
+  }
+  .tone-2 {
+    background: var(--cream);
+    color: var(--forest);
+  }
+  .space-card h3 {
+    font-family: var(--font-display);
+    font-variation-settings: var(--display-axes);
+    font-weight: 500;
+    font-size: var(--step-3);
+    line-height: 1;
+  }
+  .space-card p {
+    font-size: 0.95rem;
+  }
+  .space-card .link-arrow {
+    margin-top: auto;
+  }
+  .tone-1 .link-arrow {
+    color: var(--lime);
+  }
+</style>

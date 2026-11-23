@@ -1,0 +1,298 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Img from '../components/Img.astro';
+import Icon from '../components/Icon.astro';
+import StatsBar from '../components/StatsBar.astro';
+import { spaces } from '../data/spaces';
+import { useCases } from '../data/useCases';
+---
+
+<Base
+  title="Find Your Space"
+  description="Phone-free spaces for schools, live events, workplaces and courts. Find the Yondr program that fits your space."
+>
+  <PageHero
+    title="Find Your Space"
+    intro="Finding time without distraction shouldn’t be a struggle."
+    body="With our innovative program for creating phone-free spaces, we make it easy to put down mobile devices and pick up a conversation. Our secure phone storage services are tailored to a variety of spaces so that you can enjoy every moment to the fullest, no matter where you’re off to. At work, in the classroom, during late-night laughs, or while celebrating special occasions. Wherever you find yourself, live life phone-free and fully present."
+    image="hero-find.jpg"
+    alt="Abstract warm light trails in motion"
+    cta={{ label: 'Discover How', href: '#spaces' }}
+  />
+
+  <section class="section surface-cream" aria-labelledby="shared-title">
+    <div class="container split">
+      <div class="props" aria-hidden="true">
+        <div class="prop-paper"></div>
+        <Img src="prop-pen.png" alt="" class="p-pen" sizes="8vw" />
+        <Img src="prop-ticket.png" alt="" class="p-ticket" sizes="12vw" />
+        <Img src="product-pouch.png" alt="" class="p-pouch" sizes="20vw" />
+      </div>
+      <div class="stack" style="--stack:1.25rem">
+        <h2 id="shared-title" class="h2" data-split>
+          Less Screen Time. More Shared Time.
+        </h2>
+        <p>
+          At Yondr, we believe in making every moment count. Our lockable phone storage systems encourage
+          communities to embrace the magic that happens when digital distractions step out of the way.
+        </p>
+        <p>
+          More focus. More presence. More connection. Setting devices aside makes room for meaningful
+          interactions. Experience a shared sense of productivity, authenticity, and freedom with enhanced
+          security and engagement.
+        </p>
+        <a href="/how-it-works" class="btn">
+          Go Phone-Free <Icon name="arrow-right" class="btn-icon" />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="spaces-panels surface-forest" id="spaces" aria-labelledby="panels-title">
+    <div class="container panels-head">
+      <h2 id="panels-title" class="h2 text-accent" data-split>
+        Where Are You Off To?
+      </h2>
+      <p>Choose a space to see how Yondr works there.</p>
+    </div>
+    <ul class="panels container">
+      {spaces.map((s, i) => (
+        <li class="panel" style={`--i:${i}`}>
+          <div class="panel-img">
+            <Img src={s.card.image} alt="" sizes="(min-width: 900px) 50vw, 100vw" />
+          </div>
+          <div class="panel-body">
+            <p class="panel-tag">{s.name}</p>
+            <h3 class="h3">{s.card.title}</h3>
+            <p class="panel-text">{s.card.text}</p>
+            <ul class="panel-uses">
+              {useCases
+                .filter((u) => u.parent === s.slug)
+                .map((u) => (
+                  <li>
+                    <a href={`/spaces/${s.slug}/${u.slug}`}>{u.name}</a>
+                  </li>
+                ))}
+            </ul>
+            <a href={`/spaces/${s.slug}`} class="btn card-link">
+              {s.card.cta} <Icon name="arrow-right" class="btn-icon" />
+            </a>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="section surface-cream" aria-labelledby="nation-title">
+    <div class="container split">
+      <div class="stack">
+        <h2 id="nation-title" class="h2" data-split>
+          Securing Spaces Nationwide
+        </h2>
+        <p>
+          Yondr locking phone pouches are trusted in schools across all 50 states, and in venues and
+          institutions in 55 countries.
+        </p>
+      </div>
+      <StatsBar stats={[{ value: 2.5, decimals: 1, suffix: 'M+', label: 'Students supported every day' }]} />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .props {
+    position: relative;
+    aspect-ratio: 1 / 0.9;
+    max-width: 34rem;
+  }
+  .prop-paper {
+    position: absolute;
+    inset: 10% 20% 8% 6%;
+    background: #fff;
+    rotate: -6deg;
+    box-shadow: 0 30px 50px -30px rgb(20 24 17 / 0.4);
+  }
+  .props :global(picture) {
+    position: absolute;
+  }
+  .props :global(picture:nth-of-type(1)) {
+    width: 9%;
+    left: 4%;
+    top: 14%;
+    rotate: -18deg;
+  }
+  .props :global(picture:nth-of-type(2)) {
+    width: 20%;
+    right: 12%;
+    top: 22%;
+    rotate: 12deg;
+  }
+  .props :global(picture:nth-of-type(3)) {
+    width: 42%;
+    left: 22%;
+    top: 0;
+    filter: drop-shadow(0 30px 30px rgb(20 24 17 / 0.35));
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .props :global(.p-pouch) {
+      animation: bob 8s var(--ease-in-out) infinite;
+    }
+    .props :global(.p-ticket) {
+      animation: bob 6s var(--ease-in-out) -1s infinite reverse;
+    }
+    @keyframes bob {
+      50% {
+        transform: translateY(-12px) rotate(2deg);
+      }
+    }
+  }
+
+  .spaces-panels {
+    padding-block: var(--section);
+  }
+  .panels-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem 3rem;
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+  }
+  .panels {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    list-style: none;
+    padding: 0;
+  }
+  .panel {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: flex-end;
+    min-height: 26rem;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    color: var(--white);
+  }
+  .panel-img {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+  .panel-img :global(picture),
+  .panel-img :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 1.2s var(--ease-out);
+  }
+  .panel:hover .panel-img :global(img) {
+    transform: scale(1.06);
+  }
+  .panel-img::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(0deg, rgb(10 12 8 / 0.92), rgb(10 12 8 / 0.15) 70%);
+  }
+  .panel-body {
+    display: grid;
+    gap: 0.75rem;
+    justify-items: start;
+    padding: clamp(1.5rem, 3vw, 2.5rem);
+    min-width: min(26rem, 80vw);
+  }
+  .panel-tag {
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--lime);
+  }
+  .panel h3 {
+    color: var(--lime);
+  }
+  .panel-text {
+    max-width: 40ch;
+    font-size: 0.95rem;
+  }
+  .panel-uses {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    list-style: none;
+    padding: 0;
+  }
+  .panel-uses a {
+    display: inline-block;
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.12);
+    backdrop-filter: blur(6px);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .panel-uses a:hover {
+    background: var(--lime);
+    color: var(--forest);
+  }
+  .panel .btn::after {
+    background: var(--cream);
+  }
+  .panel .btn:hover {
+    color: var(--forest);
+  }
+  .panel .card-link::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+  @media (min-width: 900px) {
+    .panels {
+      flex-direction: row;
+      height: 36rem;
+    }
+    .panel {
+      flex: 1;
+      min-height: 0;
+      transition: flex 0.8s var(--ease-out);
+    }
+    .panel:hover,
+    .panel:focus-within {
+      flex: 2.2;
+    }
+    .panel-text,
+    .panel-uses,
+    .panel .btn {
+      opacity: 0;
+      transform: translateY(12px);
+      transition:
+        opacity 0.4s,
+        transform 0.6s var(--ease-out);
+    }
+    .panel:hover .panel-text,
+    .panel:hover .panel-uses,
+    .panel:hover .btn,
+    .panel:focus-within .panel-text,
+    .panel:focus-within .panel-uses,
+    .panel:focus-within .btn {
+      opacity: 1;
+      transform: none;
+      transition-delay: 0.2s;
+    }
+    .panels:not(:hover):not(:focus-within) .panel:first-child {
+      flex: 2.2;
+    }
+    .panels:not(:hover):not(:focus-within) .panel:first-child .panel-text,
+    .panels:not(:hover):not(:focus-within) .panel:first-child .panel-uses,
+    .panels:not(:hover):not(:focus-within) .panel:first-child .btn {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>

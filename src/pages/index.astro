@@ -1,0 +1,358 @@
+---
+import Base from '../layouts/Base.astro';
+import Img from '../components/Img.astro';
+import Icon from '../components/Icon.astro';
+import StatsBar from '../components/StatsBar.astro';
+import SpacesCarousel from '../components/SpacesCarousel.astro';
+import PressSection from '../components/PressSection.astro';
+import QuoteCarousel from '../components/QuoteCarousel.astro';
+import BlogTeaser from '../components/BlogTeaser.astro';
+import PressMarquee from '../components/PressMarquee.astro';
+import { site } from '../data/site';
+import { getSpace } from '../data/spaces';
+
+const stats = [
+  { value: 12, label: 'Years pioneering phone-free spaces' },
+  { value: 50, label: 'States' },
+  { value: 55, label: 'Countries' },
+  { value: 40, label: 'Major arenas in Europe and USA' },
+];
+const quotes = getSpace('education')
+  .stories.quotes.slice(0, 1)
+  .concat(getSpace('live-events').stories.quotes.slice(0, 2));
+---
+
+<Base title="Yondr" description={site.description}>
+  <!-- Hero -->
+  <section class="home-hero">
+    <div class="hh-media">
+      <Img
+        src="hero-home.jpg"
+        alt="Looking up at two people leaning over, framed by blue sky"
+        priority
+        sizes="100vw"
+        class="hh-img"
+      />
+    </div>
+    <div class="container hh-inner scrub-out">
+      <p class="hh-kicker" data-reveal>
+        The future is
+      </p>
+      <h1 class="h-hero hh-title">
+        <span class="visually-hidden">The future is </span>
+        <span class="hh-word" aria-hidden="true">
+          {[...'Phone-Free'].map((ch, i) => (
+            <span style={`--c:${i}`}>{ch}</span>
+          ))}
+        </span>
+        <span class="visually-hidden">Phone-Free</span>
+      </h1>
+      <div class="hh-foot">
+        <p data-reveal style="--i:2">
+          Yondr is leading the global phone-free revolution. We help educators, artists, families,
+          organizations, and businesses create phone-free spaces where connection, focus, and creativity come
+          alive.
+        </p>
+        <a href="/how-it-works" class="btn" data-reveal style="--i:3">
+          Discover Yondr <Icon name="arrow-right" class="btn-icon" />
+        </a>
+      </div>
+    </div>
+    <a href="#intro" class="hh-scroll" aria-label="Scroll to content">
+      <span></span>
+    </a>
+  </section>
+
+  <!-- Stats + product intro -->
+  <section class="intro surface-cream" id="intro">
+    <div class="container intro-stats">
+      <StatsBar stats={stats} />
+    </div>
+    <div class="intro-body">
+      <div class="intro-art" aria-hidden="true">
+        <div class="intro-block"></div>
+        <Img src="product-base.png" alt="" class="float-a" sizes="(min-width: 900px) 24vw, 50vw" />
+        <Img src="product-pouch.png" alt="" class="float-b" sizes="(min-width: 900px) 16vw, 36vw" />
+      </div>
+      <div class="intro-copy stack" style="--stack:1.25rem" data-reveal>
+        <p class="eyebrow">Why Yondr</p>
+        <p class="lead">
+          At a time when technology feels inescapable and new smart devices are encroaching on every facet of
+          modern life, Yondr is creating spaces where freedom, discovery, and the human spirit can thrive.
+          Somewhere people can just <em>be</em>.
+        </p>
+        <p>
+          For some, Yondr is a new way to engage with the present. For others, it is a return to simpler
+          times. Either way, the snap of that pouch signals possibility. Yondr phone-free spaces help people
+          reconnect with the moment, each other, and the things that matter most.
+        </p>
+        <a href="/how-it-works" class="btn">
+          Go Phone Free <Icon name="arrow-right" class="btn-icon" />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Spaces -->
+  <PressMarquee />
+
+  <section class="spaces-sec surface-forest" aria-labelledby="spaces-title">
+    <div class="spaces-img" data-reveal="clip">
+      <Img
+        src="backpack-pouch.jpg"
+        alt="A white backpack with a Yondr pouch hanging from it"
+        sizes="(min-width: 900px) 25vw, 100vw"
+      />
+    </div>
+    <div class="spaces-content">
+      <div class="spaces-copy">
+        <h2 id="spaces-title" class="h2 text-accent spaces-h" data-split>
+          Phone&#8209;Free Spaces
+        </h2>
+        <p>
+          Yondr helps people reclaim the moments that phones interrupt. By combining thoughtful design, proven
+          implementation, and 12 years of industry expertise, we create phone-free experiences that make room
+          for true connection, focus, and the beautiful unknown.
+        </p>
+        <a href="/find-your-space" class="btn">
+          Find Your Space <Icon name="arrow-right" class="btn-icon" />
+        </a>
+      </div>
+      <SpacesCarousel />
+    </div>
+  </section>
+
+  <PressSection />
+
+  <QuoteCarousel quotes={quotes} image="classroom-dark.jpg" />
+
+  <BlogTeaser />
+</Base>
+
+<style>
+  /* ---------- Hero ---------- */
+  .home-hero {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: flex-end;
+    min-height: calc(100svh - 2.5rem);
+    padding: calc(var(--header-h) + 4rem) 0 clamp(2.5rem, 5vw, 4rem);
+    color: var(--white);
+    background: var(--forest);
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    overflow: hidden;
+  }
+  .hh-media {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+  .hh-media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 30%;
+    animation: kenburns 24s var(--ease-in-out) infinite alternate;
+  }
+  @keyframes kenburns {
+    from {
+      transform: scale(1.02);
+    }
+    to {
+      transform: scale(1.12) translate(-1.5%, 1%);
+    }
+  }
+  .hh-media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgb(10 12 8 / 0.55), rgb(10 12 8 / 0) 30%),
+      linear-gradient(0deg, rgb(10 12 8 / 0.95), rgb(10 12 8 / 0.25) 55%, rgb(10 12 8 / 0.05));
+  }
+  .hh-kicker {
+    font-weight: 600;
+    font-size: var(--step-2);
+    letter-spacing: -0.01em;
+  }
+  .hh-title {
+    color: var(--lime);
+    margin-block: 0.05em 0.25em;
+    margin-left: -0.04em;
+  }
+  .hh-word {
+    display: inline-flex;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .hh-word span {
+      display: inline-block;
+      animation: letter-in 1.1s var(--ease-out) both;
+      animation-delay: calc(var(--c) * 45ms + 200ms);
+    }
+    @keyframes letter-in {
+      from {
+        opacity: 0;
+        transform: translateY(0.35em) rotate(4deg);
+        filter: blur(8px);
+      }
+    }
+  }
+  .hh-foot {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1.5rem 3rem;
+  }
+  .hh-foot p {
+    max-width: 46ch;
+    font-size: var(--step-1);
+    line-height: 1.4;
+  }
+  .hh-scroll {
+    position: absolute;
+    left: 50%;
+    bottom: 1.25rem;
+    width: 1.6rem;
+    height: 2.6rem;
+    border: 1.5px solid rgb(255 255 255 / 0.6);
+    border-radius: 999px;
+    translate: -50% 0;
+  }
+  .hh-scroll span {
+    position: absolute;
+    left: 50%;
+    top: 0.45rem;
+    width: 4px;
+    height: 8px;
+    border-radius: 4px;
+    background: var(--lime);
+    translate: -50% 0;
+    animation: scrollcue 1.8s var(--ease-in-out) infinite;
+  }
+  @keyframes scrollcue {
+    50% {
+      transform: translateY(12px);
+      opacity: 0.3;
+    }
+  }
+  @media (max-width: 700px) {
+    .hh-scroll {
+      display: none;
+    }
+  }
+
+  /* ---------- Intro ---------- */
+  .intro {
+    padding-bottom: var(--section);
+  }
+  .intro-stats {
+    position: relative;
+    z-index: 2;
+    margin-top: clamp(-3.5rem, -4vw, -2rem);
+  }
+  .intro-body {
+    display: grid;
+    align-items: center;
+    gap: clamp(2rem, 5vw, 5rem);
+    margin-top: clamp(3rem, 7vw, 6rem);
+  }
+  @media (min-width: 900px) {
+    .intro-body {
+      grid-template-columns: 1.05fr 1fr;
+    }
+  }
+  .intro-art {
+    position: relative;
+    min-height: clamp(20rem, 40vw, 36rem);
+  }
+  .intro-block {
+    position: absolute;
+    left: 0;
+    right: 12%;
+    top: 35%;
+    bottom: 0;
+    background: var(--lime);
+    border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+  }
+  .intro-art :global(picture) {
+    position: absolute;
+  }
+  .intro-art :global(picture:nth-of-type(1)) {
+    width: 54%;
+    left: -8%;
+    top: 26%;
+  }
+  .intro-art :global(picture:nth-of-type(2)) {
+    width: 30%;
+    left: 50%;
+    top: 4%;
+  }
+  .intro-art :global(img) {
+    filter: drop-shadow(0 30px 30px rgb(20 24 17 / 0.3));
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .intro-art :global(.float-a) {
+      animation: float 9s var(--ease-in-out) infinite;
+    }
+    .intro-art :global(.float-b) {
+      animation: float 7s var(--ease-in-out) -2s infinite reverse;
+    }
+    @keyframes float {
+      50% {
+        transform: translateY(-14px) rotate(-3deg);
+      }
+    }
+  }
+  .intro-copy {
+    padding-inline: var(--gutter);
+    max-width: 38rem;
+  }
+  .intro-copy em {
+    font-family: var(--font-display);
+    font-variation-settings: var(--display-axes);
+  }
+
+  /* ---------- Spaces ---------- */
+  .spaces-sec {
+    display: grid;
+    overflow: hidden;
+  }
+  @media (min-width: 900px) {
+    .spaces-sec {
+      grid-template-columns: minmax(0, 22rem) minmax(0, 1fr);
+    }
+  }
+  .spaces-img {
+    min-height: 18rem;
+  }
+  .spaces-img :global(picture),
+  .spaces-img :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .spaces-content {
+    display: grid;
+    gap: 2.5rem;
+    padding: var(--section) var(--gutter);
+    min-width: 0;
+  }
+  @media (min-width: 1200px) {
+    .spaces-content {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+      align-items: end;
+      padding-right: 0;
+    }
+  }
+  .spaces-copy {
+    display: grid;
+    gap: 1.5rem;
+    justify-items: start;
+    align-self: center;
+  }
+  .spaces-copy p {
+    max-width: 44ch;
+  }
+</style>

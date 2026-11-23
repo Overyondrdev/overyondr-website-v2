@@ -1,0 +1,236 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import StateMap from '../../components/StateMap.astro';
+import BenefitTabs from '../../components/BenefitTabs.astro';
+import ProcessSteps from '../../components/ProcessSteps.astro';
+import StatsBar from '../../components/StatsBar.astro';
+import PressSection from '../../components/PressSection.astro';
+import QuoteCarousel from '../../components/QuoteCarousel.astro';
+import ResourceGrid from '../../components/ResourceGrid.astro';
+import { getSpace } from '../../data/spaces';
+
+export async function getStaticPaths() {
+  const states = await getCollection('states');
+  return states.map((entry) => ({ params: { state: entry.id }, props: { entry } }));
+}
+interface Props {
+  entry: CollectionEntry<'states'>;
+}
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const d = entry.data;
+const all = await getCollection('states');
+const links = Object.fromEntries(
+  all.filter((s) => s.data.abbr.length === 2).map((s) => [s.data.abbr, `/school-phone-bans/${s.id}`]),
+);
+const highlight = d.abbr === 'NYC' ? 'NY' : d.abbr;
+const edu = getSpace('education');
+const facts = [
+  { k: 'Policy', v: d.policy },
+  { k: 'Law', v: d.law },
+  { k: 'Effective', v: d.effective },
+].filter((f) => f.v);
+---
+
+<Base
+  title={`${d.name} School Phone Ban`}
+  description={`${d.name} school cell phone policy explained: ${d.summary}`.slice(0, 158)}
+>
+  <section class="state-hero surface-forest">
+    <div class="container sh-grid">
+      <div class="sh-copy">
+        <a href="/school-phone-bans" class="sh-back">
+          <Icon name="arrow-left" size={18} /> School Phone Bans
+        </a>
+        <p class="sh-policy">{d.policy}</p>
+        <h1 class="h1 text-accent" data-split>
+          {d.name}
+        </h1>
+        <p class="sh-summary">{d.summary}</p>
+        <a href="/get-started?space=education" class="btn">
+          Join the Movement <Icon name="arrow-right" class="btn-icon" />
+        </a>
+      </div>
+      <div class="sh-map" data-reveal="scale">
+        <StateMap
+          links={links}
+          highlight={highlight}
+          compact
+          label={`${d.name} highlighted on a map of the U.S.`}
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="section surface-cream" aria-labelledby="overview-title">
+    <div class="container overview">
+      <div class="ov-side">
+        <h2 id="overview-title" class="h2" data-split>
+          Legislation Overview
+        </h2>
+        {facts.length > 0 && (
+          <dl class="facts">
+            {facts.map((f) => (
+              <div>
+                <dt>{f.k}</dt>
+                <dd>{f.v}</dd>
+              </div>
+            ))}
+          </dl>
+        )}
+        {d.sourceUpdated && (
+          <p class="ov-updated">
+            Last reviewed{' '}
+            {new Date(d.sourceUpdated).toLocaleDateString('en-US', {
+              month: 'long',
+              year: 'numeric',
+              timeZone: 'UTC',
+            })}
+          </p>
+        )}
+      </div>
+      <article class="prose">
+        <Content />
+      </article>
+    </div>
+  </section>
+
+  <BenefitTabs
+    id="state-benefits"
+    title={edu.benefits.title}
+    text={edu.benefits.text}
+    items={edu.benefits.items}
+    surface="surface-forest"
+  />
+
+  <ProcessSteps
+    id="state-program"
+    title="Program Components"
+    intro="Everything your school needs to comply with the law and keep the day focused."
+    steps={edu.steps}
+  />
+
+  <section class="section surface-cream" aria-labelledby="millions-title">
+    <div class="container stack" style="--stack:1.5rem">
+      <h2 id="millions-title" class="h2" data-split>
+        Used By Millions Every Day
+      </h2>
+      <p class="lead">
+        Today, Yondr is leading the phone-free movement, creating device-free spaces across the globe. Used by
+        millions of people every day, Yondr is the global leader in going tech-free.
+      </p>
+      <StatsBar
+        layout="stacked"
+        stats={[
+          { value: 2.5, decimals: 1, suffix: 'M', label: 'Students supported every day' },
+          { value: 20, suffix: 'M+', label: 'People have experienced a Yondr show' },
+          { value: 1, suffix: 'M', label: 'Court visitors served annually across 80+ jurisdictions' },
+        ]}
+      />
+    </div>
+  </section>
+
+  <PressSection variant="spotlight" />
+
+  <QuoteCarousel quotes={edu.stories.quotes.slice(0, 1)} image="classroom-dark.jpg" />
+
+  <ResourceGrid
+    id="state-resources"
+    title="Resources For Educators"
+    text="Need help making your school phone-free? Check out our resources for educators."
+    items={edu.resources.items}
+    feature={edu.resources.feature}
+  />
+</Base>
+
+<style>
+  .state-hero {
+    padding: calc(var(--header-h) + 4rem) 0 clamp(3rem, 6vw, 5rem);
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  }
+  .sh-grid {
+    display: grid;
+    gap: 3rem;
+    align-items: center;
+  }
+  @media (min-width: 950px) {
+    .sh-grid {
+      grid-template-columns: 1fr 1fr;
+      min-height: 60svh;
+    }
+  }
+  .sh-copy {
+    display: grid;
+    gap: 1.1rem;
+    justify-items: start;
+  }
+  .sh-back {
+    display: inline-flex;
+    gap: 0.4rem;
+    align-items: center;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .sh-back:hover {
+    color: var(--lime);
+  }
+  .sh-policy {
+    padding: 0.3rem 0.8rem;
+    border-radius: 999px;
+    background: var(--lime);
+    color: var(--forest);
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+  .sh-summary {
+    max-width: 48ch;
+    font-size: var(--step-1);
+  }
+  .overview {
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 1000px) {
+    .overview {
+      grid-template-columns: 22rem minmax(0, 1fr);
+      gap: 5rem;
+    }
+    .ov-side {
+      position: sticky;
+      top: calc(var(--header-h) + 2rem);
+      align-self: start;
+    }
+  }
+  .facts {
+    display: grid;
+    gap: 0;
+    margin-top: 1.75rem;
+    border-radius: var(--radius);
+    background: var(--forest);
+    color: var(--cream);
+    overflow: hidden;
+  }
+  .facts div {
+    padding: 1rem 1.25rem;
+  }
+  .facts div + div {
+    border-top: 1px solid rgb(220 255 107 / 0.2);
+  }
+  .facts dt {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    opacity: 0.7;
+  }
+  .facts dd {
+    font-weight: 600;
+    color: var(--lime);
+  }
+  .ov-updated {
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+</style>

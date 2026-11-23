@@ -1,0 +1,154 @@
+---
+import Img from './Img.astro';
+import Icon from './Icon.astro';
+
+interface Props {
+  title: string;
+  image: string;
+  alt: string;
+  kicker?: string;
+  intro?: string;
+  body?: string;
+  cta?: { label: string; href: string };
+  back?: { label: string; href: string };
+  size?: 'full' | 'tall' | 'compact';
+  position?: string;
+  center?: boolean;
+}
+const {
+  title,
+  image,
+  alt,
+  kicker,
+  intro,
+  body,
+  cta,
+  back,
+  size = 'tall',
+  position = 'center',
+  center = false,
+} = Astro.props;
+---
+
+<section class:list={['hero', `hero-${size}`, { 'hero-center': center }]}>
+  <div class="hero-media">
+    <Img src={image} alt={alt} class="parallax" priority sizes="100vw" position={position} />
+  </div>
+  <div class="hero-inner container scrub-out">
+    <div class="hero-copy">
+      {back && (
+        <a class="hero-back" href={back.href}>
+          <Icon name="arrow-left" size={18} /> {back.label}
+        </a>
+      )}
+      {kicker && <p class="hero-kicker">{kicker}</p>}
+      <h1 class="h1 hero-title" data-split>
+        {title}
+      </h1>
+      {intro && <p class="hero-intro">{intro}</p>}
+      {body && <p class="hero-body">{body}</p>}
+      <slot />
+    </div>
+    {cta && (
+      <a href={cta.href} class="btn hero-cta">
+        {cta.label} <Icon name="arrow-right" class="btn-icon" />
+      </a>
+    )}
+  </div>
+  <slot name="after" />
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: flex-end;
+    min-height: min(88svh, 52rem);
+    padding-top: calc(var(--header-h) + 3rem);
+    padding-bottom: clamp(2.5rem, 5vw, 4.5rem);
+    color: var(--white);
+    background: var(--charcoal);
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    overflow: hidden;
+  }
+  .hero-full {
+    min-height: calc(100svh - 2.5rem);
+  }
+  .hero-compact {
+    min-height: min(64svh, 38rem);
+  }
+  .hero-media {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+  .hero-media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .hero-media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgb(10 12 8 / 0.55) 0%, rgb(10 12 8 / 0) 28%),
+      linear-gradient(0deg, rgb(10 12 8 / 0.92) 0%, rgb(10 12 8 / 0.55) 38%, rgb(10 12 8 / 0) 70%);
+  }
+  .hero-inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem 3rem;
+  }
+  .hero-copy {
+    max-width: 62rem;
+  }
+  .hero-center .hero-inner {
+    justify-content: center;
+    text-align: center;
+  }
+  .hero-center .hero-copy {
+    display: grid;
+    justify-items: center;
+  }
+  .hero-center {
+    align-items: center;
+  }
+  .hero-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    opacity: 0.9;
+  }
+  .hero-back:hover {
+    color: var(--lime);
+  }
+  .hero-kicker {
+    font-weight: 600;
+    font-size: var(--step-1);
+    margin-bottom: 0.75rem;
+  }
+  .hero-title {
+    color: var(--lime);
+  }
+  .hero-intro {
+    margin-top: 1.25rem;
+    font-weight: 600;
+    font-size: var(--step-1);
+    max-width: 44ch;
+  }
+  .hero-body {
+    margin-top: 0.75rem;
+    max-width: 58ch;
+    color: rgb(255 255 255 / 0.88);
+  }
+  .hero-cta {
+    flex-shrink: 0;
+  }
+</style>

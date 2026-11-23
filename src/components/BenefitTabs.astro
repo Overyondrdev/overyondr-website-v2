@@ -1,0 +1,158 @@
+---
+// Header + image (swaps per tab) with a caption, and a list of benefit tabs. Hover or click to switch.
+import Img from './Img.astro';
+import type { Benefit } from '../data/spaces';
+
+interface Props {
+  id: string;
+  title: string;
+  text: string;
+  items: Benefit[];
+  surface?: 'surface-cream' | 'surface-forest';
+}
+const { id, title, text, items, surface = 'surface-cream' } = Astro.props;
+---
+
+<section class:list={['benefits', surface]} aria-labelledby={`${id}-title`}>
+  <div class="container section-head bt-head">
+    <h2 id={`${id}-title`} class="h2" data-split>
+      {title}
+    </h2>
+    <p>{text}</p>
+  </div>
+  <div class="bt-grid" data-tabs="hover">
+    <div class="bt-media">
+      {items.map((b, i) => (
+        <figure
+          class="bt-panel"
+          role="tabpanel"
+          id={`${id}-p${i}`}
+          aria-labelledby={`${id}-t${i}`}
+          hidden={i !== 0}
+        >
+          <div class="bt-img">
+            <Img src={b.image} alt={b.alt} sizes="(min-width: 900px) 50vw, 100vw" />
+          </div>
+          <figcaption>{b.text}</figcaption>
+        </figure>
+      ))}
+    </div>
+    <div class="bt-list" role="tablist" aria-label={title} aria-orientation="vertical">
+      {items.map((b, i) => (
+        <button
+          role="tab"
+          id={`${id}-t${i}`}
+          aria-controls={`${id}-p${i}`}
+          aria-selected={i === 0 ? 'true' : 'false'}
+          tabindex={i === 0 ? 0 : -1}
+        >
+          <span>{b.title}</span>
+          <span class="bt-arrow" aria-hidden="true">
+            →
+          </span>
+        </button>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .benefits {
+    padding-top: var(--section);
+  }
+  .bt-head {
+    margin-bottom: 2.5rem;
+  }
+  .bt-grid {
+    display: grid;
+    border-top: 1px solid var(--line);
+  }
+  @media (min-width: 900px) {
+    .bt-grid {
+      grid-template-columns: 1fr 1fr;
+      min-height: 30rem;
+    }
+  }
+  .bt-media {
+    position: relative;
+    display: grid;
+  }
+  .bt-panel {
+    display: grid;
+    grid-template-rows: 1fr auto;
+    animation: bt-in 0.6s var(--ease-out);
+  }
+  @keyframes bt-in {
+    from {
+      opacity: 0.2;
+    }
+  }
+  .bt-img {
+    position: relative;
+    min-height: 18rem;
+    overflow: hidden;
+  }
+  .bt-img :global(picture),
+  .bt-img :global(img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .bt-panel figcaption {
+    padding: 1rem var(--gutter);
+    background: var(--lime);
+    color: var(--forest);
+    font-size: 0.92rem;
+    font-weight: 500;
+  }
+  .bt-list {
+    display: grid;
+    grid-auto-rows: 1fr;
+  }
+  .bt-list button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.5rem var(--gutter);
+    border: 0;
+    border-bottom: 1px solid var(--line);
+    background: none;
+    color: inherit;
+    text-align: left;
+    font-weight: 600;
+    font-size: var(--step-2);
+    letter-spacing: -0.015em;
+    line-height: 1.15;
+    opacity: 0.45;
+    transition:
+      opacity 0.3s,
+      background 0.3s,
+      padding 0.4s var(--ease-out);
+  }
+  @media (min-width: 900px) {
+    .bt-list button {
+      border-left: 1px solid var(--line);
+    }
+  }
+  .bt-list button[aria-selected='true'] {
+    opacity: 1;
+    padding-left: calc(var(--gutter) + 0.75rem);
+  }
+  .bt-list button:hover {
+    opacity: 1;
+  }
+  .bt-arrow {
+    opacity: 0;
+    transform: translateX(-8px);
+    transition:
+      opacity 0.3s,
+      transform 0.4s var(--ease-out);
+  }
+  [aria-selected='true'] .bt-arrow {
+    opacity: 1;
+    transform: none;
+  }
+</style>

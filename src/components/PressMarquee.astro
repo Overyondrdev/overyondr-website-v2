@@ -1,0 +1,75 @@
+---
+// Infinite "As featured in" strip of outlet names, built from the press archive.
+import { press } from '../data/press';
+
+interface Props {
+  surface?: string;
+}
+const { surface = 'surface-cream' } = Astro.props;
+const skip = new Set(['Yondr Announcement', 'Texas Talks Podcast']);
+const outlets = [...new Set(press.map((p) => p.outlet))].filter((o) => !skip.has(o)).slice(0, 22);
+---
+
+<section class:list={['pm', surface]} aria-labelledby="pm-title">
+  <div class="container pm-head">
+    <h2 id="pm-title" class="eyebrow">
+      As featured in
+    </h2>
+    <a href="/press" class="link-arrow">
+      {press.length} stories and counting →
+    </a>
+  </div>
+  <div class="marquee" style="--marquee-dur:55s">
+    <ul class="marquee-track">
+      {outlets.map((o, i) => (
+        <li class:list={['pm-item', { alt: i % 3 === 1 }]}>{o}</li>
+      ))}
+    </ul>
+    <ul class="marquee-track" aria-hidden="true">
+      {outlets.map((o, i) => (
+        <li class:list={['pm-item', { alt: i % 3 === 1 }]}>{o}</li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .pm {
+    padding-block: clamp(2.5rem, 5vw, 4rem);
+    border-block: 1px solid var(--line);
+    overflow: hidden;
+  }
+  .pm-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.75rem;
+  }
+  .pm-head h2 {
+    font-family: var(--font-sans);
+    font-variation-settings: normal;
+  }
+  .pm-item {
+    font-family: var(--font-display);
+    font-variation-settings: var(--display-axes);
+    font-size: var(--step-3);
+    line-height: 1;
+    white-space: nowrap;
+    opacity: 0.85;
+    transition:
+      opacity 0.3s,
+      color 0.3s;
+  }
+  .pm-item.alt {
+    font-family: var(--font-sans);
+    font-variation-settings: normal;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+  .pm-item:hover {
+    opacity: 1;
+    color: var(--forest);
+  }
+</style>

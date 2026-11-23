@@ -1,0 +1,230 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Img from '../components/Img.astro';
+import Icon from '../components/Icon.astro';
+import ProcessSteps from '../components/ProcessSteps.astro';
+import PouchSteps from '../components/PouchSteps.astro';
+import StatsBar from '../components/StatsBar.astro';
+import { spaces } from '../data/spaces';
+
+const programSteps = spaces.map((s) => ({
+  title: s.name,
+  text: s.card.text,
+  image: s.card.image,
+  alt: s.card.alt,
+}));
+const howTo = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'How to use a Yondr pouch',
+  step: [
+    { '@type': 'HowToStep', text: 'Power off your device and place it inside the pouch.' },
+    { '@type': 'HowToStep', text: 'Push the green button to secure your pouch.' },
+    { '@type': 'HowToStep', text: 'Tap the green ring to the base to open the pouch.' },
+  ],
+};
+---
+
+<Base
+  title="How It Works"
+  description="How the Yondr phone-free program works: lockable phone pouches people keep with them, opened with an unlocking base when they leave."
+  schema={[howTo]}
+>
+  <PageHero
+    title="How It Works"
+    intro="Going phone-free should be easy. We created Yondr to make sure it is."
+    body="Our step-by-step device-free program provides comprehensive support throughout every step of the journey. We’ll walk you through everything from setting up to settling in, so you can get back to what’s important."
+    image="hero-how.jpg"
+    alt="Friends lying in the grass, relaxing without phones"
+    cta={{ label: 'Discover How', href: '#program' }}
+  />
+
+  <section class="noise surface-cream section" aria-labelledby="noise-title">
+    <div class="drift" aria-hidden="true">
+      <div class="drift-row">
+        <div class="d1">
+          <Img src="texture-water.jpg" alt="" sizes="22vw" />
+        </div>
+        <div class="d2">
+          <Img src="chess.jpg" alt="" sizes="40vw" />
+        </div>
+        <div class="d3">
+          <Img src="trees-blur.jpg" alt="" sizes="22vw" />
+        </div>
+      </div>
+    </div>
+    <div class="container section-head noise-head">
+      <h2 id="noise-title" class="h2" data-split>
+        Leading The Way To Less Digital Noise
+      </h2>
+      <p>
+        Our phone pouch program is rooted in our philosophy that life is better when it’s not lived through a
+        screen. In a time of tech addiction and the quiet exhaustion of being always available, calling back
+        to a world without devices feels like a step forward.
+      </p>
+    </div>
+  </section>
+
+  <section class="program surface-charcoal" id="program" aria-labelledby="program-title">
+    <div class="program-bg">
+      <Img src="phone-lying.jpg" alt="" sizes="100vw" class="parallax" />
+    </div>
+    <div class="container program-copy">
+      <h2 id="program-title" class="h1 text-accent" data-split>
+        How The Yondr Program Works
+      </h2>
+      <p class="lead">
+        Our smartphone storage system is simple by design. Phones go into a Yondr pouch at the start of your
+        event or school day, stay in students’ or guests’ possession the whole time, and unlock the moment
+        they’re free to use them again.
+      </p>
+      <a href="/get-started" class="btn">
+        Get Started <Icon name="arrow-right" class="btn-icon" />
+      </a>
+    </div>
+  </section>
+
+  <ProcessSteps
+    id="programs"
+    title="One Program, Every Space"
+    intro="From school leaders and artists to event organizers and everyday users, people describe the same thing: a shift in attention, energy, and connection."
+    steps={programSteps}
+  />
+
+  <section class="section surface-cream" aria-labelledby="pouch-title">
+    <div class="container">
+      <div class="pouch-head">
+        <h2 id="pouch-title" class="h2" data-split>
+          About The Pouch
+        </h2>
+        <p>
+          Our lockable smartphone pouches make secure device storage simple. Magnetically seal in cell phones
+          to prevent unwanted distraction.
+        </p>
+      </div>
+      <PouchSteps />
+      <p class="pouch-more">
+        <a href="/products" class="btn">
+          Explore All Products <Icon name="arrow-right" class="btn-icon" />
+        </a>
+      </p>
+    </div>
+  </section>
+
+  <section class="section-tight surface-cream trusted" aria-labelledby="trusted-title">
+    <div class="container split">
+      <h2 id="trusted-title" class="h2" data-split>
+        Trusted By Schools, Artists, And Institutions Worldwide
+      </h2>
+      <StatsBar stats={[{ value: 2.5, decimals: 1, suffix: 'M+', label: 'Students supported every day' }]} />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .noise {
+    overflow: hidden;
+  }
+  .drift-row {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    gap: clamp(1rem, 3vw, 2.5rem);
+    align-items: center;
+    width: 112%;
+    margin-left: -6%;
+  }
+  .drift-row > div {
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .drift-row :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .d1,
+  .d3 {
+    aspect-ratio: 4 / 3.4;
+  }
+  .d2 {
+    aspect-ratio: 16 / 10;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .drift-row {
+        animation: drift linear both;
+        animation-timeline: view();
+        animation-range: entry 0% exit 100%;
+      }
+      @keyframes drift {
+        from {
+          transform: translateX(4%);
+        }
+        to {
+          transform: translateX(-4%);
+        }
+      }
+    }
+  }
+  .noise-head {
+    margin-top: clamp(2.5rem, 5vw, 4rem);
+    margin-bottom: 0;
+  }
+  .program {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    place-items: center;
+    min-height: min(90svh, 46rem);
+    padding-block: var(--section);
+    text-align: center;
+    overflow: hidden;
+  }
+  .program-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+  .program-bg :global(picture),
+  .program-bg :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .program-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgb(12 14 10 / 0.72);
+  }
+  .program-copy {
+    display: grid;
+    justify-items: center;
+    gap: 1.5rem;
+  }
+  .program-copy h2 {
+    max-width: 14ch;
+  }
+  .program-copy .lead {
+    margin-inline: auto;
+  }
+  .pouch-head {
+    text-align: center;
+    display: grid;
+    gap: 1rem;
+    justify-items: center;
+    margin-bottom: clamp(2.5rem, 5vw, 4rem);
+  }
+  .pouch-head p {
+    max-width: 52ch;
+  }
+  .pouch-more {
+    display: flex;
+    justify-content: center;
+    margin-top: clamp(2.5rem, 5vw, 4rem);
+  }
+  .trusted {
+    padding-bottom: var(--section);
+  }
+</style>

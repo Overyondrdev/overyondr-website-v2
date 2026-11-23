@@ -1,0 +1,287 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
+import { faq } from '../data/faq';
+
+const strip = (h: string) =>
+  h
+    .replace(/<[^>]+>/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.flatMap((g) =>
+    g.items.map((i) => ({
+      '@type': 'Question',
+      name: i.q,
+      acceptedAnswer: { '@type': 'Answer', text: strip(i.a) },
+    })),
+  ),
+};
+const slug = (s: string) =>
+  s
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+---
+
+<Base
+  title="Frequently Asked Questions"
+  description="Answers to common questions about Yondr phone pouches, unlocking bases, phone-free schools, phone-free shows and workplaces."
+  schema={[schema]}
+>
+  <PageHero
+    title="Frequently Asked Questions"
+    body="These are the most common questions we get asked about our phone-free spaces. Explore answers about our lockable phone storage products, programs, and more."
+    image="hero-pouches.jpg"
+    alt="Close-up of green Yondr pouches"
+    size="compact"
+    cta={{ label: 'Join Yondr', href: '/get-started' }}
+  />
+
+  <section class="section surface-cream">
+    <div class="container faq-layout">
+      <aside class="faq-aside">
+        <div class="faq-search">
+          <label for="faq-q" class="visually-hidden">
+            Search questions
+          </label>
+          <Icon name="search" size={18} />
+          <input id="faq-q" type="search" placeholder="Search questions" autocomplete="off" data-faq-search />
+        </div>
+        <nav aria-label="On this page">
+          <p class="faq-toc-title">On This Page</p>
+          <ul>
+            {faq.map((g) => (
+              <li>
+                <a href={`#${g.id}`} data-toc={g.id}>
+                  {g.title} <span>{g.items.length}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </aside>
+
+      <div class="faq-groups">
+        {faq.map((g) => (
+          <section id={g.id} class="faq-group" aria-labelledby={`${g.id}-h`} data-faq-group>
+            <h2 id={`${g.id}-h`} class="h3">
+              {g.title}
+            </h2>
+            {g.items.map((item) => (
+              <details class="faq-item" id={`${g.id}-${slug(item.q).slice(0, 48)}`} data-faq-item>
+                <summary>
+                  <span>{item.q}</span>
+                  <span class="faq-toggle" aria-hidden="true">
+                    <Icon name="plus" size={20} />
+                  </span>
+                </summary>
+                <div class="faq-a prose" set:html={item.a} />
+              </details>
+            ))}
+          </section>
+        ))}
+        <p class="faq-empty" hidden data-faq-empty>
+          No questions match your search. <a href="/get-started">Ask us directly</a>.
+        </p>
+        <div class="faq-more card">
+          <h2 class="h3">Still have questions?</h2>
+          <p>Our team is happy to help with anything not covered here.</p>
+          <a href="/get-started" class="btn">
+            Get In Touch <Icon name="arrow-right" class="btn-icon" />
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .faq-layout {
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 960px) {
+    .faq-layout {
+      grid-template-columns: 15rem minmax(0, 46rem);
+      gap: 5rem;
+    }
+    .faq-aside {
+      position: sticky;
+      top: calc(var(--header-h) + 2rem);
+      align-self: start;
+    }
+  }
+  .faq-search {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0 1rem;
+    border-radius: 999px;
+    background: var(--white);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+  .faq-search:focus-within {
+    box-shadow: inset 0 0 0 2px var(--forest);
+  }
+  .faq-search input {
+    flex: 1;
+    min-height: 3rem;
+    border: 0;
+    background: none;
+    outline: none;
+  }
+  .faq-toc-title {
+    margin: 1.75rem 0 0.75rem;
+    font-weight: 700;
+  }
+  .faq-aside ul {
+    list-style: none;
+    padding: 0;
+    border-left: 2px solid var(--line);
+  }
+  .faq-aside a {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0.9rem;
+    margin-left: -2px;
+    border-left: 2px solid transparent;
+    text-decoration: none;
+    transition:
+      border-color 0.25s,
+      background 0.25s;
+  }
+  .faq-aside a span {
+    font-size: 0.8rem;
+    opacity: 0.6;
+  }
+  .faq-aside a:hover,
+  .faq-aside a[aria-current='true'] {
+    border-color: var(--forest);
+    font-weight: 600;
+  }
+  .faq-group + .faq-group {
+    margin-top: 3.5rem;
+  }
+  .faq-group h2 {
+    margin-bottom: 1.25rem;
+  }
+  .faq-item {
+    margin-bottom: 0.75rem;
+    border-radius: var(--radius);
+    background: var(--white);
+    transition: box-shadow 0.3s;
+  }
+  .faq-item[open] {
+    box-shadow: 0 20px 40px -30px rgb(20 24 17 / 0.5);
+  }
+  .faq-item summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.1rem 1.25rem;
+    font-weight: 600;
+    font-size: var(--step-1);
+    line-height: 1.3;
+    cursor: pointer;
+    list-style: none;
+  }
+  .faq-item summary::-webkit-details-marker {
+    display: none;
+  }
+  .faq-toggle {
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    background: var(--lime);
+    color: var(--forest);
+    transition:
+      transform 0.4s var(--ease-out),
+      background 0.3s;
+  }
+  .faq-item[open] .faq-toggle {
+    transform: rotate(45deg);
+    background: var(--forest);
+    color: var(--lime);
+  }
+  .faq-item::details-content {
+    block-size: 0;
+    overflow: hidden;
+    transition:
+      block-size 0.4s var(--ease-out),
+      content-visibility 0.4s allow-discrete;
+  }
+  .faq-item[open]::details-content {
+    block-size: auto;
+  }
+  .faq-a {
+    padding: 0 1.25rem 1.25rem;
+    max-width: none;
+  }
+  .faq-empty {
+    padding: 2rem 0;
+  }
+  .faq-more {
+    margin-top: 3.5rem;
+    padding: 2rem;
+    gap: 1rem;
+    align-items: flex-start;
+    background: var(--forest);
+    color: var(--cream);
+  }
+  .faq-more:hover {
+    transform: none;
+  }
+  .faq-more .btn::after {
+    background: var(--cream);
+  }
+  .faq-more .btn:hover {
+    color: var(--forest);
+  }
+</style>
+
+<script>
+  // Live search across questions + answers, scroll-spy for the table of contents, deep links open the item.
+  const input = document.querySelector<HTMLInputElement>('[data-faq-search]');
+  const items = [...document.querySelectorAll<HTMLDetailsElement>('[data-faq-item]')];
+  const groups = [...document.querySelectorAll<HTMLElement>('[data-faq-group]')];
+  const empty = document.querySelector<HTMLElement>('[data-faq-empty]');
+  input?.addEventListener('input', () => {
+    const q = input.value.trim().toLowerCase();
+    let shown = 0;
+    items.forEach((d) => {
+      const hit = !q || d.textContent!.toLowerCase().includes(q);
+      d.hidden = !hit;
+      if (hit) shown++;
+      if (q && hit && q.length > 2) d.open = true;
+    });
+    groups.forEach((g) => (g.hidden = !g.querySelector('[data-faq-item]:not([hidden])')));
+    if (empty) empty.hidden = shown > 0;
+  });
+
+  const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-toc]')];
+  const spy = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting)
+          links.forEach((l) => l.setAttribute('aria-current', String(l.dataset.toc === e.target.id)));
+      });
+    },
+    { rootMargin: '-30% 0px -60% 0px' },
+  );
+  groups.forEach((g) => spy.observe(g));
+
+  const openFromHash = () => {
+    const el = location.hash && document.getElementById(location.hash.slice(1));
+    if (el instanceof HTMLDetailsElement) el.open = true;
+  };
+  window.addEventListener('hashchange', openFromHash);
+  openFromHash();
+</script>

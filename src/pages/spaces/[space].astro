@@ -1,0 +1,232 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import StatsBar from '../../components/StatsBar.astro';
+import ProcessSteps from '../../components/ProcessSteps.astro';
+import SplitFeature from '../../components/SplitFeature.astro';
+import BenefitTabs from '../../components/BenefitTabs.astro';
+import Stories from '../../components/Stories.astro';
+import PressSection from '../../components/PressSection.astro';
+import ResourceGrid from '../../components/ResourceGrid.astro';
+import Img from '../../components/Img.astro';
+import Icon from '../../components/Icon.astro';
+import { spaces, type Space } from '../../data/spaces';
+import { useCases } from '../../data/useCases';
+
+export function getStaticPaths() {
+  return spaces.map((space) => ({ params: { space: space.slug }, props: { space } }));
+}
+interface Props {
+  space: Space;
+}
+const { space: s } = Astro.props;
+const uses = useCases.filter((u) => u.parent === s.slug);
+const breadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Find Your Space',
+      item: 'https://www.overyondr.com/find-your-space',
+    },
+    { '@type': 'ListItem', position: 2, name: s.name, item: `https://www.overyondr.com/spaces/${s.slug}` },
+  ],
+};
+---
+
+<Base title={s.seo.title} description={s.seo.description} schema={[breadcrumb]}>
+  <PageHero
+    title={s.hero.title}
+    intro={s.hero.intro}
+    body={s.hero.body}
+    image={s.hero.image}
+    alt={s.hero.alt}
+    back={{ label: 'Find Your Space', href: '/find-your-space' }}
+    cta={{ label: 'Discover How', href: '#process' }}
+  />
+
+  <div class="surface-cream stats-wrap">
+    <div class="container">
+      <StatsBar stats={s.stats} />
+    </div>
+  </div>
+
+  {uses.length > 0 && (
+    <nav class="uses surface-cream" aria-label={`${s.name} use cases`}>
+      <div class="container uses-row">
+        <p class="eyebrow">Explore {s.name}</p>
+        <ul>
+          {uses.map((u, i) => (
+            <li data-reveal style={`--i:${i}`}>
+              <a href={`/spaces/${s.slug}/${u.slug}`} class="use-chip" data-tilt="8">
+                {u.name} <Icon name="arrow-right" size={16} />
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </nav>
+  )}
+
+  <div id="process">
+    <ProcessSteps id={`${s.slug}-process`} intro={s.processIntro} steps={s.steps} />
+  </div>
+
+  <SplitFeature
+    lead={s.feature.lead}
+    rest={s.feature.rest}
+    text={s.feature.text}
+    image={s.feature.image}
+    alt={s.feature.alt}
+    cta={{ label: 'See How It Works', href: '/how-it-works' }}
+  />
+
+  <BenefitTabs
+    id={`${s.slug}-benefits`}
+    title={s.benefits.title}
+    text={s.benefits.text}
+    items={s.benefits.items}
+  />
+
+  <Stories id={`${s.slug}-stories`} title={s.stories.title} text={s.stories.text} quotes={s.stories.quotes} />
+
+  {s.movement && (
+    <section class="movement surface-charcoal" aria-labelledby="movement-title">
+      <div class="mv-art" aria-hidden="true">
+        <div class="mv-block" />
+        <Img src="product-base.png" alt="" sizes="22vw" />
+        <Img src="product-pouch.png" alt="" sizes="14vw" />
+      </div>
+      <div class="mv-copy">
+        <div class="mv-bg">
+          <Img src="classroom-dark.jpg" alt="" sizes="60vw" />
+        </div>
+        <h2 id="movement-title" class="h2" data-split>
+          {s.movement.title}
+        </h2>
+        <p>{s.movement.text}</p>
+        <a href={s.movement.cta.href} class="btn">
+          {s.movement.cta.label} <Icon name="arrow-right" class="btn-icon" />
+        </a>
+      </div>
+    </section>
+  )}
+
+  <PressSection />
+
+  <ResourceGrid
+    id={`${s.slug}-resources`}
+    title={s.resources.title}
+    text={s.resources.text}
+    items={s.resources.items}
+    feature={s.resources.feature}
+  />
+</Base>
+
+<style>
+  .uses {
+    padding-bottom: clamp(2rem, 4vw, 3rem);
+  }
+  .uses-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.5rem;
+  }
+  .uses ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    list-style: none;
+    padding: 0;
+  }
+  .use-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem 1.15rem;
+    border-radius: 999px;
+    background: var(--white);
+    box-shadow: inset 0 0 0 1px var(--line);
+    font-weight: 600;
+    text-decoration: none;
+    transition:
+      background 0.25s,
+      color 0.25s;
+  }
+  .use-chip:hover {
+    background: var(--forest);
+    color: var(--lime);
+  }
+  .stats-wrap {
+    padding-block: clamp(2rem, 4vw, 3rem);
+  }
+  .movement {
+    display: grid;
+    overflow: hidden;
+  }
+  @media (min-width: 900px) {
+    .movement {
+      grid-template-columns: 0.75fr 1.25fr;
+      min-height: 32rem;
+    }
+  }
+  .mv-art {
+    position: relative;
+    min-height: 18rem;
+    background: var(--cream);
+  }
+  .mv-block {
+    position: absolute;
+    inset: 40% 0 0 0;
+    background: var(--lime);
+  }
+  .mv-art :global(picture) {
+    position: absolute;
+  }
+  .mv-art :global(picture:nth-of-type(1)) {
+    width: 62%;
+    left: -18%;
+    top: 22%;
+  }
+  .mv-art :global(picture:nth-of-type(2)) {
+    width: 38%;
+    left: 42%;
+    top: 8%;
+    filter: drop-shadow(0 25px 25px rgb(0 0 0 / 0.3));
+  }
+  .mv-copy {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    align-content: center;
+    justify-items: start;
+    gap: 1.25rem;
+    padding: var(--section) var(--gutter);
+  }
+  .mv-copy h2 {
+    color: var(--cream);
+  }
+  .mv-copy p {
+    max-width: 42ch;
+  }
+  .mv-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+  .mv-bg :global(picture),
+  .mv-bg :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .mv-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgb(10 12 8 / 0.85), rgb(10 12 8 / 0.45));
+  }
+</style>

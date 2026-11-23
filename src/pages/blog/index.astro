@@ -1,0 +1,296 @@
+---
+import { Picture } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import BlogCard from '../../components/BlogCard.astro';
+import Icon from '../../components/Icon.astro';
+import { getPosts, formatDate } from '../../lib/blog';
+
+const posts = await getPosts();
+const [lead, ...rest] = posts;
+const featured = posts.filter((p) => p.data.featured && p.id !== lead.id).slice(0, 3);
+const categories = [...new Set(posts.map((p) => p.data.category))];
+---
+
+<Base
+  title="Blog"
+  description="Research, stories and guides on phone-free schools, live events and workplaces from the team at Yondr."
+>
+  <section class="blog-hero">
+    <div class="bh-media">
+      <Picture
+        src={lead.data.image}
+        alt={lead.data.imageAlt}
+        formats={['webp']}
+        widths={[800, 1400, 2000]}
+        sizes="100vw"
+        loading="eager"
+        fetchpriority="high"
+      />
+    </div>
+    <div class="container bh-inner">
+      <div>
+        <p class="bh-meta">
+          {lead.data.category} · {formatDate(lead.data.date)}
+        </p>
+        <h1 class="h1 text-accent" data-split>
+          {lead.data.title}
+        </h1>
+        <p class="bh-desc">{lead.data.description}</p>
+      </div>
+      <a href={`/blog/${lead.id}`} class="btn">
+        Read More <Icon name="arrow-right" class="btn-icon" />
+      </a>
+    </div>
+  </section>
+
+  <div class="filters-bar surface-charcoal">
+    <div class="container filters" role="group" aria-label="Filter articles by topic" data-blog-filters>
+      <button class="chip" aria-pressed="true" data-cat="all">
+        All Articles
+      </button>
+      {categories.map((c) => (
+        <button class="chip" aria-pressed="false" data-cat={c}>
+          {c}
+        </button>
+      ))}
+    </div>
+  </div>
+
+  {featured.length > 0 && (
+    <section class="section surface-forest" aria-labelledby="featured-title">
+      <div class="container">
+        <div class="section-head">
+          <h2 id="featured-title" class="h2 text-accent" data-split>
+            Featured: Unplugged Updates
+          </h2>
+          <p>
+            Learn more about the phone-free lifestyle. Explore how Yondr is redefining the role of technology
+            in our culture, communication, schools, and well-being.
+          </p>
+        </div>
+        <ul class="featured-list">
+          {featured.map((p) => (
+            <li class="feat-row">
+              <div class="feat-img media-zoom">
+                <Picture
+                  src={p.data.image}
+                  alt={p.data.imageAlt}
+                  formats={['webp']}
+                  widths={[600, 1000]}
+                  sizes="(min-width: 900px) 45vw, 100vw"
+                />
+              </div>
+              <div class="feat-body">
+                <p class="feat-meta">
+                  {p.data.category} · {formatDate(p.data.date)}
+                </p>
+                <h3>
+                  <a href={`/blog/${p.id}`} class="card-link">
+                    {p.data.title}
+                  </a>
+                </h3>
+                <p>{p.data.description}</p>
+                <span class="link-arrow" aria-hidden="true">
+                  Read More <Icon name="arrow-right" />
+                </span>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  <section class="section surface-cream" aria-labelledby="latest-title">
+    <div class="container">
+      <div class="latest-head">
+        <h2 id="latest-title" class="h2" data-split>
+          Latest Phone-Free Perspectives
+        </h2>
+        <p class="latest-count" aria-live="polite" data-blog-count>
+          {rest.length} articles
+        </p>
+      </div>
+      <ul class="post-grid" data-blog-grid>
+        {rest.map((p) => (
+          <li data-cat={p.data.category}>
+            <BlogCard post={p} />
+          </li>
+        ))}
+      </ul>
+      <div class="more-wrap">
+        <button type="button" class="btn btn-dark" data-more hidden>
+          Load More Articles
+        </button>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .blog-hero {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: flex-end;
+    min-height: min(80svh, 46rem);
+    padding: calc(var(--header-h) + 4rem) 0 clamp(2.5rem, 5vw, 4rem);
+    color: var(--white);
+    overflow: hidden;
+  }
+  .bh-media {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+  .bh-media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .bh-media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(0deg, rgb(10 12 8 / 0.95), rgb(10 12 8 / 0.3) 60%, rgb(10 12 8 / 0.4));
+  }
+  .bh-inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem 3rem;
+  }
+  .bh-inner > div {
+    max-width: 58rem;
+  }
+  .bh-inner h1 {
+    font-size: var(--step-4);
+    margin-top: 0.5rem;
+  }
+  .bh-meta {
+    font-weight: 600;
+  }
+  .bh-desc {
+    margin-top: 1rem;
+    max-width: 56ch;
+  }
+  .filters-bar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    padding-block: 0.9rem;
+  }
+  .filters {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .featured-list {
+    list-style: none;
+    padding: 0;
+    border-top: 1px solid rgb(220 255 107 / 0.3);
+  }
+  .feat-row {
+    position: relative;
+    display: grid;
+    border-bottom: 1px solid rgb(220 255 107 / 0.3);
+  }
+  @media (min-width: 900px) {
+    .feat-row {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .feat-img {
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+  }
+  .feat-img :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 1.2s var(--ease-out);
+  }
+  .feat-row:hover .feat-img :global(img) {
+    transform: scale(1.05);
+  }
+  .feat-body {
+    display: grid;
+    align-content: center;
+    gap: 0.75rem;
+    padding: 2rem clamp(0rem, 3vw, 2.5rem);
+  }
+  .feat-meta {
+    font-size: 0.85rem;
+    opacity: 0.75;
+  }
+  .feat-body h3 {
+    font-size: var(--step-2);
+    color: var(--lime);
+  }
+  .feat-body h3 a {
+    text-decoration: none;
+  }
+  .feat-body .link-arrow {
+    color: var(--lime);
+  }
+  .latest-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1rem;
+    padding-bottom: 2rem;
+    margin-bottom: 2.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .more-wrap {
+    display: flex;
+    justify-content: center;
+    margin-top: 3rem;
+  }
+  .post-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+    gap: 2.5rem 1.5rem;
+    list-style: none;
+    padding: 0;
+  }
+</style>
+
+<script>
+  // Topic filter + "Load more" (12 at a time). Without JS every article is listed.
+  const filters = document.querySelector('[data-blog-filters]');
+  const grid = document.querySelector('[data-blog-grid]');
+  const count = document.querySelector('[data-blog-count]');
+  const more = document.querySelector<HTMLButtonElement>('[data-more]');
+  const PAGE = 12;
+  let cat = 'all';
+  let limit = PAGE;
+  const render = () => {
+    if (!grid) return;
+    const items = [...grid.querySelectorAll<HTMLElement>('li[data-cat]')];
+    const pool = items.filter((li) => cat === 'all' || li.dataset.cat === cat);
+    items.forEach((li) => (li.hidden = true));
+    pool.slice(0, limit).forEach((li) => (li.hidden = false));
+    if (more) more.hidden = pool.length <= limit;
+    if (count) count.textContent = `${pool.length} article${pool.length === 1 ? '' : 's'}`;
+  };
+  filters?.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-cat]');
+    if (!btn) return;
+    cat = btn.dataset.cat!;
+    limit = PAGE;
+    filters.querySelectorAll('[data-cat]').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+    render();
+    document.getElementById('latest-title')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  more?.addEventListener('click', () => {
+    const first = grid?.querySelectorAll<HTMLElement>('li[data-cat]:not([hidden])').length ?? 0;
+    limit += PAGE;
+    render();
+    grid?.querySelectorAll<HTMLElement>('li[data-cat]:not([hidden]) a')[first]?.focus();
+  });
+  render();
+</script>

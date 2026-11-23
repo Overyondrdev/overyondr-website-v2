@@ -1,0 +1,42 @@
+---
+import Base from './Base.astro';
+import PageHero from '../components/PageHero.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  updated?: string;
+}
+const { title, description, updated } = Astro.props;
+---
+
+<Base {title} {description}>
+  <PageHero
+    {title}
+    kicker={undefined}
+    intro={updated ? `Last Updated: ${updated}` : undefined}
+    image="hero-pouches.jpg"
+    alt="Close-up of green Yondr pouches"
+    size="compact"
+  />
+  <section class="section surface-cream">
+    <div class="container legal">
+      <article class="prose legal-body">
+        <slot />
+      </article>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .legal-body {
+    max-width: 72ch;
+  }
+  .legal-body :global(h2) {
+    font-family: var(--font-sans);
+    font-variation-settings: normal;
+    font-weight: 600;
+    font-size: var(--step-2);
+    letter-spacing: -0.015em;
+  }
+</style>

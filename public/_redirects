@@ -1,0 +1,42 @@
+# Legacy Squarespace URLs -> V2 information architecture (301).
+# Keep this list in sync with the live site's URL map before cutover.
+# Use-case pages
+/phone-free-schools         /spaces/education/schools             301
+/phone-free-universities    /spaces/education/universities        301
+/camps-youth-programs       /spaces/education/camps               301
+/phone-free-music           /spaces/live-events/music             301
+/phone-free-comedy-shows    /spaces/live-events/comedy            301
+/phone-free-events          /spaces/live-events/events            301
+/phone-free-productions     /spaces/live-events/productions       301
+/phone-free-courthouses     /spaces/commercial/courts             301
+/phone-free-workplace       /spaces/commercial/workplace          301
+/phone-free-hospitality     /spaces/commercial/hospitality        301
+/other                      /spaces/commercial/other              301
+
+/phone-locking-pouch        /how-it-works                301
+/phone-free-spaces          /find-your-space             301
+/contact                    /get-started                 301
+/privacypolicy              /privacy                     301
+/termsandconditions         /terms                       301
+
+# Company and product pages
+/yondr-global               /international               301
+/hometrayterms              /home-tray/terms             301
+/modernslavery              /modern-slavery-statement    301
+/contact-2                  /get-started                 301
+/product-photos             /products                    301
+/student-pouch              /products#student-pouch      301
+/medical-pouch              /products#medical-pouch      301
+/id-pouch                   /products#id-pouch           301
+/handheld-magnet            /products#handheld-magnet    301
+/magnet-base                /products#magnet-base        301
+/lockbox                    /products#lockbox            301
+/storage-tote               /products#storage-tote       301
+/storage-hamper             /products#storage-hamper     301
+/pouch-rack                 /products#pouch-rack         301
+
+# Legislation hub moved out of the blog
+/blog/phone-free-legislation                /school-phone-bans                  301
+/blog/phone-free-legislation/newyork        /school-phone-bans/new-york         301
+/blog/phone-free-legislation/newyorkcity    /school-phone-bans/new-york-city    301
+/blog/phone-free-legislation/*              /school-phone-bans/:splat           301

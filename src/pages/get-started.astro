@@ -1,0 +1,420 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
+import { site } from '../data/site';
+
+// Form submissions: set PUBLIC_FORM_ENDPOINT (e.g. a HubSpot/Formspree/Worker URL) at build time.
+// Without it the form validates and shows a confirmation, and the payload is logged for QA.
+const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
+const spaces = [
+  { value: 'education', label: 'Education: K-12, universities, camps' },
+  { value: 'live-events', label: 'Live Events: concerts, comedy, weddings' },
+  { value: 'commercial', label: 'Commercial: workplaces, courts, productions' },
+  { value: 'home', label: 'At Home' },
+  { value: 'other', label: 'Something else' },
+];
+---
+
+<Base
+  title="Get Started"
+  description="Tell us about your space and the Yondr team will be in touch with next steps for going phone-free."
+  cta={false}
+>
+  <PageHero
+    title="Start Connecting"
+    body="Don’t miss out on more meaningful moments. Fill out the form below to get started. Our success team will personally review your details and reach out with the next steps."
+    image="hero-start.jpg"
+    alt="Colleagues working together at a laptop"
+    size="compact"
+  />
+
+  <section class="section surface-forest">
+    <div class="container start-grid">
+      <aside class="start-aside">
+        <h2 class="h3 text-accent">What happens next</h2>
+        <ol class="next-steps">
+          <li>
+            <span>1</span>
+            <div>
+              <strong>We review your details</strong>
+              <p>A specialist for your space reads every request.</p>
+            </div>
+          </li>
+          <li>
+            <span>2</span>
+            <div>
+              <strong>A quick call</strong>
+              <p>We learn about your goals, size and timeline.</p>
+            </div>
+          </li>
+          <li>
+            <span>3</span>
+            <div>
+              <strong>Your plan</strong>
+              <p>Pricing, rollout support and training tailored to you.</p>
+            </div>
+          </li>
+        </ol>
+        <div class="contact-alt">
+          <p>Prefer email?</p>
+          <a href={`mailto:${site.email}`}>{site.email}</a>
+          <p>Media inquiries</p>
+          <a href={`mailto:${site.pressEmail}`}>{site.pressEmail}</a>
+        </div>
+      </aside>
+
+      <form
+        class="start-form"
+        method="post"
+        action={endpoint || undefined}
+        novalidate
+        data-start-form
+        data-endpoint={endpoint}
+      >
+        <fieldset class="space-pick">
+          <legend>
+            Please select your space <span aria-hidden="true">*</span>
+          </legend>
+          <div class="space-options">
+            {spaces.map((s, i) => (
+              <label class="space-opt">
+                <input type="radio" name="space" value={s.value} required={i === 0} />
+                <span>{s.label.split(':')[0]}</span>
+                {s.label.includes(':') && <small>{s.label.split(':')[1]}</small>}
+              </label>
+            ))}
+          </div>
+          <p class="field-error" id="space-error" hidden>
+            Please choose the space you’re interested in.
+          </p>
+        </fieldset>
+
+        <div class="row">
+          <div class="field">
+            <label for="first">
+              First name <span aria-hidden="true">*</span>
+            </label>
+            <input
+              class="input"
+              id="first"
+              name="firstName"
+              autocomplete="given-name"
+              required
+              aria-describedby="first-error"
+            />
+            <p class="field-error" id="first-error" hidden>
+              Please complete this required field.
+            </p>
+          </div>
+          <div class="field">
+            <label for="last">
+              Last name <span aria-hidden="true">*</span>
+            </label>
+            <input
+              class="input"
+              id="last"
+              name="lastName"
+              autocomplete="family-name"
+              required
+              aria-describedby="last-error"
+            />
+            <p class="field-error" id="last-error" hidden>
+              Please complete this required field.
+            </p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="email">
+              Email <span aria-hidden="true">*</span>
+            </label>
+            <input
+              class="input"
+              id="email"
+              name="email"
+              type="email"
+              autocomplete="email"
+              required
+              aria-describedby="email-error"
+            />
+            <p class="field-error" id="email-error" hidden>
+              Please enter a valid email address.
+            </p>
+          </div>
+          <div class="field">
+            <label for="phone">Phone number</label>
+            <input class="input" id="phone" name="phone" type="tel" autocomplete="tel" placeholder="+1" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="org">Organization</label>
+            <input
+              class="input"
+              id="org"
+              name="organization"
+              autocomplete="organization"
+              placeholder="School, venue or company"
+            />
+          </div>
+          <div class="field">
+            <label for="size">Approximate size</label>
+            <select class="input" id="size" name="size">
+              <option value="">Select</option>
+              <option>Under 250 people</option>
+              <option>250–1,000</option>
+              <option>1,000–5,000</option>
+              <option>5,000+</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="msg">Tell us more</label>
+          <textarea
+            class="input"
+            id="msg"
+            name="message"
+            rows="5"
+            placeholder="Your goals, timeline, questions…"
+          ></textarea>
+        </div>
+
+        <div class="form-foot">
+          <p>
+            By submitting this form, you agree to be contacted by Yondr, Inc. See our{' '}
+            <a href="/privacy">Privacy Policy</a>.
+          </p>
+          <button class="btn" type="submit">
+            Submit <Icon name="arrow-right" class="btn-icon" />
+          </button>
+        </div>
+        <div class="form-success" role="status" aria-live="polite" tabindex="-1" hidden>
+          <Icon name="check" size={32} />
+          <h2 class="h3">Thanks, we’ve got it.</h2>
+          <p>Someone from our team will reach out within two business days.</p>
+        </div>
+      </form>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .start-grid {
+    display: grid;
+    gap: 3rem;
+  }
+  @media (min-width: 1000px) {
+    .start-grid {
+      grid-template-columns: 20rem 1fr;
+      gap: 5rem;
+    }
+    .start-aside {
+      position: sticky;
+      top: calc(var(--header-h) + 2rem);
+      align-self: start;
+    }
+  }
+  .next-steps {
+    list-style: none;
+    padding: 0;
+    margin: 1.5rem 0 2.5rem;
+    display: grid;
+    gap: 1.25rem;
+  }
+  .next-steps li {
+    display: flex;
+    gap: 1rem;
+  }
+  .next-steps li > span {
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    background: var(--lime);
+    color: var(--forest);
+    font-weight: 700;
+  }
+  .next-steps p {
+    font-size: 0.92rem;
+    opacity: 0.8;
+  }
+  .contact-alt {
+    display: grid;
+    gap: 0.2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgb(243 247 214 / 0.15);
+  }
+  .contact-alt p {
+    font-size: 0.85rem;
+    opacity: 0.7;
+    margin-top: 0.6rem;
+  }
+  .contact-alt a {
+    color: var(--lime);
+    font-weight: 600;
+  }
+  .start-form {
+    display: grid;
+    gap: 1.5rem;
+  }
+  .space-pick {
+    border: 0;
+    padding: 0;
+  }
+  .space-pick legend {
+    font-weight: 600;
+    margin-bottom: 0.85rem;
+  }
+  .space-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 12rem), 1fr));
+    gap: 0.75rem;
+  }
+  .space-opt {
+    position: relative;
+    display: grid;
+    gap: 0.2rem;
+    padding: 1rem 1.1rem;
+    border-radius: var(--radius-sm);
+    background: color-mix(in oklab, var(--cream) 12%, var(--forest-700));
+    border: 1.5px solid transparent;
+    cursor: pointer;
+    transition:
+      border-color 0.2s,
+      background 0.2s;
+  }
+  .space-opt:hover {
+    border-color: rgb(220 255 107 / 0.4);
+  }
+  .space-opt input {
+    position: absolute;
+    opacity: 0;
+  }
+  .space-opt span {
+    font-weight: 600;
+  }
+  .space-opt small {
+    font-size: 0.8rem;
+    opacity: 0.75;
+  }
+  .space-opt:has(input:checked) {
+    background: var(--lime);
+    color: var(--forest);
+  }
+  .space-opt:has(input:focus-visible) {
+    outline: 3px solid var(--lime);
+    outline-offset: 2px;
+  }
+  .row {
+    display: grid;
+    gap: 1.5rem;
+  }
+  @media (min-width: 700px) {
+    .row {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  select.input {
+    appearance: none;
+    background-image:
+      linear-gradient(45deg, transparent 50%, var(--lime) 50%),
+      linear-gradient(135deg, var(--lime) 50%, transparent 50%);
+    background-position:
+      calc(100% - 1.3rem) 55%,
+      calc(100% - 0.95rem) 55%;
+    background-size: 6px 6px;
+    background-repeat: no-repeat;
+  }
+  .form-foot {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgb(243 247 214 / 0.15);
+    font-size: 0.88rem;
+    font-style: italic;
+  }
+  .form-success {
+    display: grid;
+    gap: 0.75rem;
+    justify-items: start;
+    padding: 2rem;
+    border-radius: var(--radius);
+    background: var(--lime);
+    color: var(--forest);
+  }
+</style>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-start-form]');
+  if (form) {
+    // Preselect the space from ?space=education etc.
+    const pre = new URLSearchParams(location.search).get('space');
+    if (pre) form.querySelector<HTMLInputElement>(`input[name="space"][value="${CSS.escape(pre)}"]`)?.click();
+    // Prefill the message from ?product=student-pouch links on the products page.
+    const product = new URLSearchParams(location.search).get('product');
+    const msg = form.querySelector<HTMLTextAreaElement>('#msg');
+    if (product && msg && !msg.value) {
+      const name = product.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+      msg.value = `I'd like to know more about the ${name}.`;
+    }
+
+    const showError = (el: HTMLInputElement, msgId: string, bad: boolean) => {
+      el.setAttribute('aria-invalid', String(bad));
+      const m = document.getElementById(msgId);
+      if (m) m.hidden = !bad;
+    };
+    const validate = () => {
+      let ok = true;
+      for (const id of ['first', 'last', 'email']) {
+        const el = form.querySelector<HTMLInputElement>('#' + id)!;
+        const bad = !el.checkValidity() || !el.value.trim();
+        showError(el, `${id}-error`, bad);
+        if (bad && ok) el.focus();
+        ok &&= !bad;
+      }
+      const picked = !!form.querySelector('input[name="space"]:checked');
+      document.getElementById('space-error')!.hidden = picked;
+      return ok && picked;
+    };
+    form
+      .querySelectorAll<HTMLInputElement>('input[required]')
+      .forEach((el) =>
+        el.addEventListener(
+          'blur',
+          () => el.id && showError(el, `${el.id}-error`, !el.checkValidity() || !el.value.trim()),
+        ),
+      );
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!validate()) return;
+      const data = Object.fromEntries(new FormData(form));
+      const endpoint = form.dataset.endpoint;
+      try {
+        if (endpoint) {
+          const res = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            body: JSON.stringify(data),
+          });
+          if (!res.ok) throw new Error(String(res.status));
+        } else {
+          console.info('[get-started] No PUBLIC_FORM_ENDPOINT configured. Payload:', data);
+        }
+        [...form.children].forEach(
+          (c) => c.classList.contains('form-success') || ((c as HTMLElement).hidden = true),
+        );
+        const ok = form.querySelector<HTMLElement>('.form-success')!;
+        ok.hidden = false;
+        ok.focus();
+      } catch {
+        alert('Sorry, something went wrong. Please email team@overyondr.com.');
+      }
+    });
+  }
+</script>

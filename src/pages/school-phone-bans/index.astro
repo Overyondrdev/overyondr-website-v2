@@ -1,0 +1,421 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import Img from '../../components/Img.astro';
+import Icon from '../../components/Icon.astro';
+import StatsBar from '../../components/StatsBar.astro';
+import StateMap from '../../components/StateMap.astro';
+import ResourceGrid from '../../components/ResourceGrid.astro';
+import { getSpace } from '../../data/spaces';
+
+const states = (await getCollection('states')).sort((a, b) => a.data.name.localeCompare(b.data.name));
+const links = Object.fromEntries(
+  states.filter((s) => s.data.abbr.length === 2).map((s) => [s.data.abbr, `/school-phone-bans/${s.id}`]),
+);
+const edu = getSpace('education');
+const results = [
+  'More participation in classroom discussions',
+  'Higher face-to-face interaction with peers',
+  'Fewer in-school conflicts',
+  'Less social-media-linked bullying',
+  'Higher standardized test scores',
+  'Improved attendance',
+];
+---
+
+<Base
+  title="School Phone Bans by State"
+  description="Track school cell phone bans across the U.S. and see how Yondr helps schools comply with bell-to-bell and instructional-time phone laws."
+>
+  <PageHero
+    title="School Without Distraction"
+    body="More and more districts are moving towards phone-free school days. With statewide cell phone bans being passed across the U.S., Yondr is helping educators provide a focused place for learning."
+    image="hero-bans.jpg"
+    alt="A row of green school lockers"
+    cta={{ label: 'Join the Movement', href: '/get-started?space=education' }}
+  />
+
+  <section class="section surface-cream" aria-labelledby="bans-title">
+    <div class="container split">
+      <div class="bans-art" aria-hidden="true">
+        <div class="ba-notebook">
+          <Img src="prop-notebook.jpg" alt="" sizes="22vw" />
+        </div>
+        <div class="ba-pouch">
+          <Img src="product-pouch.png" alt="" sizes="16vw" />
+        </div>
+        <div class="ba-pen">
+          <Img src="prop-pen.png" alt="" sizes="6vw" />
+        </div>
+      </div>
+      <div class="stack" style="--stack:1.25rem">
+        <h2 id="bans-title" class="h2" data-split>
+          School Phone Bans
+        </h2>
+        <p>
+          Nationwide, K-12 schools are moving towards a path without smartphones. When distractions are taken
+          out of the picture, students have more room for creativity, engagement, and collaboration. To build
+          better learning environments, many schools are restricting mobile phone use during the school day.
+        </p>
+        <a href="#by-state" class="btn">
+          Find Your State <Icon name="arrow-right" class="btn-icon" />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight surface-cream" aria-labelledby="change-title">
+    <div class="container stack" style="--stack:1.5rem">
+      <h2 id="change-title" class="h2" data-split>
+        Change In The United States
+      </h2>
+      <p class="lead">
+        America is rapidly accelerating towards banning cell phone use in K-12 schools. Lawmakers are enacting
+        statewide school phone bans to help protect students and make life easier for educators.
+      </p>
+      <StatsBar
+        layout="stacked"
+        stats={[
+          { value: 35, suffix: ' States', label: 'Restrictions on school phone usage' },
+          { value: 26, suffix: ' States', label: 'Bell-to-bell cell-phone bans' },
+          { value: 5, suffix: ' States', label: 'Instructional time bans' },
+          { value: 1, suffix: ' State', label: 'Phone-Free Schools Act passed in California' },
+        ]}
+      />
+      <p class="muted">
+        Some schools ban phones throughout the entire school day. Others restrict use during class time. No
+        matter the method, the result is the same: better outcomes for students.
+      </p>
+    </div>
+  </section>
+
+  <section class="results surface-cream" aria-labelledby="results-title">
+    <div class="results-copy">
+      <h2 id="results-title" class="h2" data-split>
+        The Results Are In
+      </h2>
+      <p>
+        While more research is being conducted every day, teachers are already noticing a difference in their
+        classrooms. Educators have reported:
+      </p>
+      <ul class="check-list">
+        {results.map((r, i) => (
+          <li data-reveal style={`--i:${i}`}>
+            <Icon name="check" size={18} /> {r}
+          </li>
+        ))}
+      </ul>
+      <a href="/blog/nber-research-yondr-phone-free-schools-outcomes" class="link-arrow">
+        Read the latest research <Icon name="arrow-right" />
+      </a>
+    </div>
+    <div class="results-img" data-reveal="clip">
+      <Img
+        src="backpack-brick.jpg"
+        alt="Students with Yondr pouches sitting by a brick wall"
+        sizes="(min-width: 900px) 50vw, 100vw"
+      />
+    </div>
+  </section>
+
+  <section class="pfy surface-forest" aria-labelledby="pfy-title">
+    <div class="pfy-art">
+      <Img src="lockers-colour.jpg" alt="" sizes="(min-width: 900px) 30vw, 100vw" />
+      <div class="pfy-pouch" aria-hidden="true">
+        <Img src="product-pouch.png" alt="" sizes="14vw" />
+      </div>
+    </div>
+    <div class="pfy-copy stack" style="--stack:1.1rem">
+      <h2 id="pfy-title" class="h2" data-split>
+        Phone-Free With Yondr
+      </h2>
+      <p>Implementing a school phone ban can be difficult. That’s where Yondr comes in to help.</p>
+      <p>A new national study finds an 80% reduction in classroom phone use in Yondr schools.</p>
+      <p>
+        Our phone-free program supports educators at every step. After setting up, we’ll provide ongoing
+        assistance to make sure the switch is seamless.
+      </p>
+      <a href="/get-started?space=education" class="btn">
+        Get Started <Icon name="arrow-right" class="btn-icon" />
+      </a>
+    </div>
+  </section>
+
+  <section class="section surface-cream" aria-labelledby="designed-title">
+    <div class="gallery" aria-hidden="true">
+      <div>
+        <Img src="hero-pouches.jpg" alt="" sizes="22vw" />
+      </div>
+      <div>
+        <Img src="classroom-table.jpg" alt="" sizes="40vw" />
+      </div>
+      <div>
+        <Img src="pouch-white-bag.jpg" alt="" sizes="22vw" />
+      </div>
+    </div>
+    <div class="container section-head designed">
+      <h2 id="designed-title" class="h2" data-split>
+        Designed With Schools In Mind
+      </h2>
+      <div class="stack">
+        <p>
+          Designed specifically for schools, Yondr’s smartphone storage system addresses the most common
+          concerns head-on.
+        </p>
+        <p>
+          Teachers are no longer responsible for implementing bans; the system handles it for them. And
+          because the pouches are unlockable, students can always access their phones in an emergency while
+          keeping them in their possession throughout the day.
+        </p>
+        <p>
+          Yondr also provides training, support, and resources for educators, and offers specialized pouches
+          for students with medical needs.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="by-state surface-charcoal section" id="by-state" aria-labelledby="state-title">
+    <div class="container state-grid">
+      <div class="stack" style="--stack:1.25rem">
+        <h2 id="state-title" class="h2 text-accent" data-split>
+          Yondr By State
+        </h2>
+        <p>
+          Curious how phone-free school laws work in your state? Choose a highlighted state on the map or from
+          the list.
+        </p>
+        <ul class="state-list">
+          {states.map((s) => (
+            <li>
+              <a href={`/school-phone-bans/${s.id}`}>
+                <strong>{s.data.name}</strong>
+                <span>{s.data.policy}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div class="map-wrap">
+        <StateMap links={links} />
+        <p class="map-legend">
+          <span class="sw"></span> State guide available
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <ResourceGrid
+    id="bans-resources"
+    title="Resources For Educators"
+    text="Need help making your school phone-free? Check out our resources for educators."
+    items={edu.resources.items}
+    feature={edu.resources.feature}
+  />
+</Base>
+
+<style>
+  .bans-art {
+    position: relative;
+    aspect-ratio: 1 / 0.85;
+    max-width: 32rem;
+  }
+  .bans-art > div {
+    position: absolute;
+  }
+  .ba-notebook {
+    width: 62%;
+    left: 0;
+    top: 6%;
+    rotate: -8deg;
+    mix-blend-mode: multiply;
+  }
+  .ba-pouch {
+    width: 36%;
+    left: 28%;
+    top: 0;
+    filter: drop-shadow(0 30px 30px rgb(20 24 17 / 0.35));
+  }
+  .ba-pen {
+    width: 8%;
+    left: 70%;
+    top: 22%;
+    rotate: 14deg;
+  }
+  .results {
+    display: grid;
+    border-top: 1px solid var(--line);
+  }
+  @media (min-width: 900px) {
+    .results {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .results-copy {
+    display: grid;
+    gap: 1.25rem;
+    align-content: center;
+    justify-items: start;
+    padding: var(--section) var(--gutter);
+  }
+  .check-list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 0.6rem;
+  }
+  .check-list li {
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+    font-weight: 500;
+  }
+  .check-list :global(svg) {
+    flex-shrink: 0;
+    padding: 3px;
+    border-radius: 50%;
+    background: var(--lime);
+    color: var(--forest);
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+  .results-img {
+    min-height: 22rem;
+  }
+  .results-img :global(picture),
+  .results-img :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .pfy {
+    display: grid;
+  }
+  @media (min-width: 900px) {
+    .pfy {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+      min-height: 34rem;
+    }
+  }
+  .pfy-art {
+    position: relative;
+    min-height: 22rem;
+    overflow: hidden;
+  }
+  @media (min-width: 900px) {
+    .pfy-art {
+      overflow: visible;
+    }
+  }
+  .pfy-art > :global(picture),
+  .pfy-art > :global(picture img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .pfy-pouch {
+    position: absolute;
+    width: 46%;
+    right: 4%;
+    bottom: 8%;
+    filter: drop-shadow(0 30px 30px rgb(0 0 0 / 0.45));
+  }
+  @media (min-width: 900px) {
+    .pfy-pouch {
+      right: -12%;
+    }
+  }
+  .pfy-copy {
+    align-self: center;
+    padding: var(--section) var(--gutter);
+    max-width: 40rem;
+  }
+  @media (min-width: 900px) {
+    .pfy-copy {
+      padding-left: 6rem;
+    }
+  }
+  .gallery {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    gap: clamp(1rem, 3vw, 2.5rem);
+    align-items: center;
+    margin-bottom: clamp(2.5rem, 5vw, 4rem);
+  }
+  .gallery > div {
+    overflow: hidden;
+    border-radius: var(--radius);
+  }
+  .gallery > div:first-child {
+    border-radius: 0 var(--radius) var(--radius) 0;
+    aspect-ratio: 1;
+  }
+  .gallery > div:nth-child(2) {
+    aspect-ratio: 16 / 10;
+  }
+  .gallery > div:last-child {
+    border-radius: var(--radius) 0 0 var(--radius);
+    aspect-ratio: 1;
+  }
+  .gallery :global(picture),
+  .gallery :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .designed {
+    margin-bottom: 0;
+    align-items: start;
+  }
+  .state-grid {
+    display: grid;
+    gap: 3rem;
+    align-items: center;
+  }
+  @media (min-width: 1000px) {
+    .state-grid {
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    }
+  }
+  .state-list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+    gap: 0.5rem;
+  }
+  .state-list a {
+    display: grid;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-sm);
+    background: rgb(243 247 214 / 0.06);
+    text-decoration: none;
+    transition:
+      background 0.25s,
+      color 0.25s;
+  }
+  .state-list a:hover {
+    background: var(--lime);
+    color: var(--forest);
+  }
+  .state-list span {
+    font-size: 0.82rem;
+    opacity: 0.75;
+  }
+  .map-legend {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+  }
+  .sw {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 4px;
+    background: var(--lime);
+  }
+</style>

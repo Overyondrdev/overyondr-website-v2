@@ -1,0 +1,19 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "overyondr-website-v2",
+  "compatibility_date": "2026-11-20",
+  // Static assets only: no Worker script.
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page",
+    "html_handling": "drop-trailing-slash",
+  },
+  "observability": { "enabled": true },
+  // No public *.workers.dev or preview URLs: overyondrdev.com is behind Cloudflare Access,
+  // and those hostnames would bypass the login (same policy as overyondr-website-v1).
+  "workers_dev": false,
+  "preview_urls": false,
+  // Dev domain: overyondrdev.com is the portal and v1. is the migrated site (both served by the V1 Worker).
+  // The production domains (overyondr.com, www) are added only at cutover, after sign-off.
+  "routes": [{ "pattern": "v2.overyondrdev.com", "custom_domain": true }],
+}

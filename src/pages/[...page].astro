@@ -1,0 +1,130 @@
+---
+// Generic template for standalone content pages in src/content/pages (Home Tray, International, Funding, ...).
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
+import { pagePath } from '../data/pageRoutes';
+import { hasImage } from '../lib/images';
+
+export async function getStaticPaths() {
+  const pages = await getCollection('pages');
+  return pages.map((entry) => ({ params: { page: pagePath(entry.id) }, props: { entry } }));
+}
+interface Props {
+  entry: CollectionEntry<'pages'>;
+}
+const { entry } = Astro.props;
+const { Content, headings } = await render(entry);
+const d = entry.data;
+const heroImage = d.hero && hasImage(`pages/${d.hero}`) ? `pages/${d.hero}` : undefined;
+const toc = headings.filter((h) => h.depth === 2);
+---
+
+<Base title={d.title} description={d.description}>
+  {heroImage ? (
+    <PageHero
+      title={d.title}
+      kicker={d.kicker}
+      body={d.description}
+      image={heroImage}
+      alt={d.heroAlt ?? ''}
+      size="compact"
+      cta={d.cta}
+    />
+  ) : (
+    <section class="type-hero surface-forest">
+      <div class="container th-inner scrub-out">
+        {d.kicker && <p class="eyebrow">{d.kicker}</p>}
+        <h1 class="h1 text-accent" data-split>
+          {d.title}
+        </h1>
+        <p class="lead">{d.description}</p>
+        {d.cta && (
+          <a href={d.cta.href} class="btn">
+            {d.cta.label} <Icon name="arrow-right" class="btn-icon" />
+          </a>
+        )}
+      </div>
+    </section>
+  )}
+
+  <section class="section surface-cream">
+    <div class:list={['container', 'page-layout', { 'has-toc': toc.length > 2 }]}>
+      {toc.length > 2 && (
+        <nav class="page-toc" aria-label="On this page">
+          <p>On this page</p>
+          <ol>
+            {toc.map((h) => (
+              <li>
+                <a href={`#${h.slug}`}>{h.text}</a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )}
+      <article class="prose page-body">
+        <Content />
+      </article>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .type-hero {
+    padding: calc(var(--header-h) + 5rem) 0 clamp(3rem, 6vw, 5rem);
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  }
+  .th-inner {
+    display: grid;
+    gap: 1.25rem;
+    justify-items: start;
+  }
+  .th-inner h1 {
+    max-width: 18ch;
+  }
+  .page-layout {
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 1000px) {
+    .page-layout.has-toc {
+      grid-template-columns: 15rem minmax(0, 46rem);
+      gap: 5rem;
+    }
+    .page-toc {
+      position: sticky;
+      top: calc(var(--header-h) + 2rem);
+      align-self: start;
+    }
+  }
+  .page-toc p {
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+  }
+  .page-toc ol {
+    list-style: none;
+    padding: 0;
+    border-left: 2px solid var(--line);
+  }
+  .page-toc a {
+    display: block;
+    padding: 0.4rem 0.9rem;
+    margin-left: -2px;
+    border-left: 2px solid transparent;
+    font-size: 0.92rem;
+    text-decoration: none;
+  }
+  .page-toc a:hover {
+    border-color: var(--forest);
+  }
+  .page-body {
+    max-width: 46rem;
+  }
+  .page-body :global(h2) {
+    font-size: var(--step-3);
+  }
+  .page-body :global(img) {
+    border-radius: var(--radius);
+  }
+</style>
