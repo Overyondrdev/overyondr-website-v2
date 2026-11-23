@@ -1,9 +1,10 @@
 // Captures full-page desktop and mobile screenshots of every page, plus a scroll-through video.
 // Usage: npm run build && npx astro preview --port 4321 &  then  npm run screenshots
 // Requires Playwright with Chromium (`npx playwright install chromium`); it is intentionally not a project dependency.
-import { chromium } from 'playwright';
+import playwright from 'playwright';
 import { mkdir } from 'node:fs/promises';
 
+const { chromium } = playwright;
 const BASE = process.env.BASE_URL ?? 'http://localhost:4321';
 const OUT = 'walkthrough';
 export const pages = [
