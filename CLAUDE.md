@@ -3,6 +3,12 @@
 A static Astro site served by a Cloudflare Worker (static assets only). V2 is the redesign built from the
 V3 prototype; see README.md for the page map, design system and pre-launch content list.
 
+## Where things deploy
+
+Every merge to `main` is built by Cloudflare Workers Builds and goes live on **https://v2.overyondrdev.com**
+(behind Cloudflare Access). Keep `workers_dev` and `preview_urls` `false` in `wrangler.jsonc` so nothing bypasses
+the login. Do NOT add overyondr.com routes; that happens only at cutover, after sign-off.
+
 ## How to ship a change
 
 1. Branch from `main` (`design/<short-name>` or `content/<page>`).

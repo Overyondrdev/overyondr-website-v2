@@ -9,8 +9,11 @@
     "html_handling": "drop-trailing-slash",
   },
   "observability": { "enabled": true },
-  // Pull requests get a workers.dev preview URL from Cloudflare's preview builds.
-  "preview_urls": true,
-  // No custom domain yet. Add a dev domain route once one is chosen,
-  // and the production domains (overyondr.com, www) only at cutover, after sign-off.
+  // No public *.workers.dev or preview URLs: overyondrdev.com is behind Cloudflare Access,
+  // and those hostnames would bypass the login (same policy as overyondr-website-v1).
+  "workers_dev": false,
+  "preview_urls": false,
+  // Dev domain: overyondrdev.com is the portal and v1. is the migrated site (both served by the V1 Worker).
+  // The production domains (overyondr.com, www) are added only at cutover, after sign-off.
+  "routes": [{ "pattern": "v2.overyondrdev.com", "custom_domain": true }],
 }

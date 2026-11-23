@@ -58,7 +58,6 @@ Photography was taken from the prototype file.
 
 ### Before launch: content to confirm or replace
 
-- **Logo:** `src/components/Logo.astro` is a close typographic match to the prototype wordmark. Swap in the official SVG.
 - **School phone ban figures** on `/school-phone-bans` (35 / 26 / 5 / 1 states) come from the prototype. The migrated
   hub post says "20 states as of May 2025". Confirm the current numbers.
 - **Space-page stats** for Live Events and Commercial reuse figures that appear elsewhere in the prototype
@@ -77,5 +76,15 @@ newsletter form shows a confirmation only, until a provider is connected.
 
 ## Deploys
 
-Connect this repo to Cloudflare Workers Builds (Git integration) like V1: every PR gets a preview URL and `main`
-deploys automatically. No domain is attached yet (`wrangler.jsonc`). Preview URLs are `noindex` via `public/_headers`.
+Cloudflare Workers Builds (Git integration) builds and deploys this repo, as with V1:
+
+| Branch | Goes to                                                                                     |
+| ------ | ------------------------------------------------------------------------------------------- |
+| `main` | **https://v2.overyondrdev.com** (Worker `overyondr-website-v2`), about a minute after merge |
+
+- overyondrdev.com is behind Cloudflare Access (one-time code to `@overyondr.com` addresses). The portal at
+  overyondrdev.com and V1 at v1.overyondrdev.com are served by the V1 repo's Worker; its portal links here.
+- `workers_dev` and `preview_urls` are `false` in `wrangler.jsonc` so nothing bypasses Access. Review PRs locally
+  (`npm run preview`) or on v2.overyondrdev.com after merge.
+- overyondr.com still points to Squarespace. Production domains are added to `wrangler.jsonc` only at cutover.
+- Cloudflare build settings: build command `npm run build`, deploy command `npx wrangler deploy`, production branch `main`.
