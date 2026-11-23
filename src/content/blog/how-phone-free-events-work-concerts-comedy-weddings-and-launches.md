@@ -10,7 +10,7 @@ featured: true
 
 A lot of people meet their first phone-free event at the door, when a staff member holds out a pouch and the line on the ticket suddenly makes sense. The questions that follow are practical ones: where the phone is going, whether you can get to it if the babysitter calls, and how long the line out of the building will be.
 
-Yondr's pouches have been used at [more than 10,000 events around the world](https://www.overyondr.com/blog/billboard-article-1025) and have secured more than 20 million devices, and the routine that answers those questions has barely changed from an arena tour to a wedding for 150. This guide goes through it once, then looks at how it bends to fit concerts, comedy, weddings, and launches.
+Yondr's pouches have been used at [more than 10,000 events around the world](/blog/billboard-article-1025) and have secured more than 20 million devices, and the routine that answers those questions has barely changed from an arena tour to a wedding for 150. This guide goes through it once, then looks at how it bends to fit concerts, comedy, weddings, and launches.
 
 ## The Routine, Door to Door
 
@@ -30,7 +30,7 @@ Yondr works with [artists, venues, promoters, and labels](/spaces/live-events) o
 
 ### Comedy
 
-Comedians go [phone-free](https://www.overyondr.com/phone-free-comedy-shows) so they can try out new jokes, and so a tour's worth of material stays protected until the special. The same setup scales down to a club. [The Comedy Store](https://thecomedystore.com/information) in Los Angeles has run every show device-free with Yondr since December 2024, with Phone Use Areas in the building.
+Comedians go [phone-free](/spaces/live-events/comedy) so they can try out new jokes, and so a tour's worth of material stays protected until the special. The same setup scales down to a club. [The Comedy Store](https://thecomedystore.com/information) in Los Angeles has run every show device-free with Yondr since December 2024, with Phone Use Areas in the building.
 
 ### Weddings and private events
 
@@ -42,7 +42,7 @@ Product reveals, album playbacks, and premieres go phone-free so that the first 
 
 ### Film sets and tapings
 
-On [film sets, live tapings, and stage productions](https://www.overyondr.com/phone-free-productions) the pouch protects work that hasn't been released yet and keeps cast and crew focused. In Yondr's event numbers for this year, sets account for more guests pouched than any other category.
+On [film sets, live tapings, and stage productions](/spaces/live-events/productions) the pouch protects work that hasn't been released yet and keeps cast and crew focused. In Yondr's event numbers for this year, sets account for more guests pouched than any other category.
 
 ## Yondr Events in 2026, by the Numbers
 
@@ -83,7 +83,7 @@ Set your phone to vibrate before it goes into the pouch. You'll feel a call or a
 
 ### What happens in an emergency?
 
-Venue staff and security carry phones and radios and are trained to run the venue's emergency procedures, and guests should follow their instructions. Yondr's [guest FAQ](https://www.overyondr.com/faq) states that its venue staff have handheld unlocking devices outside, at a safe distance from the venue.
+Venue staff and security carry phones and radios and are trained to run the venue's emergency procedures, and guests should follow their instructions. Yondr's [guest FAQ](/faq) states that its venue staff have handheld unlocking devices outside, at a safe distance from the venue.
 
 ### Does it take long to get out afterward?
 

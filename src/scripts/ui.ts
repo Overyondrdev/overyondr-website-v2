@@ -13,7 +13,7 @@ function splitLines(el: HTMLElement) {
   const lines: string[][] = [];
   let top = -1;
   spans.forEach((s) => {
-    if (Math.abs(s.offsetTop - top) > 4) {
+    if (!lines.length || Math.abs(s.offsetTop - top) > 4) {
       lines.push([]);
       top = s.offsetTop;
     }
@@ -157,3 +157,53 @@ document.querySelectorAll<HTMLElement>('[data-glow]').forEach((el) => {
     el.style.setProperty('--my', `${e.clientY - r.top}px`);
   });
 });
+
+/* ---------- Tilt cards ---------- */
+if (matchMedia('(hover: hover) and (prefers-reduced-motion: no-preference)').matches) {
+  document.querySelectorAll<HTMLElement>('[data-tilt]').forEach((el) => {
+    const max = parseFloat(el.dataset.tilt || '6');
+    el.addEventListener('pointermove', (e) => {
+      const r = el.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+      el.classList.add('is-tilting');
+      el.style.setProperty('--ry', `${x * max}deg`);
+      el.style.setProperty('--rx', `${-y * max}deg`);
+      el.style.setProperty('--ty', '-4px');
+    });
+    el.addEventListener('pointerleave', () => {
+      el.classList.remove('is-tilting');
+      el.style.setProperty('--rx', '0deg');
+      el.style.setProperty('--ry', '0deg');
+      el.style.setProperty('--ty', '0');
+    });
+  });
+
+  /* ---------- Magnetic buttons ---------- */
+  document.querySelectorAll<HTMLElement>('.btn:not(.btn-sm)').forEach((el) => {
+    el.addEventListener('pointermove', (e) => {
+      const r = el.getBoundingClientRect();
+      const x = e.clientX - (r.left + r.width / 2);
+      const y = e.clientY - (r.top + r.height / 2);
+      el.style.translate = `${x * 0.18}px ${y * 0.25}px`;
+    });
+    el.addEventListener('pointerleave', () => (el.style.translate = ''));
+  });
+}
+
+/* ---------- Back to top + scroll progress ---------- */
+const toTop = document.querySelector<HTMLButtonElement>('[data-to-top]');
+if (toTop) {
+  const onScroll = () => {
+    const max = document.documentElement.scrollHeight - innerHeight;
+    const p = max > 0 ? scrollY / max : 0;
+    toTop.style.setProperty('--p', p.toFixed(3));
+    toTop.classList.toggle('is-visible', scrollY > innerHeight * 1.2);
+  };
+  addEventListener('scroll', () => requestAnimationFrame(onScroll), { passive: true });
+  toTop.addEventListener('click', () => {
+    scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+    document.getElementById('main')?.focus({ preventScroll: true });
+  });
+  onScroll();
+}

@@ -23,7 +23,7 @@ const ext = (h: string) => h.startsWith('http');
       <p>{text}</p>
       <ul class="res-cards">
         {items.map((r, i) => (
-          <li class="card res-card" data-reveal style={`--i:${i}`}>
+          <li class="card res-card" data-tilt="5" data-reveal style={`--i:${i}`}>
             <h3>
               <a
                 href={r.href}

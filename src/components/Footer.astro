@@ -1,7 +1,7 @@
 ---
 import Logo from './Logo.astro';
 import Icon from './Icon.astro';
-import { footerNav, site } from '../data/site';
+import { footerNav, legalNav, site } from '../data/site';
 const year = new Date().getFullYear();
 ---
 
@@ -55,12 +55,11 @@ const year = new Date().getFullYear();
     <p>© {year} Yondr, Inc. All rights reserved.</p>
     <p class="locations">{site.locations.join(' · ')}</p>
     <ul>
-      <li>
-        <a href="/terms">Terms</a>
-      </li>
-      <li>
-        <a href="/privacy">Privacy</a>
-      </li>
+      {legalNav.map((l) => (
+        <li>
+          <a href={l.href}>{l.label}</a>
+        </li>
+      ))}
     </ul>
   </div>
 </footer>
@@ -160,6 +159,7 @@ const year = new Date().getFullYear();
   }
   .footer-bottom ul {
     display: flex;
+    flex-wrap: wrap;
     gap: 0.25rem;
     list-style: none;
     padding: 0;

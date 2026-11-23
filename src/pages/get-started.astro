@@ -356,6 +356,13 @@ const spaces = [
     // Preselect the space from ?space=education etc.
     const pre = new URLSearchParams(location.search).get('space');
     if (pre) form.querySelector<HTMLInputElement>(`input[name="space"][value="${CSS.escape(pre)}"]`)?.click();
+    // Prefill the message from ?product=student-pouch links on the products page.
+    const product = new URLSearchParams(location.search).get('product');
+    const msg = form.querySelector<HTMLTextAreaElement>('#msg');
+    if (product && msg && !msg.value) {
+      const name = product.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+      msg.value = `I'd like to know more about the ${name}.`;
+    }
 
     const showError = (el: HTMLInputElement, msgId: string, bad: boolean) => {
       el.setAttribute('aria-invalid', String(bad));

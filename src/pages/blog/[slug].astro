@@ -206,7 +206,11 @@ const article = {
   }
   .post-layout {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 2.5rem;
+  }
+  .post-layout > * {
+    min-width: 0;
   }
   @media (min-width: 1000px) {
     .post-layout {

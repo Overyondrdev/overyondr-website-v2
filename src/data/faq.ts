@@ -1,4 +1,4 @@
-// FAQ content migrated verbatim from https://www.overyondr.com/faq.
+// FAQ content migrated verbatim from /faq
 // The source page is a single flat list; questions are grouped here by topic.
 // The source has no commercial or at-home questions, so those groups are omitted.
 

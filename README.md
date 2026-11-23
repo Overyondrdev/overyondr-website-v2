@@ -20,19 +20,22 @@ npm run screenshots  # full-page desktop + mobile screenshots and a scroll-throu
 
 ## Pages
 
-| URL                                                              | Source                                                     | Notes                                                               |
-| ---------------------------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------- |
-| `/`                                                              | `src/pages/index.astro`                                    | Hero, stats, spaces carousel, press bento, testimonial, blog teaser |
-| `/how-it-works`                                                  | `src/pages/how-it-works.astro`                             | Program overview, animated pouch steps                              |
-| `/find-your-space`                                               | `src/pages/find-your-space.astro`                          | Expanding space panels                                              |
-| `/spaces/education`, `/spaces/live-events`, `/spaces/commercial` | `src/pages/spaces/[space].astro` + `src/data/spaces.ts`    | One template, content in data                                       |
-| `/blog`, `/blog/<slug>`                                          | `src/pages/blog/` + `src/content/blog/*.md`                | Topic filter, reading progress, table of contents                   |
-| `/press`                                                         | `src/pages/press.astro` + `src/data/press.ts`              | Full press archive with year filter and pagination                  |
-| `/get-started`                                                   | `src/pages/get-started.astro`                              | Contact form (see "Forms" below)                                    |
-| `/about`, `/timeline`                                            | `src/pages/`                                               | Dotted world map, pinned horizontal timeline                        |
-| `/faq`                                                           | `src/pages/faq.astro` + `src/data/faq.ts`                  | Search, scroll-spy, FAQPage schema                                  |
-| `/school-phone-bans`, `/school-phone-bans/<state>`               | `src/pages/school-phone-bans/` + `src/content/states/*.md` | US tile map, one Markdown file per state                            |
-| `/privacy`, `/terms`                                             | `src/content/legal/*.md`                                   |                                                                     |
+| URL                                                                                | Source                                                              | Notes                                                                            |
+| ---------------------------------------------------------------------------------- | ------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `/`                                                                                | `src/pages/index.astro`                                             | Hero, stats, spaces carousel, press bento, testimonial, blog teaser              |
+| `/how-it-works`                                                                    | `src/pages/how-it-works.astro`                                      | Program overview, animated pouch steps                                           |
+| `/find-your-space`                                                                 | `src/pages/find-your-space.astro`                                   | Expanding space panels                                                           |
+| `/spaces/education`, `/spaces/live-events`, `/spaces/commercial`                   | `src/pages/spaces/[space].astro` + `src/data/spaces.ts`             | One template, content in data                                                    |
+| `/blog`, `/blog/<slug>`                                                            | `src/pages/blog/` + `src/content/blog/*.md`                         | Topic filter, reading progress, table of contents                                |
+| `/press`                                                                           | `src/pages/press.astro` + `src/data/press.ts`                       | Full press archive with year filter and pagination                               |
+| `/get-started`                                                                     | `src/pages/get-started.astro`                                       | Contact form (see "Forms" below)                                                 |
+| `/about`, `/timeline`                                                              | `src/pages/`                                                        | Dotted world map, pinned horizontal timeline                                     |
+| `/faq`                                                                             | `src/pages/faq.astro` + `src/data/faq.ts`                           | Search, scroll-spy, FAQPage schema                                               |
+| `/school-phone-bans`, `/school-phone-bans/<state>`                                 | `src/pages/school-phone-bans/` + `src/content/states/*.md`          | US tile map, one Markdown file per state                                         |
+| `/privacy`, `/terms`                                                               | `src/content/legal/*.md`                                            |                                                                                  |
+| `/spaces/<space>/<use-case>`                                                       | `src/pages/spaces/[space]/[usecase].astro` + `src/data/useCases.ts` | Use cases (music, comedy, courts, universities, ...) migrated from the live site |
+| `/products`                                                                        | `src/pages/products.astro` + `src/data/products.ts`                 | Catalog with category filter; old product URLs redirect to `/products#<slug>`    |
+| `/home-tray`, `/international`, `/funding`, `/uk-schools`, `/roi`, `/patents`, ... | `src/pages/[...page].astro` + `src/content/pages/*.md`              | Generic content page template; URL overrides in `src/data/pageRoutes.ts`         |
 
 ## Design system
 
@@ -50,7 +53,7 @@ npm run screenshots  # full-page desktop + mobile screenshots and a scroll-throu
 ## Content sources
 
 Copy and layouts follow the V3 prototype. Real content was migrated from the live overyondr.com:
-press archive (`src/data/press.ts`), FAQ answers, privacy and terms, 9 blog posts and 11 state legislation guides.
+press archive (`src/data/press.ts`), FAQ answers, privacy and terms, the full blog, state legislation guides, use-case pages, products and company pages.
 Photography was taken from the prototype file.
 
 ### Before launch: content to confirm or replace
@@ -62,6 +65,7 @@ Photography was taken from the prototype file.
   (20M+ show attendees, 1M court visitors, 80+ jurisdictions, 55 countries, 40 arenas).
 - **Testimonials:** the prototype's testimonial cards used placeholder text, so they were replaced with real, attributed
   press quotes. The video testimonials (James Ketley, Amy Richards) need video links before they can be added back.
+- **Products:** the live product pages have photos and names only. Add descriptions/specs to `src/data/products.ts`.
 - **FAQ:** questions marked "Additional questions from the V3 prototype" in `src/data/faq.ts` have new answers to review.
 - **Process steps / benefit captions** where the prototype had lorem ipsum (in `src/data/spaces.ts`) are new copy.
 

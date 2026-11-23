@@ -92,7 +92,7 @@ Because students’ phones were secured in Yondr pouches, leaders could push ver
 ### How Greece Central (NY) Made Phone-Free Safe—and Simple
 
 **District scale (17 buildings, ~11,000 students)**\
-After weighing “off/away” rules (hard to enforce), Greece Central School District (NY) chose a [Tier-1, everyone-everyday approach with Yondr](https://www.overyondr.com/blog/mtss-student-success) to support safety procedures and keep classrooms calm.
+After weighing “off/away” rules (hard to enforce), Greece Central School District (NY) chose a [Tier-1, everyone-everyday approach with Yondr](/blog/mtss-student-success) to support safety procedures and keep classrooms calm.
 
 What they did (fast): Board alignment, summer staff training, clear unlock points (AP/main office/nurse), and plain rules (if it’s visible, it’s a violation). A quick “reboot” in week three closed earbuds/burner-phone gaps.
 

@@ -7,6 +7,7 @@ import SpacesCarousel from '../components/SpacesCarousel.astro';
 import PressSection from '../components/PressSection.astro';
 import QuoteCarousel from '../components/QuoteCarousel.astro';
 import BlogTeaser from '../components/BlogTeaser.astro';
+import PressMarquee from '../components/PressMarquee.astro';
 import { site } from '../data/site';
 import { getSpace } from '../data/spaces';
 
@@ -33,7 +34,7 @@ const quotes = getSpace('education')
         class="hh-img"
       />
     </div>
-    <div class="container hh-inner">
+    <div class="container hh-inner scrub-out">
       <p class="hh-kicker" data-reveal>
         The future is
       </p>
@@ -93,8 +94,10 @@ const quotes = getSpace('education')
   </section>
 
   <!-- Spaces -->
+  <PressMarquee />
+
   <section class="spaces-sec surface-forest" aria-labelledby="spaces-title">
-    <div class="spaces-img">
+    <div class="spaces-img" data-reveal="clip">
       <Img
         src="backpack-pouch.jpg"
         alt="A white backpack with a Yondr pouch hanging from it"

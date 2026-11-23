@@ -70,7 +70,7 @@ export const press: PressItem[] = [
     date: '2025-05-22',
     excerpt:
       'Former UK Schools Minister Sir Nick Gibb has joined Yondr as Strategic Adviser, bringing over a decade of education policy experience to help expand distraction-free learning across the country.',
-    url: 'https://www.overyondr.com/blog/sir-nick-gibb-announcement',
+    url: '/blog/sir-nick-gibb-announcement',
   },
   {
     outlet: 'CBS News New York',

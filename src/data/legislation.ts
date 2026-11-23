@@ -1,5 +1,5 @@
 // National summary figures, verbatim from the hub post
-// https://www.overyondr.com/blog/phone-free-legislation (published 2025-06-15):
+// /school-phone-bans (published 2025-06-15):
 // "As of May 2025, 20 U.S. states have implemented statewide cellphone policies—including
 // nine with full bell-to-bell restrictions, such as Alabama, New York, Virginia, Georgia, and Oklahoma."
 export interface NationalSummaryItem {

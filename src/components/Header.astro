@@ -2,6 +2,14 @@
 import Logo from './Logo.astro';
 import Icon from './Icon.astro';
 import { mainNav, site } from '../data/site';
+import { useCases } from '../data/useCases';
+
+const usesFor = (href: string) => useCases.filter((u) => href.endsWith(`/${u.parent}`));
+const featured = [
+  { label: 'Products', href: '/products', text: 'Pouches, bases and storage' },
+  { label: 'Yondr Home Tray', href: '/home-tray', text: 'Phone-free time at home' },
+  { label: 'School Phone Bans', href: '/school-phone-bans', text: 'Laws, state by state' },
+];
 
 const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 const isCurrent = (href: string) =>
@@ -36,16 +44,40 @@ const isSection = (item: (typeof mainNav)[number]) =>
                   <span class="visually-hidden">Show {item.label} pages</span>
                 </button>
                 <div class="submenu" id="menu-spaces">
-                  <ul>
+                  <div class="mega">
                     {item.children.map((c) => (
-                      <li>
-                        <a href={c.href} aria-current={isCurrent(c.href) ? 'page' : undefined}>
+                      <div class="mega-col">
+                        <a
+                          href={c.href}
+                          class="mega-head"
+                          aria-current={isCurrent(c.href) ? 'page' : undefined}
+                        >
                           <strong>{c.label}</strong>
                           <span>{c.description}</span>
                         </a>
-                      </li>
+                        <ul>
+                          {usesFor(c.href).map((u) => (
+                            <li>
+                              <a
+                                href={`/spaces/${u.parent}/${u.slug}`}
+                                aria-current={isCurrent(`/spaces/${u.parent}/${u.slug}`) ? 'page' : undefined}
+                              >
+                                {u.name}
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     ))}
-                  </ul>
+                    <div class="mega-col mega-feat">
+                      {featured.map((f) => (
+                        <a href={f.href} class="mega-card">
+                          <strong>{f.label}</strong>
+                          <span>{f.text}</span>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </>
             )}
@@ -84,10 +116,13 @@ const isSection = (item: (typeof mainNav)[number]) =>
             )}
           </li>
         ))}
-        <li style="--i:3">
+        <li style="--i:4">
+          <a href="/home-tray">Home Tray</a>
+        </li>
+        <li style="--i:5">
           <a href="/blog">Blog</a>
         </li>
-        <li style="--i:4">
+        <li style="--i:6">
           <a href="/school-phone-bans">School Phone Bans</a>
         </li>
       </ul>
@@ -223,23 +258,26 @@ const isSection = (item: (typeof mainNav)[number]) =>
   .submenu-toggle[aria-expanded='true'] {
     transform: rotate(180deg);
   }
+  .has-menu {
+    position: static !important;
+  }
   .submenu {
     position: absolute;
-    top: calc(100% + 0.9rem);
+    top: calc(100% + 0.75rem);
     left: 50%;
-    width: 22rem;
-    padding: 0.5rem;
-    border-radius: var(--radius);
+    width: min(62rem, calc(100vw - 2 * var(--gutter)));
+    padding: 0.75rem;
+    border-radius: var(--radius-lg);
     background: var(--forest);
     box-shadow:
       inset 0 0 0 1px rgb(255 255 255 / 0.08),
-      0 30px 60px -20px rgb(0 0 0 / 0.55);
+      0 40px 80px -30px rgb(0 0 0 / 0.6);
     opacity: 0;
     visibility: hidden;
-    translate: -50% -8px;
+    translate: -50% -10px;
     transition:
       opacity 0.25s,
-      translate 0.35s var(--ease-out),
+      translate 0.4s var(--ease-out),
       visibility 0.25s;
   }
   .submenu::before {
@@ -255,34 +293,101 @@ const isSection = (item: (typeof mainNav)[number]) =>
     visibility: visible;
     translate: -50% 0;
   }
-  .submenu ul {
-    list-style: none;
-    padding: 0;
+  .mega {
     display: grid;
-    gap: 0.25rem;
+    grid-template-columns: repeat(3, 1fr) 1.1fr;
+    gap: 0.5rem;
   }
-  .submenu a {
+  .mega-col {
+    display: grid;
+    align-content: start;
+    gap: 0.25rem;
+    padding: 0.5rem;
+  }
+  .mega-col ul {
+    list-style: none;
+    padding: 0 0 0 1rem;
+    display: grid;
+    gap: 0.1rem;
+  }
+  .mega a {
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    transition:
+      background 0.2s,
+      color 0.2s,
+      padding 0.3s var(--ease-out);
+  }
+  .mega-head {
     display: grid;
     gap: 0.15rem;
-    padding: 0.85rem 1rem;
-    border-radius: var(--radius-sm);
-    text-decoration: none;
-    transition: background 0.2s;
+    padding: 0.75rem 1rem;
   }
-  .submenu a strong {
+  .mega-head strong,
+  .mega-card strong {
     font-family: var(--font-display);
     font-variation-settings: var(--display-axes);
     font-weight: 600;
-    font-size: 1.15rem;
+    font-size: 1.2rem;
     color: var(--lime);
   }
-  .submenu a span {
-    font-size: 0.88rem;
-    color: rgb(243 247 214 / 0.75);
+  .mega-head span,
+  .mega-card span {
+    font-size: 0.85rem;
+    color: rgb(243 247 214 / 0.7);
   }
-  .submenu a:hover,
-  .submenu a[aria-current='page'] {
+  .mega-col ul a {
+    display: block;
+    padding: 0.4rem 0.75rem;
+    font-size: 0.95rem;
+    color: rgb(243 247 214 / 0.9);
+  }
+  .mega-col ul a:hover {
+    color: var(--lime);
+    padding-left: 1.05rem;
+  }
+  .mega-head:hover,
+  .mega a[aria-current='page'] {
     background: rgb(255 255 255 / 0.07);
+  }
+  .mega-feat {
+    gap: 0.5rem;
+    padding: 0.5rem;
+    border-radius: var(--radius);
+    background: rgb(220 255 107 / 0.07);
+  }
+  .mega-card {
+    display: grid;
+    gap: 0.15rem;
+    padding: 0.9rem 1rem;
+  }
+  .mega-card:hover {
+    background: var(--lime);
+  }
+  .mega-card:hover strong,
+  .mega-card:hover span {
+    color: var(--forest);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .has-menu:hover .mega-col,
+    .has-menu.is-open .mega-col {
+      animation: mega-in 0.5s var(--ease-out) both;
+    }
+    .mega-col:nth-child(2) {
+      animation-delay: 40ms !important;
+    }
+    .mega-col:nth-child(3) {
+      animation-delay: 80ms !important;
+    }
+    .mega-col:nth-child(4) {
+      animation-delay: 120ms !important;
+    }
+    @keyframes mega-in {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+    }
   }
 
   .header-cta {

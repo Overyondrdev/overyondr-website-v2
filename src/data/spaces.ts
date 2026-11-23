@@ -183,7 +183,7 @@ export const spaces: Space[] = [
         {
           title: 'Funding Guide',
           text: 'Step-by-step help paying for a phone-free program.',
-          href: 'https://www.overyondr.com/funding',
+          href: '/funding',
           icon: 'download',
         },
         {

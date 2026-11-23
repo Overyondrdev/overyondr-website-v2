@@ -15,7 +15,7 @@ In May 2025, Governor Kay Ivey signed the [FOCUS Act](https://mynbc15.com/news/l
 
 ## Bell Momentum: A Quick Look
 
-Need a quick reference? [Download the Alabama Phone-Free Program Overview (PDF)](https://www.overyondr.com/s/Alabama_Legislative_Overview.pdf) for a one-page summary of legislation requirements, early results, and how Yondr can help your school stay compliant.
+Need a quick reference? [Download the Alabama Phone-Free Program Overview (PDF)](/files/alabama-legislative-overview.pdf) for a one-page summary of legislation requirements, early results, and how Yondr can help your school stay compliant.
 
 By the start of the 2025–2026 school year, every public district in Alabama must:
 

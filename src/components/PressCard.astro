@@ -17,6 +17,7 @@ const Tag = item.url ? 'a' : 'div';
 ---
 
 <Tag
+  data-tilt="5"
   class:list={['press-card card', className]}
   href={item.url}
   target={item.url && !item.url.startsWith('/') ? '_blank' : undefined}

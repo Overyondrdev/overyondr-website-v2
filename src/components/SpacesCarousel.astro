@@ -15,7 +15,7 @@ const { heading = 'name' } = Astro.props;
   <CarouselNav label="space" class="spaces-nav" />
   <ul class="spaces-track" data-track>
     {spaces.map((s, i) => (
-      <li class:list={['space-card', `tone-${i % 3}`]}>
+      <li data-tilt="6" class:list={['space-card', `tone-${i % 3}`]}>
         <h3>{heading === 'name' ? s.name : s.card.title}</h3>
         <p>{s.card.text}</p>
         <a href={`/spaces/${s.slug}`} class="link-arrow card-link">
@@ -62,9 +62,6 @@ const { heading = 'name' } = Astro.props;
     transition:
       transform 0.5s var(--ease-out),
       background 0.4s;
-  }
-  .space-card:hover {
-    transform: translateY(-6px);
   }
   .tone-0 {
     background: var(--lime);

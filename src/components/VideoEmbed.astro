@@ -1,0 +1,153 @@
+---
+// Lightweight YouTube/Vimeo embed: shows a poster + play button, loads the player only on click.
+import Icon from './Icon.astro';
+import Img from './Img.astro';
+
+interface Props {
+  url: string;
+  title: string;
+  /** Fallback poster from src/assets/images (Vimeo has no static thumbnail URL). */
+  poster?: string;
+}
+const { url, title, poster: fallback } = Astro.props;
+const yt = url.match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([\w-]{11})/)?.[1];
+const vimeo = url.match(/vimeo\.com\/(?:video\/)?(\d+)/)?.[1];
+const embed = yt
+  ? `https://www.youtube-nocookie.com/embed/${yt}?autoplay=1&rel=0`
+  : vimeo
+    ? `https://player.vimeo.com/video/${vimeo}?autoplay=1`
+    : undefined;
+const poster = yt ? `https://i.ytimg.com/vi/${yt}/hqdefault.jpg` : undefined;
+---
+
+<figure class="video-embed">
+  <div class="ve-frame" data-embed={embed}>
+    {poster && <img src={poster} alt="" loading="lazy" decoding="async" width="480" height="360" />}
+    {!poster && fallback && <Img src={fallback} alt="" sizes="(min-width: 900px) 50vw, 100vw" />}
+    <span class="ve-label">{title}</span>
+    {embed ? (
+      <button type="button" class="ve-play" aria-label={`Play video: ${title}`}>
+        <Icon name="play" size={28} />
+      </button>
+    ) : (
+      <a
+        class="ve-play"
+        href={url}
+        target="_blank"
+        rel="noopener"
+        aria-label={`Watch ${title} (opens in a new tab)`}
+      >
+        <Icon name="play" size={28} />
+      </a>
+    )}
+  </div>
+  <figcaption>
+    <span>{title}</span>
+    <a href={url} target="_blank" rel="noopener">
+      Open <Icon name="external" size={14} />
+      <span class="visually-hidden">(opens in a new tab)</span>
+    </a>
+  </figcaption>
+</figure>
+
+<style>
+  .ve-frame {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: radial-gradient(circle at 30% 30%, var(--forest-700), var(--charcoal));
+  }
+  .ve-frame img,
+  .ve-frame :global(iframe) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: 0;
+  }
+  .ve-frame img {
+    transition: transform 1s var(--ease-out);
+  }
+  .ve-frame :global(picture img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.55);
+  }
+  .ve-label {
+    position: absolute;
+    left: 1.25rem;
+    bottom: 1rem;
+    right: 1.25rem;
+    color: var(--white);
+    font-family: var(--font-display);
+    font-variation-settings: var(--display-axes);
+    font-size: var(--step-2);
+    line-height: 1.1;
+  }
+  .video-embed:hover .ve-frame img {
+    transform: scale(1.05);
+  }
+  .ve-play {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    display: grid;
+    place-items: center;
+    width: 4.5rem;
+    height: 4.5rem;
+    border: 0;
+    border-radius: 50%;
+    background: var(--lime);
+    color: var(--forest);
+    translate: -50% -50%;
+    box-shadow: 0 0 0 0 rgb(220 255 107 / 0.6);
+    transition: transform 0.3s var(--ease-out);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .ve-play {
+      animation: ring 2.2s infinite;
+    }
+    @keyframes ring {
+      70% {
+        box-shadow: 0 0 0 18px rgb(220 255 107 / 0);
+      }
+    }
+  }
+  .ve-play:hover {
+    transform: scale(1.08);
+  }
+  figcaption {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 0.75rem;
+    font-weight: 600;
+  }
+  figcaption a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.ve-frame[data-embed]').forEach((frame) => {
+    const btn = frame.querySelector('button');
+    btn?.addEventListener('click', () => {
+      const iframe = document.createElement('iframe');
+      iframe.src = frame.dataset.embed!;
+      iframe.title = btn.getAttribute('aria-label')?.replace('Play video: ', '') ?? 'Video';
+      iframe.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+      iframe.allowFullscreen = true;
+      frame.replaceChildren(iframe);
+      iframe.focus();
+    });
+  });
+</script>

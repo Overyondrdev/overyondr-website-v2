@@ -5,6 +5,7 @@ import Img from '../components/Img.astro';
 import Icon from '../components/Icon.astro';
 import StatsBar from '../components/StatsBar.astro';
 import { spaces } from '../data/spaces';
+import { useCases } from '../data/useCases';
 ---
 
 <Base
@@ -65,6 +66,15 @@ import { spaces } from '../data/spaces';
             <p class="panel-tag">{s.name}</p>
             <h3 class="h3">{s.card.title}</h3>
             <p class="panel-text">{s.card.text}</p>
+            <ul class="panel-uses">
+              {useCases
+                .filter((u) => u.parent === s.slug)
+                .map((u) => (
+                  <li>
+                    <a href={`/spaces/${s.slug}/${u.slug}`}>{u.name}</a>
+                  </li>
+                ))}
+            </ul>
             <a href={`/spaces/${s.slug}`} class="btn card-link">
               {s.card.cta} <Icon name="arrow-right" class="btn-icon" />
             </a>
@@ -208,6 +218,29 @@ import { spaces } from '../data/spaces';
     max-width: 40ch;
     font-size: 0.95rem;
   }
+  .panel-uses {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    list-style: none;
+    padding: 0;
+  }
+  .panel-uses a {
+    display: inline-block;
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.12);
+    backdrop-filter: blur(6px);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .panel-uses a:hover {
+    background: var(--lime);
+    color: var(--forest);
+  }
   .panel .btn::after {
     background: var(--cream);
   }
@@ -234,6 +267,7 @@ import { spaces } from '../data/spaces';
       flex: 2.2;
     }
     .panel-text,
+    .panel-uses,
     .panel .btn {
       opacity: 0;
       transform: translateY(12px);
@@ -242,8 +276,10 @@ import { spaces } from '../data/spaces';
         transform 0.6s var(--ease-out);
     }
     .panel:hover .panel-text,
+    .panel:hover .panel-uses,
     .panel:hover .btn,
     .panel:focus-within .panel-text,
+    .panel:focus-within .panel-uses,
     .panel:focus-within .btn {
       opacity: 1;
       transform: none;
@@ -253,6 +289,7 @@ import { spaces } from '../data/spaces';
       flex: 2.2;
     }
     .panels:not(:hover):not(:focus-within) .panel:first-child .panel-text,
+    .panels:not(:hover):not(:focus-within) .panel:first-child .panel-uses,
     .panels:not(:hover):not(:focus-within) .panel:first-child .btn {
       opacity: 1;
       transform: none;

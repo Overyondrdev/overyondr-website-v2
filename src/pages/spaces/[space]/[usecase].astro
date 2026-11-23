@@ -1,0 +1,294 @@
+---
+import Base from '../../../layouts/Base.astro';
+import PageHero from '../../../components/PageHero.astro';
+import StatsBar from '../../../components/StatsBar.astro';
+import Stories from '../../../components/Stories.astro';
+import VideoEmbed from '../../../components/VideoEmbed.astro';
+import Icon from '../../../components/Icon.astro';
+import { useCases, type UseCase } from '../../../data/useCases';
+import { getSpace } from '../../../data/spaces';
+
+export function getStaticPaths() {
+  return useCases.map((uc) => ({ params: { space: uc.parent, usecase: uc.slug }, props: { uc } }));
+}
+interface Props {
+  uc: UseCase;
+}
+const { uc } = Astro.props;
+const parent = getSpace(uc.parent);
+const siblings = useCases.filter((u) => u.parent === uc.parent && u.slug !== uc.slug);
+const breadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Find Your Space',
+      item: 'https://www.overyondr.com/find-your-space',
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: parent.name,
+      item: `https://www.overyondr.com/spaces/${parent.slug}`,
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: uc.name,
+      item: `https://www.overyondr.com/spaces/${parent.slug}/${uc.slug}`,
+    },
+  ],
+};
+const [lead, ...rest] = uc.sections;
+---
+
+<Base title={uc.title} description={uc.seoDescription} schema={[breadcrumb]}>
+  <PageHero
+    title={uc.title}
+    body={uc.intro}
+    image={`usecases/${uc.image}`}
+    alt={uc.imageAlt}
+    back={{ label: parent.name, href: `/spaces/${parent.slug}` }}
+    cta={{ label: 'Get Started', href: `/get-started?space=${parent.slug}` }}
+  />
+
+  {uc.names && uc.names.length >= 5 && (
+    <section class="names surface-cream" aria-label="Trusted by">
+      <div class="marquee" style={`--marquee-dur:${Math.max(30, uc.names.length * 3)}s`}>
+        <ul class="marquee-track">
+          {uc.names.map((n) => (
+            <li>{n}</li>
+          ))}
+        </ul>
+        <ul class="marquee-track" aria-hidden="true">
+          {uc.names.map((n) => (
+            <li>{n}</li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  {lead && (
+    <section class="section surface-cream" aria-labelledby="uc-lead">
+      <div class="container uc-lead">
+        <h2 id="uc-lead" class="h2" data-split>
+          {lead.heading ?? `Phone-free ${uc.name.toLowerCase()}`}
+        </h2>
+        <div class="stack" style="--stack:1.1rem">
+          {lead.body.map((p) => (
+            <p>{p}</p>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {uc.stats && uc.stats.length > 0 && (
+    <section class="section-tight surface-cream">
+      <div class="container">
+        <StatsBar
+          layout="stacked"
+          stats={uc.stats.map((s) => ({ value: 0, display: s.value, label: s.label }))}
+        />
+      </div>
+    </section>
+  )}
+
+  {uc.bullets && uc.bullets.length > 0 && (
+    <section class="section surface-forest" aria-labelledby="uc-why">
+      <div class="container">
+        <h2 id="uc-why" class="h2 text-accent" data-split>
+          Why Go Phone-Free
+        </h2>
+        <ul class="uc-bullets">
+          {uc.bullets.map((b, i) => (
+            <li data-reveal style={`--i:${i % 4}`} data-tilt="5">
+              <span class="ub-num">{String(i + 1).padStart(2, '0')}</span>
+              <p>{b}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  {rest.length > 0 && (
+    <section class="section surface-cream">
+      <div class="container uc-sections">
+        {rest.map((s, i) => (
+          <article class="uc-sec" data-reveal style={`--i:${i % 3}`}>
+            {s.heading && <h2 class="h3">{s.heading}</h2>}
+            {s.body.map((p) => (
+              <p>{p}</p>
+            ))}
+            {s.body.some((p) => /click below|request a/i.test(p)) && (
+              <a href={`/get-started?space=${parent.slug}`} class="btn">
+                Request A Demo <Icon name="arrow-right" class="btn-icon" />
+              </a>
+            )}
+          </article>
+        ))}
+      </div>
+    </section>
+  )}
+
+  {uc.videos && uc.videos.length > 0 && (
+    <section class="section surface-charcoal" aria-labelledby="uc-videos">
+      <div class="container">
+        <h2 id="uc-videos" class="h2 text-accent" data-split>
+          See It In Action
+        </h2>
+        <div class="uc-videos">
+          {uc.videos.map((v) => (
+            <VideoEmbed url={v.url} title={v.title} poster={`usecases/${uc.image}`} />
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {uc.quotes && uc.quotes.length > 0 && (
+    <Stories
+      id={`${uc.slug}-quotes`}
+      title="In Their Words"
+      text={`What people say about phone-free ${uc.name.toLowerCase()}.`}
+      quotes={uc.quotes.map((q) => ({ quote: q.quote, name: q.name, role: q.role ?? '' }))}
+    />
+  )}
+
+  {siblings.length > 0 && (
+    <section class="section-tight surface-cream" aria-labelledby="uc-more">
+      <div class="container">
+        <h2 id="uc-more" class="h3">
+          More in {parent.name}
+        </h2>
+        <ul class="uc-more">
+          {siblings.map((s) => (
+            <li>
+              <a href={`/spaces/${s.parent}/${s.slug}`} class="uc-chip" data-tilt="8">
+                {s.name} <Icon name="arrow-right" size={18} />
+              </a>
+            </li>
+          ))}
+          <li>
+            <a href={`/spaces/${parent.slug}`} class="uc-chip alt">
+              All of {parent.name} <Icon name="arrow-up-right" size={18} />
+            </a>
+          </li>
+        </ul>
+      </div>
+    </section>
+  )}
+</Base>
+
+<style>
+  .names {
+    padding-block: 2rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .names li {
+    font-family: var(--font-display);
+    font-variation-settings: var(--display-axes);
+    font-size: var(--step-2);
+    white-space: nowrap;
+  }
+  .uc-lead {
+    display: grid;
+    gap: 2rem 5rem;
+    align-items: start;
+  }
+  @media (min-width: 900px) {
+    .uc-lead {
+      grid-template-columns: 1fr 1.2fr;
+    }
+    .uc-lead h2 {
+      position: sticky;
+      top: calc(var(--header-h) + 2rem);
+    }
+  }
+  .uc-bullets {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+    gap: 1rem;
+    list-style: none;
+    padding: 0;
+    margin-top: 2.5rem;
+  }
+  .uc-bullets li {
+    display: grid;
+    gap: 1rem;
+    align-content: start;
+    min-height: 11rem;
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    background: rgb(243 247 214 / 0.06);
+    box-shadow: inset 0 0 0 1px rgb(243 247 214 / 0.12);
+  }
+  .uc-bullets li:hover {
+    background: var(--lime);
+    color: var(--forest);
+  }
+  .ub-num {
+    font-family: var(--font-display);
+    font-size: var(--step-3);
+    line-height: 1;
+    color: var(--lime);
+  }
+  .uc-bullets li:hover .ub-num {
+    color: var(--forest);
+  }
+  .uc-bullets p {
+    font-weight: 600;
+  }
+  .uc-sections {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    gap: 2.5rem 3rem;
+  }
+  .uc-sec :global(.btn) {
+    justify-self: start;
+  }
+  .uc-sec {
+    display: grid;
+    gap: 0.9rem;
+    align-content: start;
+    padding-top: 1.5rem;
+    border-top: 2px solid var(--forest);
+  }
+  .uc-videos {
+    max-width: 64rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    gap: 1.5rem;
+    margin-top: 2.5rem;
+  }
+  .uc-more {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    list-style: none;
+    padding: 0;
+    margin-top: 1.25rem;
+  }
+  .uc-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.9rem 1.25rem;
+    border-radius: 999px;
+    background: var(--forest);
+    color: var(--lime);
+    font-family: var(--font-display);
+    font-variation-settings: var(--display-axes);
+    font-weight: 600;
+    font-size: var(--step-1);
+    text-decoration: none;
+  }
+  .uc-chip.alt {
+    background: var(--lime);
+    color: var(--forest);
+  }
+</style>

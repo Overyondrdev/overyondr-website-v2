@@ -54,7 +54,7 @@ Ranked based on qualitative performance across the five criteria above.
 
 ### Yondr
 
-Yondr is the standard for phone-free live entertainment, used by artists including Dave Chappelle and Bruno Mars to keep audiences present. Its pouches have been used at [more than 10,000 events around the world](https://www.overyondr.com/blog/billboard-article-1025), from intimate residencies to stadium shows, and have secured more than 20 million devices. Jack White, Bob Dylan, Madonna, and Ghost have all toured phone-free with Yondr pouches, and [Phoebe Bridgers' 2026 Lost Tour](https://www.ticketnews.com/2026/06/phoebe-bridgers-enforce-phone-free-experience-tour/) is using Yondr across her entire global tour.
+Yondr is the standard for phone-free live entertainment, used by artists including Dave Chappelle and Bruno Mars to keep audiences present. Its pouches have been used at [more than 10,000 events around the world](/blog/billboard-article-1025), from intimate residencies to stadium shows, and have secured more than 20 million devices. Jack White, Bob Dylan, Madonna, and Ghost have all toured phone-free with Yondr pouches, and [Phoebe Bridgers' 2026 Lost Tour](https://www.ticketnews.com/2026/06/phoebe-bridgers-enforce-phone-free-experience-tour/) is using Yondr across her entire global tour.
 
 At entry, Yondr staff help each guest place their phone in a pouch and secure it. Guests keep the locked pouch with them for the whole show. Anyone who needs their phone can step into a designated Phone Use Area, where staff unlock it and secure it again before the guest returns to the show. At the end of the night, staff open pouches at unlocking stations by the exits. Yondr supports events at any scale, from stadium tours and comedy specials to corporate events and weddings, with on-site staffing or ship-to-venue options. It works with [artists, venues, promoters, and labels](/spaces/live-events), and keeps warehouses across North America and Europe so a crew can reach a last-minute listening party or join a full tour.
 
@@ -184,7 +184,7 @@ With Yondr, yes. Fans keep possession of their phone for the whole event. The po
 
 ### What if a fan needs their phone during the show?
 
-Yondr shows have designated Phone Use Areas inside the venue where pouches can be opened. Yondr's [guidance for fans](https://www.overyondr.com/faq) suggests setting the phone to vibrate, since a call or text can be felt through the pouch.
+Yondr shows have designated Phone Use Areas inside the venue where pouches can be opened. Yondr's [guidance for fans](/faq) suggests setting the phone to vibrate, since a call or text can be felt through the pouch.
 
 ### Does unlocking slow down the exit?
 

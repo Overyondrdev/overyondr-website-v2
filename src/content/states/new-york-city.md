@@ -10,7 +10,7 @@ sourceUpdated: '2025-07-28'
 
 _New York City must comply with a statewide bell-to-bell cellphone ban starting Fall 2025._
 
-At Yondr, we believe that schools should be spaces where students are fully present—engaged in learning, connected to one another, and free from the constant distractions of personal devices. That’s why [Yondr’s Phone-Free Schools Program](https://www.overyondr.com/newyork) provides everything New York City campuses need to meet the new state mandate for distraction-free learning environments: secure equipment, full programmatic infrastructure, training for staff, and ongoing support from our dedicated team.
+At Yondr, we believe that schools should be spaces where students are fully present—engaged in learning, connected to one another, and free from the constant distractions of personal devices. That’s why [Yondr’s Phone-Free Schools Program](/school-phone-bans/new-york) provides everything New York City campuses need to meet the new state mandate for distraction-free learning environments: secure equipment, full programmatic infrastructure, training for staff, and ongoing support from our dedicated team.
 
 ## What New York Schools Must Do by Fall 2025
 
@@ -86,4 +86,4 @@ Through the Yondr Program, students receive a meaningful 6–8 hour daily opport
 
 **If you’d like to learn more about bringing Yondr to your school community, schedule a time to connect. We’d love to hear from you.**
 
-[get in touch](https://www.overyondr.com/newyork)
+[get in touch](/school-phone-bans/new-york)

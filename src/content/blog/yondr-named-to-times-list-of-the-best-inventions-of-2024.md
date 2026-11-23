@@ -8,7 +8,7 @@ imageAlt: 'TIME magazine cover for the Best Inventions of 2024 issue, showing a 
 featured: false
 ---
 
-We are incredibly proud to announce that [Yondr](https://www.overyondr.com/) has been named to [TIME’s Best Inventions of 2024 list](https://time.com/7094783/yondr-pouch/)! The list includes 200 groundbreaking inventions that are changing the ways we live, work, play, and think about what’s possible.
+We are incredibly proud to announce that [Yondr](/) has been named to [TIME’s Best Inventions of 2024 list](https://time.com/7094783/yondr-pouch/)! The list includes 200 groundbreaking inventions that are changing the ways we live, work, play, and think about what’s possible.
 
 Yondr is the industry leader and inventor of phone-free spaces, with 10 years of experience developing rigorously tested products and offering unparalleled support, expertise, and guidance to all of our partners.
 

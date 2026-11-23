@@ -26,7 +26,7 @@ By July 2026, every California district must:
 
 Under the legislation, districts are also required to review and update their policies every five years.
 
-To get ahead of the deadline, download the [California Phone-Free Program Overview](https://www.overyondr.com/california) (PDF) for a quick reference guide covering new requirements, initial implementation outcomes, and how Yondr supports schools in creating phone-free classrooms.
+To get ahead of the deadline, download the [California Phone-Free Program Overview](/school-phone-bans/california) (PDF) for a quick reference guide covering new requirements, initial implementation outcomes, and how Yondr supports schools in creating phone-free classrooms.
 
 ## What State Leaders Are Saying
 
@@ -42,7 +42,7 @@ Rep. John Hoover recognized the importance of the bipartisan legislation for imp
 
 Long before California AD3216 law was passed, forward-thinking California educators partnered with Yondr to implement effective phone-free environments using Yondr’s patented lockable pouches to reduce digital distractions and create focused spaces where students and faculty can thrive.
 
-Schools that implemented [Yondr’s Phone-Free Schools Program](https://www.overyondr.com/california) ahead of the mandate are reporting big wins like increased social interaction and happier students overall.
+Schools that implemented [Yondr’s Phone-Free Schools Program](/school-phone-bans/california) ahead of the mandate are reporting big wins like increased social interaction and happier students overall.
 
 ## San Mateo-Foster City School District
 
@@ -85,7 +85,7 @@ Join schools across the country that are working with Yondr to benefit entire sc
 
 Why wait for the deadline when your students and staff can begin reaping the benefits of phone-free classrooms almost immediately?
 
-[Yondr’s Phone-Free Schools Program](https://www.overyondr.com/california) is ready to help California districts transition to phone-free learning. We’ll partner with you to make the process as seamless as possible with:
+[Yondr’s Phone-Free Schools Program](/school-phone-bans/california) is ready to help California districts transition to phone-free learning. We’ll partner with you to make the process as seamless as possible with:
 
 - **Customized policy development** tailored to your district’s needs
 - **Comprehensive training and onboarding** for staff, students, and parents

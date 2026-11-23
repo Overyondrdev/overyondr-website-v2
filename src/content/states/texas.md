@@ -13,7 +13,7 @@ Starting Fall 2025, Texas public schools must restrict student device use bell t
 
 ## Texas Mandates Phone-Free Classrooms by Fall 2025
 
-This week in our [Phone-Free Schools by State](https://www.overyondr.com/blog/phone-free-legislation) series, we’re heading to Texas, where [House Bill 1481 (HB 1481)](https://tea.texas.gov/about-tea/news-and-multimedia/correspondence/taa-letters/implementation-of-texas-house-bill-1481-student-use-of-personal-communication-devices-on-school-property) was signed into law, requiring public schools to restrict student device use bell-to-bell starting September 18, 2025. The Texas Education Agency (TEA) has published [model guidance](https://tea.texas.gov/texas-schools/school-boards/hb-1481-guidance-07-30-25.pdf) and policy language to support compliance while preserving local control.
+This week in our [Phone-Free Schools by State](/school-phone-bans) series, we’re heading to Texas, where [House Bill 1481 (HB 1481)](https://tea.texas.gov/about-tea/news-and-multimedia/correspondence/taa-letters/implementation-of-texas-house-bill-1481-student-use-of-personal-communication-devices-on-school-property) was signed into law, requiring public schools to restrict student device use bell-to-bell starting September 18, 2025. The Texas Education Agency (TEA) has published [model guidance](https://tea.texas.gov/texas-schools/school-boards/hb-1481-guidance-07-30-25.pdf) and policy language to support compliance while preserving local control.
 
 By the 2025–26 school year, every district and open-enrollment charter should:
 
@@ -34,7 +34,7 @@ Implementing House Bill 1481? We’re partnering with districts across Texas to 
 - Include assurances + a budget summary (phone storage)
 - Attach an itemized quote and submit by Dec 5, 2025
 
-If you need an [**itemized, eGrants-ready quote**](https://www.overyondr.com/texas), our team can prepare one sized to your campuses.
+If you need an [**itemized, eGrants-ready quote**](/school-phone-bans/texas), our team can prepare one sized to your campuses.
 
 For districts selected for funding (see [TEA Grants Awarded page](https://tea.texas.gov/finance-and-grants/grants/grants-administration/grants-awarded/2025-2026-phone-free-schools-grant-program)).
 
@@ -56,7 +56,7 @@ Texas districts already partnering with Yondr are seeing measurable gains—more
 
 ### Richardson Independent School District (North Texas)
 
-Serving over 37,000 students across 55 campuses, [Richardson ISD](https://www.overyondr.com/s/Yondr_CaseStudy_TX_RichardsonISD_April2025.pdf) expanded Yondr from one junior high to eight campuses, with strong results:
+Serving over 37,000 students across 55 campuses, [Richardson ISD](/files/yondr-casestudy-tx-richardsonisd-april2025.pdf) expanded Yondr from one junior high to eight campuses, with strong results:
 
 _“In a single school year, we recaptured 168,000 hours of instructional time.”_
 
@@ -96,7 +96,7 @@ Texas is part of a nationwide movement to address rising concerns about classroo
 
 **Read the key takeaways:**
 
-[Congressional Wake‑Up Call: Phone‑Free Schools Gain Bipartisan Praise](https://www.overyondr.com/blog/congress-phone-free-schools)
+[Congressional Wake‑Up Call: Phone‑Free Schools Gain Bipartisan Praise](/blog/congress-phone-free-schools)
 
 ## Supporting Teachers Starts with Supporting the Classroom
 

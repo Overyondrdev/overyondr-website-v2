@@ -118,6 +118,11 @@ const categories = [...new Set(posts.map((p) => p.data.category))];
           </li>
         ))}
       </ul>
+      <div class="more-wrap">
+        <button type="button" class="btn btn-dark" data-more hidden>
+          Load More Articles
+        </button>
+      </div>
     </div>
   </section>
 </Base>
@@ -240,6 +245,11 @@ const categories = [...new Set(posts.map((p) => p.data.category))];
     margin-bottom: 2.5rem;
     border-bottom: 1px solid var(--line);
   }
+  .more-wrap {
+    display: flex;
+    justify-content: center;
+    margin-top: 3rem;
+  }
   .post-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
@@ -250,22 +260,37 @@ const categories = [...new Set(posts.map((p) => p.data.category))];
 </style>
 
 <script>
-  // Topic filter: hides non-matching cards in "Latest" and featured rows stay as-is.
+  // Topic filter + "Load more" (12 at a time). Without JS every article is listed.
   const filters = document.querySelector('[data-blog-filters]');
   const grid = document.querySelector('[data-blog-grid]');
   const count = document.querySelector('[data-blog-count]');
+  const more = document.querySelector<HTMLButtonElement>('[data-more]');
+  const PAGE = 12;
+  let cat = 'all';
+  let limit = PAGE;
+  const render = () => {
+    if (!grid) return;
+    const items = [...grid.querySelectorAll<HTMLElement>('li[data-cat]')];
+    const pool = items.filter((li) => cat === 'all' || li.dataset.cat === cat);
+    items.forEach((li) => (li.hidden = true));
+    pool.slice(0, limit).forEach((li) => (li.hidden = false));
+    if (more) more.hidden = pool.length <= limit;
+    if (count) count.textContent = `${pool.length} article${pool.length === 1 ? '' : 's'}`;
+  };
   filters?.addEventListener('click', (e) => {
     const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-cat]');
-    if (!btn || !grid) return;
-    const cat = btn.dataset.cat;
+    if (!btn) return;
+    cat = btn.dataset.cat!;
+    limit = PAGE;
     filters.querySelectorAll('[data-cat]').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
-    let n = 0;
-    grid.querySelectorAll<HTMLElement>('li[data-cat]').forEach((li) => {
-      const show = cat === 'all' || li.dataset.cat === cat;
-      li.hidden = !show;
-      if (show) n++;
-    });
-    if (count) count.textContent = `${n} article${n === 1 ? '' : 's'}`;
+    render();
     document.getElementById('latest-title')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
+  more?.addEventListener('click', () => {
+    const first = grid?.querySelectorAll<HTMLElement>('li[data-cat]:not([hidden])').length ?? 0;
+    limit += PAGE;
+    render();
+    grid?.querySelectorAll<HTMLElement>('li[data-cat]:not([hidden]) a')[first]?.focus();
+  });
+  render();
 </script>

@@ -1,0 +1,331 @@
+---
+import Base from '../layouts/Base.astro';
+import Img from '../components/Img.astro';
+import Icon from '../components/Icon.astro';
+import { products } from '../data/products';
+
+// Category intros are drawn from facts published in the FAQ and How It Works copy.
+const groups = [
+  {
+    id: 'pouch',
+    label: 'Pouches',
+    intro:
+      'Lockable pouches that people keep with them. A phone goes in, the pouch closes with one push, and it stays locked until it is tapped on an unlocking base. Some Yondr pouches, like the velcro pouch, open by hand without any unlocking equipment.',
+  },
+  {
+    id: 'unlocking',
+    label: 'Unlocking',
+    intro:
+      'Magnetic unlocking equipment opens pouches at exits, classroom doors and Phone Use Areas. Magnets may interfere with some implanted medical devices, so see the FAQ for guidance.',
+  },
+  {
+    id: 'storage',
+    label: 'Storage',
+    intro:
+      'Storage that keeps pouches organised and ready between uses, for classrooms, venues and front desks.',
+  },
+].filter((g) => products.some((p) => p.category === g.id));
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  itemListElement: products.map((p, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: p.name,
+    url: `https://www.overyondr.com/products#${p.slug}`,
+  })),
+};
+---
+
+<Base
+  title="Products"
+  description="Yondr lockable phone pouches, unlocking bases and storage: everything a phone-free school, venue or workplace needs."
+  schema={[schema]}
+>
+  <section class="prod-hero surface-forest">
+    <div class="container ph-grid">
+      <div class="ph-copy scrub-out">
+        <p class="eyebrow">The Yondr system</p>
+        <h1 class="h1 text-accent" data-split>
+          Simple By Design
+        </h1>
+        <p class="lead">
+          Lockable pouches that people keep with them, unlocking bases that open them in a second, and storage
+          that keeps a program running smoothly.
+        </p>
+        <div class="flow-row">
+          <a href="#catalog" class="btn">
+            Browse Products <Icon name="arrow-right" class="btn-icon" />
+          </a>
+          <a href="/how-it-works" class="link-arrow">
+            How it works <Icon name="arrow-right" />
+          </a>
+        </div>
+      </div>
+      <div class="ph-art" aria-hidden="true">
+        <div class="ph-ring"></div>
+        <Img src="product-base.png" alt="" sizes="30vw" priority />
+        <Img src="product-pouch.png" alt="" sizes="18vw" priority />
+      </div>
+    </div>
+  </section>
+
+  <section class="section surface-cream" id="catalog" aria-labelledby="catalog-title" data-catalog>
+    <div class="container">
+      <div class="cat-head">
+        <h2 id="catalog-title" class="h2" data-split>
+          The Catalog
+        </h2>
+        <div class="cat-filters" role="group" aria-label="Filter products">
+          <button class="chip" aria-pressed="true" data-filter="all">
+            All
+          </button>
+          {groups.map((g) => (
+            <button class="chip" aria-pressed="false" data-filter={g.id}>
+              {g.label}
+            </button>
+          ))}
+        </div>
+      </div>
+      {groups.map((g) => (
+        <div class="cat-group" data-group={g.id}>
+          <div class="cat-group-head">
+            <h3 class="h3">{g.label}</h3>
+            <p>{g.intro}</p>
+          </div>
+          <ul class="cat-grid">
+            {products
+              .filter((p) => p.category === g.id)
+              .map((p, i) => (
+                <li class="cat-card card" id={p.slug} data-tilt="6" data-reveal style={`--i:${i % 4}`}>
+                  <div class="cat-img">
+                    <Img
+                      src={`products/${p.image}`}
+                      alt={p.imageAlt}
+                      sizes="(min-width: 900px) 22vw, 45vw"
+                      widths={[400, 800]}
+                    />
+                  </div>
+                  <div class="cat-body">
+                    <h4>{p.name}</h4>
+                    {p.tagline && <p class="cat-line">{p.tagline}</p>}
+                    {p.description.map((d) => (
+                      <p class="cat-line">{d}</p>
+                    ))}
+                    <a href={`/get-started?product=${p.slug}`} class="link-arrow card-link">
+                      Ask about this <Icon name="arrow-right" />
+                    </a>
+                  </div>
+                </li>
+              ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="section-tight surface-forest prod-cta" aria-labelledby="prod-cta">
+    <div class="container prod-cta-row">
+      <div>
+        <h2 id="prod-cta" class="h2 text-accent" data-split>
+          Not Sure What You Need?
+        </h2>
+        <p>
+          Every program is tailored. Tell us about your space and we’ll recommend the right mix of pouches,
+          unlocking and storage.
+        </p>
+      </div>
+      <a href="/get-started" class="btn">
+        Talk To Us <Icon name="arrow-right" class="btn-icon" />
+      </a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .prod-hero {
+    padding: calc(var(--header-h) + 4rem) 0 clamp(3rem, 6vw, 5rem);
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    overflow: hidden;
+  }
+  .ph-grid {
+    display: grid;
+    gap: 3rem;
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .ph-grid {
+      grid-template-columns: 1.1fr 1fr;
+      min-height: 62svh;
+    }
+  }
+  .ph-copy {
+    display: grid;
+    gap: 1.25rem;
+    justify-items: start;
+  }
+  .ph-art {
+    position: relative;
+    aspect-ratio: 1;
+    max-width: 34rem;
+    width: 100%;
+    justify-self: center;
+  }
+  .ph-ring {
+    position: absolute;
+    inset: 8%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgb(220 255 107 / 0.28), transparent 65%);
+  }
+  .ph-art :global(picture) {
+    position: absolute;
+  }
+  .ph-art :global(picture:nth-of-type(1)) {
+    width: 70%;
+    left: 0;
+    top: 22%;
+  }
+  .ph-art :global(picture:nth-of-type(2)) {
+    width: 40%;
+    right: 6%;
+    top: 4%;
+    filter: drop-shadow(0 30px 40px rgb(0 0 0 / 0.45));
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .ph-art :global(picture:nth-of-type(1)) {
+      animation: spin-slow 40s linear infinite;
+    }
+    .ph-art :global(picture:nth-of-type(2)) {
+      animation: hover-y 6s var(--ease-in-out) infinite;
+    }
+    @keyframes spin-slow {
+      to {
+        rotate: 360deg;
+      }
+    }
+    @keyframes hover-y {
+      50% {
+        translate: 0 -18px;
+        rotate: 4deg;
+      }
+    }
+  }
+  .cat-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1.25rem;
+    margin-bottom: 2.5rem;
+  }
+  .cat-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .cat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+    gap: 1rem;
+    list-style: none;
+    padding: 0;
+  }
+  .cat-img {
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    padding: 1.25rem;
+    background: linear-gradient(160deg, var(--cream-200), #fff);
+  }
+  .cat-img :global(img) {
+    max-height: 100%;
+    width: auto;
+    object-fit: contain;
+    transition: transform 0.8s var(--ease-out);
+  }
+  .cat-card:hover .cat-img :global(img) {
+    transform: scale(1.07) rotate(-2deg);
+  }
+  .cat-body {
+    display: grid;
+    gap: 0.3rem;
+    padding: 1rem 1.25rem 1.25rem;
+  }
+  .cat-tag {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #5b6152;
+  }
+  .cat-body h3 {
+    font-size: var(--step-1);
+  }
+  .cat-body a {
+    text-decoration: none;
+  }
+  .cat-line {
+    font-size: 0.9rem;
+    color: #4d5345;
+  }
+  .cat-group + .cat-group {
+    margin-top: clamp(3rem, 6vw, 5rem);
+  }
+  .cat-group-head {
+    display: grid;
+    gap: 0.5rem 4rem;
+    margin-bottom: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid var(--forest);
+  }
+  @media (min-width: 900px) {
+    .cat-group-head {
+      grid-template-columns: 1fr 1.6fr;
+      align-items: start;
+    }
+  }
+  .cat-group-head p {
+    max-width: 60ch;
+  }
+  .cat-body h4 {
+    font-size: var(--step-1);
+    font-weight: 600;
+  }
+  .cat-body .link-arrow {
+    margin-top: 0.5rem;
+    justify-self: start;
+  }
+  .cat-card {
+    scroll-margin-top: 7rem;
+  }
+  .cat-card:target {
+    box-shadow:
+      0 0 0 3px var(--lime),
+      0 0 0 5px var(--forest);
+  }
+  .prod-cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1.5rem 3rem;
+    padding-block: 1rem;
+  }
+  .prod-cta-row p {
+    max-width: 52ch;
+    margin-top: 1rem;
+  }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-catalog]');
+  root?.addEventListener('click', (e) => {
+    const b = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-filter]');
+    if (!b) return;
+    const f = b.dataset.filter;
+    root.querySelectorAll('[data-filter]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    root
+      .querySelectorAll<HTMLElement>('[data-group]')
+      .forEach((g) => (g.hidden = f !== 'all' && g.dataset.group !== f));
+  });
+</script>

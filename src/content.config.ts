@@ -41,4 +41,17 @@ const legal = defineCollection({
   }),
 });
 
-export const collections = { blog, states, legal };
+// Standalone content pages migrated from the live site (Home Tray, International, Funding, ...).
+const pages = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/pages' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    kicker: z.string().optional(),
+    hero: z.string().optional(),
+    heroAlt: z.string().optional(),
+    cta: z.object({ label: z.string(), href: z.string() }).optional(),
+  }),
+});
+
+export const collections = { blog, states, legal, pages };

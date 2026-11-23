@@ -13,7 +13,7 @@ const { post, variant = 'plain', sizes = '(min-width: 900px) 30vw, 90vw' } = Ast
 const { title, description, image, imageAlt, date, category } = post.data;
 ---
 
-<article class:list={['blog-card', `bc-${variant}`]}>
+<article data-tilt="4" class:list={['blog-card', `bc-${variant}`]}>
   <div class="bc-media media">
     <Picture
       src={image}
@@ -48,9 +48,6 @@ const { title, description, image, imageAlt, date, category } = post.data;
     border-radius: var(--radius);
     overflow: hidden;
     transition: transform 0.5s var(--ease-out);
-  }
-  .blog-card:hover {
-    transform: translateY(-5px);
   }
   .bc-media {
     aspect-ratio: 4 / 3;

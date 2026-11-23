@@ -104,6 +104,11 @@ const howTo = {
         </p>
       </div>
       <PouchSteps />
+      <p class="pouch-more">
+        <a href="/products" class="btn">
+          Explore All Products <Icon name="arrow-right" class="btn-icon" />
+        </a>
+      </p>
     </div>
   </section>
 
@@ -213,6 +218,11 @@ const howTo = {
   }
   .pouch-head p {
     max-width: 52ch;
+  }
+  .pouch-more {
+    display: flex;
+    justify-content: center;
+    margin-top: clamp(2.5rem, 5vw, 4rem);
   }
   .trusted {
     padding-bottom: var(--section);

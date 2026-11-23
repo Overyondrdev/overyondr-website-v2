@@ -15,7 +15,7 @@ const { lead, rest, text, image, alt, cta } = Astro.props;
 ---
 
 <section class="split-feature surface-charcoal" aria-label={`${lead} ${rest}`}>
-  <div class="sf-media media-zoom">
+  <div class="sf-media media-zoom" data-reveal="clip">
     <Img src={image} alt={alt} sizes="(min-width: 900px) 50vw, 100vw" />
     <p class="sf-lead display" aria-hidden="true" data-reveal>
       {lead}

@@ -11,7 +11,7 @@ sourceUpdated: '2025-06-25'
 
 _Missouri’s new legislation could reshape how students use phones in school—statewide._
 
-**This week in our** [**Phone-Free Schools by State**](https://www.overyondr.com/blog/phone-free-legislation) **series, we’re heading to the Show-Me State.**  
+**This week in our** [**Phone-Free Schools by State**](/school-phone-bans) **series, we’re heading to the Show-Me State.**  
 Missouri’s newly passed legislation could bring sweeping changes to classrooms across the state—banning student cellphone use from the first bell to the last. If enacted, Senate Bill 1481 would make Missouri the latest to join a growing nationwide push for focused, distraction-free learning.
 
 The policy takes a comprehensive, “bell-to-bell” approach and would place Missouri alongside nine other states with similar phone-free requirements. Designed to support student success and ease the burden on teachers, the shift reflects a broader movement toward learning environments that prioritize engagement and well-being.
