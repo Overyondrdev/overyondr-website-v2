@@ -1,0 +1,16 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "overyondr-website-v2",
+  "compatibility_date": "2026-11-20",
+  // Static assets only: no Worker script.
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page",
+    "html_handling": "drop-trailing-slash",
+  },
+  "observability": { "enabled": true },
+  // Pull requests get a workers.dev preview URL from Cloudflare's preview builds.
+  "preview_urls": true,
+  // No custom domain yet. Add a dev domain route once one is chosen,
+  // and the production domains (overyondr.com, www) only at cutover, after sign-off.
+}

@@ -1,0 +1,154 @@
+---
+// Full-bleed photo with a large testimonial quote; carousel when there are several.
+import Img from './Img.astro';
+import Icon from './Icon.astro';
+import CarouselNav from './CarouselNav.astro';
+import type { Quote } from '../data/spaces';
+
+interface Props {
+  quotes: Quote[];
+  image: string;
+}
+const { quotes, image } = Astro.props;
+---
+
+<section class="quote-banner" aria-label="Testimonials" data-carousel>
+  <div class="qb-media">
+    <Img src={image} alt="" sizes="100vw" class="parallax" />
+  </div>
+  <ul class="qb-track" data-track>
+    {quotes.map((q) => (
+      <li class="qb-slide">
+        <figure class="container">
+          <blockquote>
+            <p>“{q.quote}”</p>
+          </blockquote>
+          <figcaption>
+            {q.image && (
+              <span class="qb-avatar">
+                <Img src={q.image} alt="" sizes="5rem" widths={[160]} />
+              </span>
+            )}
+            <span>
+              <strong>{q.name}</strong>
+              <span>{q.role}</span>
+            </span>
+            {q.url && (
+              <a class="qb-source" href={q.url} target="_blank" rel="noopener">
+                Read the story <Icon name="external" size={16} />
+                <span class="visually-hidden">(opens in a new tab)</span>
+              </a>
+            )}
+          </figcaption>
+        </figure>
+      </li>
+    ))}
+  </ul>
+  {quotes.length > 1 && <CarouselNav label="quote" class="qb-nav container" />}
+</section>
+
+<style>
+  .quote-banner {
+    position: relative;
+    isolation: isolate;
+    color: var(--white);
+    background: var(--charcoal);
+    overflow: hidden;
+  }
+  .qb-media {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+  .qb-media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .qb-media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(0deg, rgb(10 12 8 / 0.92), rgb(10 12 8 / 0.55));
+  }
+  .qb-track {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 100%;
+    list-style: none;
+    padding: 0;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .qb-track::-webkit-scrollbar {
+    display: none;
+  }
+  .qb-slide {
+    scroll-snap-align: start;
+    display: grid;
+    align-items: center;
+    min-height: min(80svh, 44rem);
+    padding-block: var(--section) calc(var(--section) + 2rem);
+  }
+  figure {
+    display: grid;
+    gap: 2.5rem;
+    justify-items: center;
+    text-align: center;
+  }
+  blockquote p {
+    max-width: 26ch;
+    font-family: var(--font-display);
+    font-variation-settings: var(--display-axes);
+    font-size: var(--step-4);
+    line-height: 1.1;
+    text-wrap: balance;
+  }
+  figcaption {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem 1.25rem;
+    text-align: left;
+  }
+  figcaption strong {
+    display: block;
+    font-size: 1.05rem;
+  }
+  figcaption > span > span {
+    font-size: 0.9rem;
+    opacity: 0.8;
+  }
+  .qb-avatar {
+    width: 4rem;
+    height: 4rem;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    box-shadow: 0 0 0 2px rgb(255 255 255 / 0.6);
+  }
+  .qb-avatar :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 75% 20%;
+  }
+  .qb-source {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--lime);
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  .quote-banner :global(.qb-nav) {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 2rem;
+    justify-content: flex-end;
+    margin-inline: auto;
+    color: var(--white);
+  }
+</style>

@@ -1,0 +1,98 @@
+---
+export interface Stat {
+  value: number;
+  decimals?: number;
+  prefix?: string;
+  suffix?: string;
+  /** Text to show instead of an animated number, e.g. "50-80%". */
+  display?: string;
+  label: string;
+}
+interface Props {
+  stats: Stat[];
+  layout?: 'inline' | 'stacked';
+  class?: string;
+}
+const { stats, layout = 'inline', class: className } = Astro.props;
+const fmt = (s: Stat) => s.display ?? `${s.prefix ?? ''}${s.value.toFixed(s.decimals ?? 0)}${s.suffix ?? ''}`;
+---
+
+<dl class:list={['stats', `stats-${layout}`, className]} data-reveal>
+  {stats.map((s) => (
+    <div class="stat">
+      <dt class="stat-label">{s.label}</dt>
+      <dd class="stat-value">
+        {s.display ? (
+          s.display
+        ) : (
+          <span
+            data-count={s.value}
+            data-decimals={s.decimals ?? 0}
+            data-prefix={s.prefix ?? ''}
+            data-suffix={s.suffix ?? ''}
+          >
+            {fmt(s)}
+          </span>
+        )}
+      </dd>
+    </div>
+  ))}
+</dl>
+
+<style>
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+    padding: clamp(1.5rem, 3vw, 2.25rem) clamp(1.25rem, 3vw, 2.5rem);
+    border-radius: var(--radius-lg);
+    background: var(--forest);
+    color: var(--cream);
+    box-shadow: 0 30px 60px -40px rgb(20 24 17 / 0.6);
+  }
+  .stat {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.75rem clamp(0.75rem, 2vw, 1.5rem);
+  }
+  .stat + .stat {
+    border-left: 1px solid rgb(220 255 107 / 0.35);
+  }
+  .stat-value {
+    font-family: var(--font-display);
+    font-variation-settings: var(--display-axes);
+    font-size: var(--step-4);
+    line-height: 1;
+    color: var(--lime);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .stat-label {
+    font-weight: 600;
+    line-height: 1.2;
+    max-width: 11ch;
+    font-size: var(--step-0);
+  }
+  .stats-stacked .stat {
+    flex-direction: column-reverse;
+    text-align: center;
+    gap: 0.6rem;
+  }
+  .stats-stacked .stat-label {
+    max-width: 22ch;
+  }
+  @media (max-width: 700px) {
+    .stat + .stat {
+      border-left: 0;
+      border-top: 1px solid rgb(220 255 107 / 0.25);
+    }
+    .stat {
+      justify-content: flex-end;
+    }
+    .stats-inline .stat {
+      justify-content: space-between;
+    }
+  }
+</style>

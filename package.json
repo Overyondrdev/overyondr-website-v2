@@ -1,0 +1,38 @@
+{
+  "name": "overyondr-website-v2",
+  "version": "2.0.0-alpha.0",
+  "description": "overyondr.com V2 \u2014 redesigned Yondr marketing site (Astro + Cloudflare Workers static assets)",
+  "private": true,
+  "type": "module",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro check && astro build",
+    "postbuild": "node scripts/check-no-squarespace-cdn.mjs",
+    "preview": "npm run build && wrangler dev",
+    "check": "astro check",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check:links": "linkinator dist --recurse --clean-urls --skip \"^(mailto:|tel:|https?://(?!(localhost|127\\\\.0\\\\.0\\\\.1)[:/]))\"",
+    "screenshots": "node scripts/walkthrough.mjs",
+    "deploy": "npm run build && wrangler deploy",
+    "check:links:external": "linkinator dist --recurse --clean-urls --skip \"linkedin\\\\.com|ashbyhq\\\\.com|^mailto:|^tel:\""
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.6",
+    "@fontsource-variable/fraunces": "^5.3.0",
+    "@fontsource-variable/instrument-sans": "^5.3.0",
+    "astro": "^7.4.13"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "linkinator": "^8.1.0",
+    "prettier": "^3.10.1",
+    "prettier-plugin-astro": "^1.1.2",
+    "typescript": "^6.0.3",
+    "wrangler": "^4.166.0"
+  }
+}

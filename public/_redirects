@@ -1,0 +1,17 @@
+# Legacy Squarespace URLs -> V2 information architecture (301).
+# Keep this list in sync with the live site's URL map before cutover.
+/phone-locking-pouch        /how-it-works                301
+/phone-free-spaces          /find-your-space             301
+/phone-free-schools         /spaces/education            301
+/phone-free-universities    /spaces/education            301
+/camps-youth-programs       /spaces/education            301
+/phone-free-music           /spaces/live-events          301
+/phone-free-comedy-shows    /spaces/live-events          301
+/phone-free-events          /spaces/live-events          301
+/phone-free-productions     /spaces/live-events          301
+/phone-free-workplace       /spaces/commercial           301
+/phone-free-courthouses     /spaces/commercial           301
+/phone-free-hospitality     /spaces/commercial           301
+/contact                    /get-started                 301
+/privacypolicy              /privacy                     301
+/termsandconditions         /terms                       301

@@ -1,0 +1,41 @@
+---
+// Responsive, optimised image. Pass the file name from src/assets/images.
+import { Picture } from 'astro:assets';
+import { img } from '../lib/images';
+
+interface Props {
+  src: string;
+  alt: string;
+  class?: string;
+  sizes?: string;
+  widths?: number[];
+  priority?: boolean;
+  position?: string;
+}
+const {
+  src,
+  alt,
+  class: className,
+  sizes = '(min-width: 1400px) 1400px, 100vw',
+  widths,
+  priority = false,
+  position,
+} = Astro.props;
+const meta = img(src);
+const isPng = src.endsWith('.png');
+const w = widths ?? [480, 800, 1200, 1600, 2400].filter((x) => x <= meta.width);
+---
+
+<Picture
+  src={meta}
+  alt={alt}
+  class={className}
+  formats={['webp']}
+  fallbackFormat={isPng ? 'png' : 'jpg'}
+  widths={w.length ? w : [meta.width]}
+  sizes={sizes}
+  loading={priority ? 'eager' : 'lazy'}
+  fetchpriority={priority ? 'high' : 'auto'}
+  decoding={priority ? 'sync' : 'async'}
+  style={position ? `object-position:${position}` : undefined}
+/>

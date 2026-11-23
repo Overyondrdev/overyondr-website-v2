@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# Least-privilege token for every job.
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      # Pin third-party actions to a commit SHA before going live (Dependabot keeps them current).
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run format:check
+      - run: npm run build # astro check + build + Squarespace-CDN check
+      - run: npm run check:links
+# Deploys are handled by Cloudflare Workers Builds (Git integration), not by Actions,
+# so no Cloudflare secrets are stored in GitHub.

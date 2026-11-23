@@ -1,0 +1,183 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import PressSection from '../components/PressSection.astro';
+import PressCard from '../components/PressCard.astro';
+import Icon from '../components/Icon.astro';
+import { press, featured } from '../data/press';
+import { site } from '../data/site';
+
+const years = [...new Set(press.map((p) => p.date.slice(0, 4)))];
+---
+
+<Base
+  title="Press"
+  description="Yondr in the news: coverage of phone-free schools, concerts and workplaces from CNN, The Washington Post, The Wall Street Journal, the BBC and more."
+>
+  <PageHero
+    kicker={featured.hero.outlet}
+    title={featured.hero.title}
+    image="hero-press.jpg"
+    alt="A concert crowd holding up phones to film the stage"
+    size="compact"
+    cta={{ label: 'Read More', href: featured.hero.url }}
+  />
+
+  <PressSection
+    variant="spotlight"
+    text="Reshaping how people interact with their phones, Yondr is creating headlines worldwide. Garnering attention from leading news and media outlets, our cell-phone-free experiences are making a real-world difference."
+  />
+
+  <section class="section surface-forest" aria-labelledby="latest-title" data-press-list>
+    <div class="container">
+      <div class="latest-head">
+        <h2 id="latest-title" class="h2 text-accent" data-split>
+          Latest News & Press
+        </h2>
+        <div class="latest-filters" role="group" aria-label="Filter by year">
+          <button class="chip" aria-pressed="true" data-year="all">
+            All
+          </button>
+          {years.map((y) => (
+            <button class="chip" aria-pressed="false" data-year={y}>
+              {y}
+            </button>
+          ))}
+        </div>
+      </div>
+      <ul class="latest-grid">
+        {press.map((p, i) => (
+          <li data-press-item data-year={p.date.slice(0, 4)} data-index={i}>
+            <PressCard item={p} showDate />
+          </li>
+        ))}
+      </ul>
+      <nav class="pager" aria-label="Press pages" data-pager></nav>
+      <p class="latest-count" aria-live="polite" data-count></p>
+    </div>
+  </section>
+
+  <section class="inquiries surface-charcoal" aria-labelledby="inq-title">
+    <div class="container">
+      <h2 id="inq-title" class="h3 text-accent">
+        For media inquiries, please contact:
+      </h2>
+      <a href={`mailto:${site.pressEmail}`} class="inq-mail">
+        {site.pressEmail} <Icon name="arrow-up-right" />
+      </a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .latest-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding-bottom: 2rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid rgb(220 255 107 / 0.25);
+  }
+  .latest-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .latest-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+    gap: 1rem;
+    list-style: none;
+    padding: 0;
+  }
+  .latest-grid > li {
+    display: grid;
+  }
+  .pager {
+    display: flex;
+    justify-content: center;
+    gap: 0.4rem;
+    margin-top: 2.5rem;
+  }
+  .pager :global(button) {
+    min-width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 999px;
+    border: 1px solid rgb(243 247 214 / 0.3);
+    background: none;
+    font-weight: 600;
+  }
+  .pager :global(button[aria-current='page']) {
+    background: var(--lime);
+    color: var(--forest);
+    border-color: var(--lime);
+  }
+  .latest-count {
+    margin-top: 1rem;
+    text-align: center;
+    font-size: 0.9rem;
+    opacity: 0.7;
+  }
+  .inquiries {
+    padding-block: clamp(3.5rem, 7vw, 6rem);
+    text-align: center;
+  }
+  .inq-mail {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    font-size: var(--step-2);
+    font-weight: 600;
+  }
+</style>
+
+<script>
+  // Client-side year filter + pagination (12 per page). Without JS every item is listed.
+  const root = document.querySelector<HTMLElement>('[data-press-list]');
+  if (root) {
+    const items = [...root.querySelectorAll<HTMLElement>('[data-press-item]')];
+    const chips = [...root.querySelectorAll<HTMLButtonElement>('[data-year]')].filter(
+      (b) => b.tagName === 'BUTTON',
+    );
+    const pager = root.querySelector<HTMLElement>('[data-pager]')!;
+    const count = root.querySelector<HTMLElement>('[data-count]')!;
+    const PER = 12;
+    let year = 'all';
+    let page = 1;
+    const render = () => {
+      const pool = items.filter((i) => year === 'all' || i.dataset.year === year);
+      const pages = Math.max(1, Math.ceil(pool.length / PER));
+      page = Math.min(page, pages);
+      items.forEach((i) => (i.hidden = true));
+      pool.slice((page - 1) * PER, page * PER).forEach((i) => (i.hidden = false));
+      pager.innerHTML =
+        pages > 1
+          ? Array.from(
+              { length: pages },
+              (_, k) =>
+                `<button type="button" data-page="${k + 1}" ${k + 1 === page ? 'aria-current="page"' : ''} aria-label="Page ${k + 1}">${k + 1}</button>`,
+            ).join('')
+          : '';
+      count.textContent = `Showing ${Math.min(pool.length, (page - 1) * PER + 1)}–${Math.min(pool.length, page * PER)} of ${pool.length} stories`;
+    };
+    chips.forEach((c) =>
+      c.addEventListener('click', () => {
+        year = c.dataset.year!;
+        page = 1;
+        chips.forEach((x) => x.setAttribute('aria-pressed', String(x === c)));
+        render();
+      }),
+    );
+    pager.addEventListener('click', (e) => {
+      const b = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-page]');
+      if (!b) return;
+      page = +b.dataset.page!;
+      render();
+      root.scrollIntoView({ behavior: 'smooth' });
+    });
+    render();
+  }
+</script>
