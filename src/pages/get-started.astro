@@ -317,15 +317,15 @@ const spaces = [
       grid-template-columns: 1fr 1fr;
     }
   }
+  /* Lime chevron with room to breathe: text stops before it and it sits clear of the rounded border. */
   select.input {
+    -webkit-appearance: none;
     appearance: none;
-    background-image:
-      linear-gradient(45deg, transparent 50%, var(--lime) 50%),
-      linear-gradient(135deg, var(--lime) 50%, transparent 50%);
-    background-position:
-      calc(100% - 1.3rem) 55%,
-      calc(100% - 0.95rem) 55%;
-    background-size: 6px 6px;
+    padding-right: 3rem;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1.5 1.5 6 6l4.5-4.5' fill='none' stroke='%23dcff6b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-position: right 1.1rem center;
+    background-size: 12px 8px;
     background-repeat: no-repeat;
   }
   .form-foot {
