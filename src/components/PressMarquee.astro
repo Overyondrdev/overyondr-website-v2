@@ -1,5 +1,6 @@
 ---
 // Infinite "As featured in" strip of outlet names, built from the press archive.
+import Icon from './Icon.astro';
 import { press } from '../data/press';
 
 interface Props {
@@ -16,7 +17,7 @@ const outlets = [...new Set(press.map((p) => p.outlet))].filter((o) => !skip.has
       As featured in
     </h2>
     <a href="/press" class="link-arrow">
-      {press.length} stories and counting →
+      {press.length} stories and counting <Icon name="arrow-right" />
     </a>
   </div>
   <div class="marquee" style="--marquee-dur:55s">

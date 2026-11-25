@@ -60,6 +60,10 @@ const { quotes, image } = Astro.props;
     inset: 0;
     z-index: -1;
   }
+  /* <Img> wraps the image in <picture>: let it fill the frame so the cover image reaches every edge. */
+  .qb-media :global(picture) {
+    height: 100%;
+  }
   .qb-media :global(img) {
     width: 100%;
     height: 100%;
@@ -127,6 +131,10 @@ const { quotes, image } = Astro.props;
     border-radius: var(--radius-sm);
     overflow: hidden;
     box-shadow: 0 0 0 2px rgb(255 255 255 / 0.6);
+  }
+  /* <Img> wraps the image in <picture>: let it fill the frame so the cover image reaches every edge. */
+  .qb-avatar :global(picture) {
+    height: 100%;
   }
   .qb-avatar :global(img) {
     width: 100%;

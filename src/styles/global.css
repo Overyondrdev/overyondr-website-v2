@@ -31,6 +31,8 @@
   --accent: var(--lime);
   --on-accent: var(--forest);
   --focus: #6a8cff;
+  /* Error colour for form fields on the dark (forest) form surface. */
+  --error: #ffb199;
 
   /* Type */
   --font-display: 'Fraunces Variable', 'Iowan Old Style', Georgia, serif;
@@ -159,6 +161,10 @@ h4 {
   outline: 3px solid var(--focus);
   outline-offset: 3px;
   border-radius: 4px;
+}
+/* Regions that only receive focus from script (skip link target, form confirmation) get no ring. */
+[tabindex='-1']:focus {
+  outline: none;
 }
 
 /* ---------- Surfaces (theme scopes) ---------- */
@@ -561,14 +567,15 @@ h4 {
   box-shadow: 0 0 0 4px color-mix(in oklab, var(--lime) 25%, transparent);
 }
 .input[aria-invalid='true'] {
-  border-color: #ffb199;
+  border-color: var(--error);
 }
 textarea.input {
   min-height: 9rem;
   resize: vertical;
 }
 .field-error {
-  color: var(--lime);
+  /* Errors read as errors: the same colour as the invalid field's border, not the brand lime. */
+  color: var(--error);
   font-size: 0.85rem;
 }
 
@@ -596,6 +603,11 @@ textarea.input {
 }
 .skip-link:focus {
   transform: none;
+}
+/* Hyphenated words in headings (wrapped at build time by src/middleware.ts) don't break at the hyphen. */
+.nobr,
+[data-split] .w {
+  white-space: nowrap;
 }
 .flow-row {
   display: flex;

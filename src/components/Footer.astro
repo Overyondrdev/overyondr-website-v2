@@ -53,8 +53,12 @@ const year = new Date().getFullYear();
 
   <div class="container footer-bottom">
     <p>© {year} Yondr, Inc. All rights reserved.</p>
-    <p class="locations">{site.locations.join(' · ')}</p>
-    <ul>
+    <ul class="locations sep-list" aria-label="Offices">
+      {site.locations.map((l) => (
+        <li>{l}</li>
+      ))}
+    </ul>
+    <ul class="sep-list">
       {legalNav.map((l) => (
         <li>
           <a href={l.href}>{l.label}</a>
@@ -131,6 +135,12 @@ const year = new Date().getFullYear();
     color: var(--lime);
   }
   .social {
+    /* 44px target; the negative margin keeps the icon where it was. */
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    margin: -0.6875rem;
     justify-self: start;
     color: var(--cream);
     transition: color 0.2s;
@@ -158,20 +168,45 @@ const year = new Date().getFullYear();
   .locations {
     color: rgb(243 247 214 / 0.6);
   }
-  .footer-bottom ul {
+  /* Separated inline lists. Each item carries its separator in front; the list is shifted left by one
+     separator and that strip is clipped, so a separator that wraps to the start of a line is hidden
+     instead of orphaned. */
+  .sep-list {
+    --sep-w: 1.1rem;
     display: flex;
     flex-wrap: wrap;
-    gap: 0.25rem;
     list-style: none;
     padding: 0;
+    margin-left: calc(-1 * var(--sep-w));
+    clip-path: inset(-0.5rem -0.5rem -0.5rem var(--sep-w));
   }
-  .footer-bottom li + li::before {
+  .sep-list li {
+    display: inline-flex;
+    align-items: center;
+  }
+  .sep-list li::before {
     content: '|';
-    margin-right: 0.35rem;
+    width: var(--sep-w);
+    text-align: center;
     opacity: 0.6;
+  }
+  .locations li::before {
+    content: '·';
   }
   .footer-bottom a {
     text-decoration: none;
+  }
+  @media (max-width: 700px) {
+    /* 44px touch targets for the footer links on phones. */
+    .footer-nav ul {
+      gap: 0;
+    }
+    .footer-nav a,
+    .footer-bottom a {
+      display: inline-block;
+      padding-block: 0.6rem;
+      background-origin: content-box;
+    }
   }
   .footer-bottom a:hover {
     text-decoration: underline;

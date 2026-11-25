@@ -158,6 +158,9 @@ const isSection = (item: (typeof mainNav)[number]) =>
     position: sticky;
     top: 0;
     z-index: 50;
+    /* flow-root keeps the bar's top margin inside the zero-height header, so the hero runs straight under
+       the announcement bar and the stuck bar keeps its inset from the top of the viewport. */
+    display: flow-root;
     height: 0;
     padding-inline: var(--gutter);
     transition: transform 0.45s var(--ease-out);
@@ -184,7 +187,9 @@ const isSection = (item: (typeof mainNav)[number]) =>
       0 10px 40px -20px rgb(0 0 0 / 0.5);
     transition: background 0.4s;
   }
-  .site-header.is-scrolled .bar {
+  .site-header.is-scrolled .bar,
+  :global(body:has(#main > .surface-cream:first-child)) .bar {
+    /* Solid bar once scrolled, and on pages that open on a light surface (white text needs the contrast). */
     background: rgb(28 43 14 / 0.82);
   }
   .brand {
@@ -255,6 +260,10 @@ const isSection = (item: (typeof mainNav)[number]) =>
   .submenu-toggle:hover {
     background: rgb(255 255 255 / 0.1);
   }
+  .submenu-toggle:focus-visible {
+    outline-offset: 0;
+    border-radius: 50%;
+  }
   .submenu-toggle[aria-expanded='true'] {
     transform: rotate(180deg);
   }
@@ -292,6 +301,12 @@ const isSection = (item: (typeof mainNav)[number]) =>
     opacity: 1;
     visibility: visible;
     translate: -50% 0;
+  }
+  /* Escape closes the menu even while focus or the pointer is still on the item. */
+  .has-menu.is-dismissed .submenu {
+    opacity: 0;
+    visibility: hidden;
+    translate: -50% -10px;
   }
   .mega {
     display: grid;
@@ -430,7 +445,8 @@ const isSection = (item: (typeof mainNav)[number]) =>
     flex-direction: column;
     justify-content: space-between;
     gap: 2rem;
-    padding: calc(var(--header-h) + 3rem) var(--gutter) 2.5rem;
+    /* Clear the announcement bar (2.5rem), the bar's inset (0.85rem) and the bar itself. */
+    padding: calc(2.5rem + 0.85rem + var(--header-h) + 1.5rem) var(--gutter) 2.5rem;
     overflow-y: auto;
   }
   .mobile-menu:not([hidden]) {
@@ -469,10 +485,14 @@ const isSection = (item: (typeof mainNav)[number]) =>
   .mobile-sub {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem 1.25rem;
-    margin-top: 0.5rem;
+    gap: 0 1.25rem;
+    margin-top: 0.25rem;
   }
   .mobile-sub a {
+    /* 44px touch targets without changing the look of the row. */
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
     color: var(--lime);
     font-weight: 500;
   }
@@ -526,13 +546,20 @@ const isSection = (item: (typeof mainNav)[number]) =>
         const open = btn.getAttribute('aria-expanded') !== 'true';
         btn.setAttribute('aria-expanded', String(open));
         li.classList.toggle('is-open', open);
+        li.classList.toggle('is-dismissed', !open);
       });
       li.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
           btn.setAttribute('aria-expanded', 'false');
           li.classList.remove('is-open');
+          li.classList.add('is-dismissed');
           btn.focus();
         }
+      });
+      // A dismissed menu opens again on the next hover or focus.
+      li.addEventListener('pointerleave', () => li.classList.remove('is-dismissed'));
+      li.addEventListener('focusout', (e) => {
+        if (!li.contains(e.relatedTarget as Node)) li.classList.remove('is-dismissed');
       });
       document.addEventListener('click', (e) => {
         if (!li.contains(e.target as Node)) {
@@ -545,11 +572,16 @@ const isSection = (item: (typeof mainNav)[number]) =>
     // Mobile menu
     const toggle = header.querySelector<HTMLButtonElement>('[data-menu-toggle]')!;
     const menu = header.querySelector<HTMLElement>('[data-mobile-menu]')!;
+    // Everything outside the header is inert while the menu is open, so Tab stays in the menu.
+    const outside = [...document.body.children].filter(
+      (el): el is HTMLElement => el instanceof HTMLElement && el !== header && el.tagName !== 'SCRIPT',
+    );
     const setOpen = (open: boolean) => {
       toggle.setAttribute('aria-expanded', String(open));
       menu.hidden = !open;
       header.classList.toggle('menu-open', open);
       document.documentElement.style.overflow = open ? 'hidden' : '';
+      outside.forEach((el) => (el.inert = open));
       if (open) menu.querySelector<HTMLElement>('a')?.focus();
     };
     toggle.addEventListener('click', () => setOpen(menu.hasAttribute('hidden')));

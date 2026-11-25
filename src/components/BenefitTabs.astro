@@ -1,6 +1,7 @@
 ---
 // Header + image (swaps per tab) with a caption, and a list of benefit tabs. Hover or click to switch.
 import Img from './Img.astro';
+import Icon from './Icon.astro';
 import type { Benefit } from '../data/spaces';
 
 interface Props {
@@ -47,9 +48,7 @@ const { id, title, text, items, surface = 'surface-cream' } = Astro.props;
           tabindex={i === 0 ? 0 : -1}
         >
           <span>{b.title}</span>
-          <span class="bt-arrow" aria-hidden="true">
-            →
-          </span>
+          <Icon name="arrow-right" class="bt-arrow" />
         </button>
       ))}
     </div>
@@ -144,14 +143,17 @@ const { id, title, text, items, surface = 'surface-cream' } = Astro.props;
   .bt-list button:hover {
     opacity: 1;
   }
-  .bt-arrow {
+  .bt-list :global(.bt-arrow) {
+    flex-shrink: 0;
+    width: 1em;
+    height: 1em;
     opacity: 0;
     transform: translateX(-8px);
     transition:
       opacity 0.3s,
       transform 0.4s var(--ease-out);
   }
-  [aria-selected='true'] .bt-arrow {
+  [aria-selected='true'] :global(.bt-arrow) {
     opacity: 1;
     transform: none;
   }

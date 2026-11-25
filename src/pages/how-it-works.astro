@@ -138,6 +138,10 @@ const howTo = {
     border-radius: var(--radius);
     overflow: hidden;
   }
+  /* <Img> wraps the image in <picture>: let it fill the frame so the cover image reaches every edge. */
+  .drift-row :global(picture) {
+    height: 100%;
+  }
   .drift-row :global(img) {
     width: 100%;
     height: 100%;

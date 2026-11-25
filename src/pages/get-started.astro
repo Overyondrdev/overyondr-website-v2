@@ -72,7 +72,7 @@ const spaces = [
         data-start-form
         data-endpoint={endpoint}
       >
-        <fieldset class="space-pick">
+        <fieldset class="space-pick" aria-describedby="space-error">
           <legend>
             Please select your space <span aria-hidden="true">*</span>
           </legend>
@@ -180,6 +180,10 @@ const spaces = [
           ></textarea>
         </div>
 
+        <p class="field-error form-error" role="alert" data-form-error hidden>
+          Sorry, something went wrong sending the form. Please try again, or email
+          <a href={`mailto:${site.email}`}>{site.email}</a>.
+        </p>
         <div class="form-foot">
           <p>
             By submitting this form, you agree to be contacted by Yondr, Inc. See our{' '}
@@ -265,17 +269,21 @@ const spaces = [
     padding: 0;
   }
   .space-pick legend {
+    padding: 0;
     font-weight: 600;
     margin-bottom: 0.85rem;
   }
   .space-options {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 12rem), 1fr));
+    /* Every option is the same height, with or without a description line. */
+    grid-auto-rows: 1fr;
     gap: 0.75rem;
   }
   .space-opt {
     position: relative;
     display: grid;
+    align-content: start;
     gap: 0.2rem;
     padding: 1rem 1.1rem;
     border-radius: var(--radius-sm);
@@ -287,7 +295,13 @@ const spaces = [
       background 0.2s;
   }
   .space-opt:hover {
-    border-color: rgb(220 255 107 / 0.4);
+    border-color: color-mix(in oklab, var(--lime) 35%, transparent);
+  }
+  #space-error {
+    margin-top: 0.5rem;
+  }
+  .space-pick[aria-invalid='true'] .space-opt:not(:hover) {
+    border-color: var(--error);
   }
   .space-opt input {
     position: absolute;
@@ -321,10 +335,11 @@ const spaces = [
   select.input {
     -webkit-appearance: none;
     appearance: none;
-    padding-right: 3.5rem;
+    /* Same inset as the other dropdowns on overyondrdev.com: chevron 18px from the edge, text stops 46px in. */
+    padding-right: 2.875rem;
     cursor: pointer;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1.5 1.5 6 6l4.5-4.5' fill='none' stroke='%23dcff6b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-    background-position: right 1.35rem center;
+    background-position: right 1.125rem center;
     background-size: 12px 8px;
     background-repeat: no-repeat;
   }
@@ -338,6 +353,13 @@ const spaces = [
     border-top: 1px solid rgb(243 247 214 / 0.15);
     font-size: 0.88rem;
     font-style: italic;
+  }
+  .form-error a {
+    color: inherit;
+  }
+  .start-form button[type='submit'][aria-busy='true'] {
+    opacity: 0.7;
+    cursor: progress;
   }
   .form-success {
     display: grid;
@@ -369,6 +391,15 @@ const spaces = [
       const m = document.getElementById(msgId);
       if (m) m.hidden = !bad;
     };
+    const spacePick = form.querySelector<HTMLFieldSetElement>('.space-pick');
+    form.querySelectorAll<HTMLInputElement>('input[name="space"]').forEach((r) =>
+      r.addEventListener('change', () => {
+        document.getElementById('space-error')!.hidden = true;
+        spacePick?.removeAttribute('aria-invalid');
+      }),
+    );
+    const formError = form.querySelector<HTMLElement>('[data-form-error]');
+    const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
     const validate = () => {
       let ok = true;
       for (const id of ['first', 'last', 'email']) {
@@ -380,6 +411,9 @@ const spaces = [
       }
       const picked = !!form.querySelector('input[name="space"]:checked');
       document.getElementById('space-error')!.hidden = picked;
+      spacePick?.setAttribute('aria-invalid', String(!picked));
+      // Nothing else wrong: take the visitor to the space choice so the error is seen and announced.
+      if (ok && !picked) form.querySelector<HTMLInputElement>('input[name="space"]')?.focus();
       return ok && picked;
     };
     form
@@ -392,9 +426,11 @@ const spaces = [
       );
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      if (!validate()) return;
+      if (submit.getAttribute('aria-busy') === 'true' || !validate()) return;
       const data = Object.fromEntries(new FormData(form));
       const endpoint = form.dataset.endpoint;
+      if (formError) formError.hidden = true;
+      submit.setAttribute('aria-busy', 'true');
       try {
         if (endpoint) {
           const res = await fetch(endpoint, {
@@ -413,7 +449,9 @@ const spaces = [
         ok.hidden = false;
         ok.focus();
       } catch {
-        alert('Sorry, something went wrong. Please email team@overyondr.com.');
+        if (formError) formError.hidden = false;
+      } finally {
+        submit.removeAttribute('aria-busy');
       }
     });
   }

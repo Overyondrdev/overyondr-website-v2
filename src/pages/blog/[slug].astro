@@ -155,6 +155,10 @@ const article = {
     inset: 0;
     z-index: -1;
   }
+  /* <Img> wraps the image in <picture>: let it fill the frame so the cover image reaches every edge. */
+  .ph-media :global(picture) {
+    height: 100%;
+  }
   .ph-media :global(img) {
     width: 100%;
     height: 100%;

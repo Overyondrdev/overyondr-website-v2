@@ -84,7 +84,7 @@ const slug = (s: string) =>
             ))}
           </section>
         ))}
-        <p class="faq-empty" hidden data-faq-empty>
+        <p class="faq-empty" role="status" hidden data-faq-empty>
           No questions match your search. <a href="/get-started">Ask us directly</a>.
         </p>
         <div class="faq-more card">
@@ -127,12 +127,30 @@ const slug = (s: string) =>
   .faq-search:focus-within {
     box-shadow: inset 0 0 0 2px var(--forest);
   }
+  .faq-search :global(svg) {
+    flex-shrink: 0;
+  }
   .faq-search input {
     flex: 1;
+    min-width: 0;
     min-height: 3rem;
     border: 0;
     background: none;
     outline: none;
+  }
+  /* Clear button: the site's close icon in the text colour instead of the browser's blue cross. */
+  .faq-search input::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 1.1rem;
+    height: 1.1rem;
+    margin-left: 0.5rem;
+    background: var(--fg);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M6 6l12 12M18 6 6 18'/%3E%3C/svg%3E")
+      center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M6 6l12 12M18 6 6 18'/%3E%3C/svg%3E")
+      center / contain no-repeat;
+    cursor: pointer;
   }
   .faq-toc-title {
     margin: 1.75rem 0 0.75rem;
@@ -146,6 +164,7 @@ const slug = (s: string) =>
   .faq-aside a {
     display: flex;
     justify-content: space-between;
+    align-items: baseline;
     padding: 0.5rem 0.9rem;
     margin-left: -2px;
     border-left: 2px solid transparent;
@@ -277,6 +296,15 @@ const slug = (s: string) =>
     { rootMargin: '-30% 0px -60% 0px' },
   );
   groups.forEach((g) => spy.observe(g));
+  // Back above the first group: no section is current.
+  addEventListener(
+    'scroll',
+    () => {
+      if (groups[0] && groups[0].getBoundingClientRect().top > innerHeight * 0.3)
+        links.forEach((l) => l.setAttribute('aria-current', 'false'));
+    },
+    { passive: true },
+  );
 
   const openFromHash = () => {
     const el = location.hash && document.getElementById(location.hash.slice(1));

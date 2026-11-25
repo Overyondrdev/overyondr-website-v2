@@ -102,7 +102,7 @@ const schema = {
                     <Img
                       src={`products/${p.image}`}
                       alt={p.imageAlt}
-                      sizes="(min-width: 900px) 22vw, 45vw"
+                      sizes="(min-width: 900px) 22vw, (min-width: 560px) 45vw, 90vw"
                       widths={[400, 800]}
                     />
                   </div>
@@ -241,6 +241,8 @@ const schema = {
     max-height: 100%;
     width: auto;
     object-fit: contain;
+    /* Product shots are on white: let the tile's gradient show through instead of a white square. */
+    mix-blend-mode: multiply;
     transition: transform 0.8s var(--ease-out);
   }
   .cat-card:hover .cat-img :global(img) {

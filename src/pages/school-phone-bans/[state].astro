@@ -194,7 +194,8 @@ const facts = [
   }
   @media (min-width: 1000px) {
     .overview {
-      grid-template-columns: 22rem minmax(0, 1fr);
+      /* Wide enough for "Legislation" at the largest heading size (it overflowed 22rem). */
+      grid-template-columns: 23rem minmax(0, 1fr);
       gap: 5rem;
     }
     .ov-side {

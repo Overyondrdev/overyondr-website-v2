@@ -53,6 +53,10 @@ const { title, description, image, imageAlt, date, category } = post.data;
     aspect-ratio: 4 / 3;
     border-radius: 0;
   }
+  /* Fill the 4:3 frame edge to edge (the picture element otherwise keeps the photo's own ratio). */
+  .bc-media :global(picture) {
+    height: 100%;
+  }
   .blog-card:hover .bc-media :global(img) {
     transform: scale(1.05);
   }

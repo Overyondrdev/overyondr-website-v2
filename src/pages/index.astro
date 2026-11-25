@@ -148,6 +148,10 @@ const quotes = getSpace('education')
     inset: 0;
     z-index: -1;
   }
+  /* <Img> wraps the image in <picture>: let it fill the frame so the cover image reaches every edge. */
+  .hh-media :global(picture) {
+    height: 100%;
+  }
   .hh-media :global(img) {
     width: 100%;
     height: 100%;

@@ -17,7 +17,7 @@ const { stats, layout = 'inline', class: className } = Astro.props;
 const fmt = (s: Stat) => s.display ?? `${s.prefix ?? ''}${s.value.toFixed(s.decimals ?? 0)}${s.suffix ?? ''}`;
 ---
 
-<dl class:list={['stats', `stats-${layout}`, className]} data-reveal>
+<dl class:list={['stats', `stats-${layout}`, className]} data-items={stats.length} data-reveal>
   {stats.map((s) => (
     <div class="stat">
       <dt class="stat-label">{s.label}</dt>
@@ -50,6 +50,9 @@ const fmt = (s: Stat) => s.display ?? `${s.prefix ?? ''}${s.value.toFixed(s.deci
     box-shadow: 0 30px 60px -40px rgb(20 24 17 / 0.6);
   }
   .stat {
+    /* Each cell is a size container so the number can never be wider than its cell. */
+    container-type: inline-size;
+    min-width: 0;
     display: flex;
     flex-direction: row-reverse;
     justify-content: center;
@@ -77,11 +80,29 @@ const fmt = (s: Stat) => s.display ?? `${s.prefix ?? ''}${s.value.toFixed(s.deci
   }
   .stats-stacked .stat {
     flex-direction: column-reverse;
+    /* Values share a top line across the row; one- and two-line labels hang below them. */
+    justify-content: flex-end;
     text-align: center;
     gap: 0.6rem;
   }
   .stats-stacked .stat-label {
     max-width: 22ch;
+  }
+  /* Stacked values are words as well as numbers ("26 States"): scale them to the cell. */
+  .stats-stacked .stat-value {
+    font-size: min(var(--step-4), 21cqi);
+  }
+  /* Four stats on a tablet: two rows of two instead of three and an orphan. */
+  @media (min-width: 701px) and (max-width: 999px) {
+    .stats[data-items='4'] {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .stats[data-items='4'] .stat:nth-child(odd) {
+      border-left: 0;
+    }
+    .stats[data-items='4'] .stat:nth-child(n + 3) {
+      border-top: 1px solid rgb(220 255 107 / 0.25);
+    }
   }
   @media (max-width: 700px) {
     .stat + .stat {
@@ -93,6 +114,10 @@ const fmt = (s: Stat) => s.display ?? `${s.prefix ?? ''}${s.value.toFixed(s.deci
     }
     .stats-inline .stat {
       justify-content: space-between;
+    }
+    /* Labels start on one shared edge, however wide the number beside them. */
+    .stats-inline .stat-label {
+      flex: 0 1 11ch;
     }
   }
 </style>
