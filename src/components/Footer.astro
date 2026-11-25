@@ -2,7 +2,6 @@
 import Logo from './Logo.astro';
 import Icon from './Icon.astro';
 import { footerNav, legalNav, site } from '../data/site';
-const year = new Date().getFullYear();
 ---
 
 <footer class="site-footer surface-forest">
@@ -52,7 +51,7 @@ const year = new Date().getFullYear();
   </div>
 
   <div class="container footer-bottom">
-    <p>© {year} Yondr, Inc. All rights reserved.</p>
+    <p>© Yondr, Inc. 2027. All rights reserved.</p>
     <ul class="locations sep-list" aria-label="Offices">
       {site.locations.map((l) => (
         <li>{l}</li>
