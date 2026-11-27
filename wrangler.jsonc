@@ -24,8 +24,8 @@
   // No public *.workers.dev or preview URLs: they would be extra hostnames for the site. Keep both false.
   "workers_dev": false,
   "preview_urls": false,
-  // No routes yet. v2.overyondrdev.com is still served by the overyondr-website-v1 Worker; the custom domain is
-  // attached to this Worker only at the switch-over (it moves the host from the V1 Worker in one step).
-  // The production domains (overyondr.com, www) are added only at cutover, after sign-off.
-  // "routes": [{ "pattern": "v2.overyondrdev.com", "custom_domain": true }],
+  // v2.overyondrdev.com belongs to this Worker (moved from the V1 Worker in November 2026). Every request is checked
+  // for the Yondr sign-in in worker/index.js. The production domains (overyondr.com, www) are added only at cutover,
+  // after sign-off.
+  "routes": [{ "pattern": "v2.overyondrdev.com", "custom_domain": true }],
 }
