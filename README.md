@@ -114,8 +114,8 @@ CI job; they are never uploaded to a public server. Locally the checks use the p
 
 ## Deploys
 
-Worker `overyondr-website-v2` (`wrangler.jsonc`). Once Cloudflare Workers Builds is connected to this repo, merges to
-`main` build with `npm run build` and deploy with `npx wrangler deploy`. `v2.overyondrdev.com` is attached to this
-Worker at the switch-over (until then the V1 Worker still serves it); the route is commented out in `wrangler.jsonc`.
+Worker `overyondr-website-v2` (`wrangler.jsonc`). Cloudflare Workers Builds is connected to this repo: merges to
+`main` build with `npm run build` and deploy with `npx wrangler deploy`. `v2.overyondrdev.com` is this Worker's
+custom domain (moved from the V1 Worker in November 2026).
 `workers_dev` and `preview_urls` stay `false`. overyondr.com still points to Squarespace; production domains are added
 only at cutover, after sign-off.

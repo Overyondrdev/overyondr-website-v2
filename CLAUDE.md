@@ -3,8 +3,8 @@
 This repository is the home of **V2**, the redesigned Yondr marketing site (the Loba redesign, built from the V3
 prototype). V2 will become the public overyondr.com, so it lives here on its own, separate from V1. V1 (the faithful
 Squarespace replica, the portal, the feedback tool and the sign-in) lives in
-[Overyondrdev/overyondr-website-v1](https://github.com/Overyondrdev/overyondr-website-v1). Don't copy V1 code here,
-and don't change V2 in V1's old `v2/` folder.
+[Overyondrdev/overyondr-website-v1](https://github.com/Overyondrdev/overyondr-website-v1). Don't copy V1 code here
+(V1's old `v2/` folder was removed in November 2026).
 
 A static Astro site (`src/`, built into `dist/`) served by one small Cloudflare Worker (`worker/index.js`,
 `wrangler.jsonc`). See README.md for the page map, design system and pre-launch content list.
@@ -16,10 +16,10 @@ sessions work (both in the V1 repository).
 
 ## Where things deploy
 
-- Worker **`overyondr-website-v2`**. Once Cloudflare Workers Builds is connected to this repository, every merge to
-  `main` is built (`npm run build`) and deployed (`npx wrangler deploy`) automatically.
-- Host: **https://v2.overyondrdev.com**. Until the switch-over, that host is still served by the V1 Worker from V1's
-  old `v2/` folder; `wrangler.jsonc` has the `custom_domain` route commented out, and it is attached at switch-over.
+- Worker **`overyondr-website-v2`**. Cloudflare Workers Builds is connected to this repository: every merge to
+  `main` is built (`npm run build`) and deployed (`npx wrangler deploy`) automatically, live about a minute later.
+- Host: **https://v2.overyondrdev.com**, a `custom_domain` route in `wrangler.jsonc` (moved here from the V1 Worker in
+  November 2026).
 - Do NOT add overyondr.com routes; that happens only at cutover, after sign-off.
 - Keep `workers_dev` and `preview_urls` `false` in `wrangler.jsonc`.
 
