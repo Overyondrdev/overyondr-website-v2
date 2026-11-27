@@ -22,8 +22,9 @@ const {
     const cls = ['tile', href && 'has-guide', highlight === abbr && 'is-current'];
     const style = `grid-column:${c + 1};grid-row:${r + 1}`;
     return href && !compact ? (
-      <a class:list={cls} href={href} style={style} aria-label={`${name}: read the guide`} title={name}>
+      <a class:list={cls} href={href} style={style} title={name}>
         {abbr}
+        <span class="visually-hidden">{name}: read the guide</span>
       </a>
     ) : (
       <span class:list={cls} style={style} title={name} aria-hidden={compact ? 'true' : undefined}>

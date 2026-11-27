@@ -42,5 +42,42 @@ jobs:
             exit 1
           }
 
+  # Launch-quality gates for V2 (README "Launch quality"): SEO hygiene, redirects, axe-core accessibility at 1280px
+  # and 375px, and Lighthouse CI budgets. Each check runs even if an earlier one fails; reports are kept as an
+  # artifact (never uploaded to a public Lighthouse server: this repository is public).
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # Non-blocking for now. TODO: make blocking before launch (remove continue-on-error).
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - name: SEO hygiene
+        run: npm run quality:seo
+      - name: Redirects
+        if: ${{ !cancelled() }}
+        run: npm run quality:redirects
+      - name: Accessibility (axe-core)
+        if: ${{ !cancelled() }}
+        run: npm run quality:a11y
+      - name: Lighthouse CI
+        if: ${{ !cancelled() }}
+        run: npm run quality:lighthouse
+      - name: Keep Lighthouse reports
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-reports
+          path: .lighthouseci/
+          if-no-files-found: ignore
+          retention-days: 14
+
 # Deploys are handled by Cloudflare Workers Builds (Git integration), not by Actions,
 # so no Cloudflare secrets are stored in GitHub.

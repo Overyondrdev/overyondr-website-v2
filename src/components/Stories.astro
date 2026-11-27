@@ -23,7 +23,7 @@ const { id, title, text, quotes } = Astro.props;
       <p>{text}</p>
       <CarouselNav label="story" />
     </div>
-    <ul class="stories-track" data-track>
+    <ul class="stories-track" data-track tabindex="0" aria-label={`${title}: scroll for more`}>
       {quotes.map((q) => (
         <li class="story">
           {q.image && (
