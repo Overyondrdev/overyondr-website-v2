@@ -527,6 +527,7 @@ h4 {
   border-color: currentColor;
 }
 .chip[aria-pressed='true'],
+.chip[role='tab'][aria-selected='true'],
 .chip[aria-current='true'] {
   background: var(--lime);
   border-color: var(--lime);

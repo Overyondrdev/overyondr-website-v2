@@ -6,3 +6,4 @@ public/images
 src/assets
 worker/yondr-session.js
 .wrangler
+.lighthouseci

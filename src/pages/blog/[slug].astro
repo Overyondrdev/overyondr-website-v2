@@ -362,3 +362,10 @@ const article = {
     }),
   );
 </script>
+
+<script>
+  // Wide tables scroll sideways on phones (display: block; overflow-x: auto): make them keyboard-scrollable.
+  document.querySelectorAll<HTMLTableElement>('.post-body table').forEach((t) => {
+    t.tabIndex = 0;
+  });
+</script>
