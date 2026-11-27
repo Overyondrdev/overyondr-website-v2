@@ -18,7 +18,8 @@ const PUBLIC_HOSTS = new Set([]);
 // The dev domain (and local `wrangler dev`): noindex, plus the feedback widget.
 const DEV_HOST = /(^|\.)overyondrdev\.com$|^(localhost|127\.0\.0\.1)$/;
 const LOCAL_HOST = /^(localhost|127\.0\.0\.1)$/;
-const WIDGET = '<script src="https://feedback.overyondrdev.com/widget.js" data-project="v2" data-toolbar="website" defer></script>';
+const WIDGET =
+  '<script src="https://feedback.overyondrdev.com/widget.js" data-project="v2" data-toolbar="website" defer></script>';
 
 // ---------------------------------------------------------------- _redirects / _headers
 // _redirects: "<from> <to> [status]" per line; a trailing * in <from> becomes :splat in <to>. Lines starting with #
