@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# Least-privilege token for every job.
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      # Pin third-party actions to a commit SHA before going live (Dependabot keeps them current).
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run format:check
+      - run: npm run build # astro check + build + Squarespace-CDN check
+      - run: npm run check:links
+      - name: Worker syntax and bundle
+        run: |
+          node --check worker/index.js
+          node --check worker/yondr-session.js
+          npx wrangler deploy --dry-run --outdir "$RUNNER_TEMP/worker"
+      # worker/yondr-session.js must stay identical to the sign-in's source of truth (docs/PLATFORM.md in v1).
+      - name: Session check matches overyondr-website-v1/auth/src/session.js
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/Overyondrdev/overyondr-website-v1/main/auth/src/session.js -o "$RUNNER_TEMP/session.js"
+          cmp "$RUNNER_TEMP/session.js" worker/yondr-session.js || {
+            echo "::error file=worker/yondr-session.js::Differs from overyondr-website-v1 auth/src/session.js. Copy it over unchanged."
+            exit 1
+          }
+
+# Deploys are handled by Cloudflare Workers Builds (Git integration), not by Actions,
+# so no Cloudflare secrets are stored in GitHub.

@@ -1,0 +1,50 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+---
+
+<Base title="Page Not Found" description="This page doesn’t exist. Head back to the Yondr homepage." noindex>
+  <section class="nf surface-forest">
+    <div class="container nf-inner">
+      <p class="nf-code display" aria-hidden="true">
+        4<span>0</span>4
+      </p>
+      <h1 class="h2 text-accent">This page went phone-free.</h1>
+      <p>We couldn’t find what you were looking for. It may have moved, or the link may be out of date.</p>
+      <div class="flow-row">
+        <a href="/" class="btn">
+          Back Home <Icon name="arrow-right" class="btn-icon" />
+        </a>
+        <a href="/find-your-space" class="link-arrow">
+          Find your space <Icon name="arrow-right" />
+        </a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf {
+    padding: calc(var(--header-h) + 5rem) 0 var(--section);
+  }
+  .nf-inner {
+    display: grid;
+    gap: 1.25rem;
+    justify-items: start;
+  }
+  .nf-code {
+    font-size: clamp(6rem, 3rem + 14vw, 16rem);
+    line-height: 0.85;
+    color: var(--cream);
+  }
+  .nf-code span {
+    display: inline-block;
+    color: var(--lime);
+    animation: spin 6s linear infinite;
+  }
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+</style>

@@ -1,0 +1,154 @@
+---
+// Dotted world map (Natural Earth 110m land, pre-rendered to src/data/worldmap.json) with region tabs.
+import map from '../data/worldmap.json';
+
+const regions = [
+  {
+    id: 'us',
+    name: 'United States',
+    pins: ['california', 'newyork', 'minnesota'],
+    text: 'Headquartered in California with teams in New York and Minnesota, Yondr supports schools in all 50 states along with arenas, theaters, comedy clubs and courthouses nationwide.',
+  },
+  {
+    id: 'uk',
+    name: 'UK & Ireland',
+    pins: ['london', 'dublin'],
+    text: 'From our London office, Yondr works with individual schools and entire multi-academy trusts across the UK, and with schools in Ireland, as phone-free school days gain broad public support.',
+  },
+  {
+    id: 'au',
+    name: 'Australia',
+    pins: ['sydney'],
+    text: 'Our Sydney team supports schools and live events across Australia, where states including New South Wales have moved to keep phones out of classrooms.',
+  },
+];
+---
+
+<div class="world" data-tabs>
+  <div class="world-map">
+    <svg viewBox={`0 0 ${map.W} ${map.H}`} role="img" aria-label="World map showing Yondr offices">
+      <path d={map.d} class="land"></path>
+      {regions.map((r) =>
+        r.pins.map((p) => {
+          const [x, y] = (map.pins as Record<string, number[]>)[p];
+          return (
+            <g class="pin" data-region={r.id}>
+              <circle cx={x} cy={y} r="14" class="pin-pulse" />
+              <circle cx={x} cy={y} r="6" class="pin-dot" />
+            </g>
+          );
+        }),
+      )}
+    </svg>
+  </div>
+  <div class="world-copy">
+    <p class="eyebrow">Worldwide</p>
+    <div class="world-tabs" role="tablist" aria-label="Regions">
+      {regions.map((r, i) => (
+        <button
+          class="chip"
+          role="tab"
+          id={`region-${r.id}`}
+          aria-controls={`region-panel-${r.id}`}
+          aria-selected={i === 0 ? 'true' : 'false'}
+          aria-pressed={i === 0 ? 'true' : 'false'}
+          tabindex={i === 0 ? 0 : -1}
+          data-region-tab={r.id}
+        >
+          {r.name}
+        </button>
+      ))}
+    </div>
+    {regions.map((r, i) => (
+      <div role="tabpanel" id={`region-panel-${r.id}`} aria-labelledby={`region-${r.id}`} hidden={i !== 0}>
+        <h3 class="h3">{r.name}</h3>
+        <p>{r.text}</p>
+      </div>
+    ))}
+  </div>
+</div>
+
+<style>
+  .world {
+    display: grid;
+    gap: 2rem;
+    align-items: center;
+  }
+  @media (min-width: 1000px) {
+    .world {
+      grid-template-columns: 1.4fr 1fr;
+    }
+  }
+  .land {
+    stroke: #a9b48f;
+    stroke-width: 5;
+    stroke-linecap: round;
+    fill: none;
+  }
+  .pin-dot {
+    fill: var(--forest);
+    transition: fill 0.3s;
+  }
+  .pin-pulse {
+    fill: var(--forest);
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  .pin.is-active .pin-dot {
+    fill: var(--forest);
+    r: 8;
+  }
+  .pin.is-active .pin-pulse {
+    opacity: 0.25;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .pin.is-active .pin-pulse {
+      animation: pulse 2s var(--ease-out) infinite;
+    }
+    @keyframes pulse {
+      from {
+        transform: scale(0.4);
+        opacity: 0.5;
+      }
+      to {
+        transform: scale(2.2);
+        opacity: 0;
+      }
+    }
+  }
+  .world-copy {
+    display: grid;
+    gap: 1.25rem;
+  }
+  .world-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  [role='tabpanel'] p {
+    margin-top: 0.75rem;
+    max-width: 44ch;
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.world').forEach((root) => {
+    const sync = () => {
+      const active = root.querySelector('[aria-selected="true"]') as HTMLElement | null;
+      const id = active?.dataset.regionTab;
+      root
+        .querySelectorAll<HTMLButtonElement>('[data-region-tab]')
+        .forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.regionTab === id)));
+      root
+        .querySelectorAll<SVGGElement>('.pin')
+        .forEach((p) => p.classList.toggle('is-active', p.dataset.region === id));
+    };
+    root
+      .querySelectorAll('[role="tab"]')
+      .forEach((t) =>
+        new MutationObserver(sync).observe(t, { attributes: true, attributeFilter: ['aria-selected'] }),
+      );
+    sync();
+  });
+</script>

@@ -1,0 +1,125 @@
+---
+import Icon from './Icon.astro';
+import MediaCard from './MediaCard.astro';
+import type { Resource } from '../data/spaces';
+
+interface Props {
+  id: string;
+  title: string;
+  text: string;
+  items: Resource[];
+  feature: { title: string; text: string; image: string; href: string; cta: string };
+}
+const { id, title, text, items, feature } = Astro.props;
+const ext = (h: string) => h.startsWith('http');
+---
+
+<section class="section surface-cream" aria-labelledby={`${id}-title`}>
+  <div class="container res-grid">
+    <div class="res-left">
+      <h2 id={`${id}-title`} class="h2" data-split>
+        {title}
+      </h2>
+      <p>{text}</p>
+      <ul class="res-cards">
+        {items.map((r, i) => (
+          <li class="card res-card" data-tilt="5" data-reveal style={`--i:${i}`}>
+            <h3>
+              <a
+                href={r.href}
+                class="card-link"
+                target={ext(r.href) ? '_blank' : undefined}
+                rel={ext(r.href) ? 'noopener' : undefined}
+              >
+                {r.title}
+              </a>
+            </h3>
+            <p>{r.text}</p>
+            <span class="res-icon" aria-hidden="true">
+              <Icon
+                name={r.icon === 'download' ? 'download' : ext(r.href) ? 'external' : 'arrow-right'}
+                size={18}
+              />
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+    <MediaCard
+      class="res-feature"
+      image={feature.image}
+      title={feature.title}
+      text={feature.text}
+      href={feature.href}
+      cta={feature.cta}
+      external={false}
+    />
+  </div>
+</section>
+
+<style>
+  .res-grid {
+    display: grid;
+    gap: 1.25rem;
+  }
+  @media (min-width: 1000px) {
+    .res-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .res-left {
+    display: grid;
+    gap: 1.25rem;
+    align-content: start;
+  }
+  .res-left > p {
+    max-width: 46ch;
+  }
+  .res-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr));
+    gap: 1rem;
+    list-style: none;
+    padding: 0;
+    margin-top: 0.75rem;
+  }
+  .res-card {
+    min-height: 9.5rem;
+    padding: 1.25rem 1.25rem 3.5rem;
+    gap: 0.35rem;
+  }
+  .res-card h3 {
+    font-size: var(--step-1);
+  }
+  .res-card a {
+    text-decoration: none;
+  }
+  .res-card p {
+    font-size: 0.9rem;
+    color: #4d5345;
+  }
+  .res-icon {
+    position: absolute;
+    right: 0.9rem;
+    bottom: 0.9rem;
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    background: var(--lime);
+    color: var(--forest);
+    transition:
+      background 0.3s,
+      color 0.3s,
+      transform 0.4s var(--ease-out);
+  }
+  .res-card:hover .res-icon {
+    background: var(--forest);
+    color: var(--lime);
+    transform: translateX(3px);
+  }
+  :global(.res-feature) {
+    min-height: 26rem;
+  }
+</style>

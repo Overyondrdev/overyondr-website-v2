@@ -1,0 +1,31 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "overyondr-website-v2",
+  "compatibility_date": "2026-11-20",
+  // Small Worker in front of the static site: Yondr sign-in, _redirects/_headers, feedback widget, noindex.
+  "main": "worker/index.js",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    // Every request, static files included, goes through the sign-in check first.
+    "run_worker_first": true,
+    "not_found_handling": "404-page",
+    "html_handling": "drop-trailing-slash",
+  },
+  // The Worker imports public/_redirects and public/_headers as text and applies them itself.
+  "rules": [{ "type": "Text", "globs": ["**/_redirects", "**/_headers"], "fallthrough": true }],
+  "observability": { "enabled": true },
+  "vars": {
+    // Yondr Google sign-in (auth.overyondrdev.com): public key of the shared session cookie. Safe to commit.
+    // Same values as every other overyondrdev.com site (see docs/PLATFORM.md in overyondr-website-v1).
+    "YONDR_AUTH_PUBLIC_JWK": "{\"kty\":\"EC\",\"crv\":\"P-256\",\"x\":\"BpCjLJMykOsJbtPTm63rdbw2BzRUTNTz3jj9LWqK6AM\",\"y\":\"RyW0y7Dki1BQ6GnYdD-4FPovGYfoaMmDgr21lNU7xXQ\",\"kid\":\"yondr-2026-11-26-a3a7e6\"}",
+    "ALLOWED_EMAIL_DOMAINS": "overyondr.com",
+  },
+  // No public *.workers.dev or preview URLs: they would be extra hostnames for the site. Keep both false.
+  "workers_dev": false,
+  "preview_urls": false,
+  // No routes yet. v2.overyondrdev.com is still served by the overyondr-website-v1 Worker; the custom domain is
+  // attached to this Worker only at the switch-over (it moves the host from the V1 Worker in one step).
+  // The production domains (overyondr.com, www) are added only at cutover, after sign-off.
+  // "routes": [{ "pattern": "v2.overyondrdev.com", "custom_domain": true }],
+}
