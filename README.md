@@ -87,7 +87,7 @@ if it drifts.
 
 The Worker also applies `public/_redirects` and `public/_headers` (Cloudflare doesn't apply them to Worker
 responses), and on the dev domain adds `X-Robots-Tag: noindex` and the team feedback widget
-(`https://feedback.overyondrdev.com/widget.js`, `data-project="v2"`).
+(`https://feedback.overyondrdev.com/widget.js`, `data-project="v2"`, `data-toolbar="website"` for the V1/V2 preview toolbar and tour).
 
 To try it locally: put `DEV_EMAIL="someone@overyondr.com"` in `.dev.vars` (git-ignored; honoured on localhost only),
 then `npm run build && npm run preview`. Without `.dev.vars` you get the redirect to the sign-in page.
