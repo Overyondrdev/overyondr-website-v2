@@ -6,7 +6,8 @@
 #    AUTOFIX_ACTORS (the ops GitHub account; comma-separated, no spaces), on an issue that same kind of account opened.
 #    Strangers can't add labels; comments, other labels and other people's issues never start it. AUTOFIX_ACTORS unset
 #    = nothing ever runs.
-#  - gate: reads the ops kill switch (`autofix_enabled`); off = stop. No checkout, no code.
+#  - gate: asks ops whether auto-fix may run (`autofix_enabled`: off when switched off OR paused because this month's
+#    Claude API spend reached the budget's pause level); not allowed = stop. No checkout, no code.
 #  - fix: Claude Code with a READ-ONLY GITHUB_TOKEN and no secret but ANTHROPIC_API_KEY. It can read and edit
 #    files and run the build, nothing else: no commit, push, gh, curl or web. Its change leaves the job as a patch.
 #  - publish: never runs Claude or repository code. Fresh checkout, checks the patch mechanically (forbidden paths,
@@ -14,6 +15,10 @@
 #    opens the pull request with AUTOFIX_PR_TOKEN (a token that triggers CI, unlike GITHUB_TOKEN).
 #  - autofix-guard.yml re-checks the pull request and turns on auto-merge; the required checks must pass first.
 #    autofix-report.yml tells ops when it merged (ops then watches the deploy and reverts automatically if needed).
+#  - spending: the fix job reads what the Claude run cost (`total_cost_usd` of the final "result" entry in the action's
+#    `execution_file` output) and publish reports it to ops with every outcome (cost_usd / cost_unknown / run_id). Ops
+#    keeps the monthly budget and pauses auto-fix at 90 % until the owner approves more (yondr-ops README
+#    "Auto-fix → Spending"). A cost that can't be read is reported as unknown; ops counts $2.00 for it.
 name: Auto-fix
 
 on:
@@ -63,9 +68,13 @@ jobs:
           if [ -z "$id" ]; then echo "::error::The issue's first line is not a Yondr Ops marker; not an ops issue."; exit 1; fi
           if [ -z "$OPS_TOKEN" ]; then echo "::error::The OPS_INGEST_TOKEN secret is not set."; exit 1; fi
           echo "ops_id=$id" >> "$GITHUB_OUTPUT"
-          enabled=$(curl -fsS --max-time 20 -H "X-Ops-Token: $OPS_TOKEN" "$OPS_URL/api/autofix/config" | jq -r '.autofix_enabled == true')
+          cfg=$(curl -fsS --max-time 20 -H "X-Ops-Token: $OPS_TOKEN" "$OPS_URL/api/autofix/config")
+          enabled=$(printf '%s' "$cfg" | jq -r '.autofix_enabled == true')
+          reason=$(printf '%s' "$cfg" | jq -r '.reason // ""')
           echo "enabled=$enabled" >> "$GITHUB_OUTPUT"
-          if [ "$enabled" = true ]; then msg="Workflow started: $RUN_URL"; status=fixing; else msg="Workflow stopped: auto-fix is switched off in Ops. $RUN_URL"; status=failed; fi
+          if [ "$enabled" = true ]; then msg="Workflow started: $RUN_URL"; status=fixing
+          elif [ "$reason" = budget ]; then msg="Workflow stopped: auto-fix is paused in Ops because this month's spend reached the budget's pause level (an owner can approve more). $RUN_URL"; status=failed
+          else msg="Workflow stopped: auto-fix is switched off in Ops. $RUN_URL"; status=failed; fi
           jq -n --argjson id "$id" --arg m "$msg" --arg s "$status" '{id: $id, status: $s, actor: "github-actions", message: $m}' |
             curl -fsS --max-time 20 -X POST -H "X-Ops-Token: $OPS_TOKEN" -H 'content-type: application/json' --data-binary @- "$OPS_URL/api/autofix/events" > /dev/null || true
 
@@ -79,6 +88,8 @@ jobs:
       issues: read
     outputs:
       result: ${{ steps.claude.outputs.structured_output }}
+      cost_usd: ${{ steps.cost.outputs.cost_usd }}
+      cost_unknown: ${{ steps.cost.outputs.cost_unknown }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -137,6 +148,32 @@ jobs:
             --allowedTools "Read,Glob,Grep,LS,Edit,MultiEdit,Bash(npm run build),Bash(npm run check:links),Bash(npm run format:check),Bash(npx prettier --write:*),Bash(git diff:*),Bash(git status),Bash(git log:*)"
             --disallowedTools "Write,WebFetch,WebSearch,Bash(git push:*),Bash(git commit:*),Bash(git config:*),Bash(gh:*),Bash(curl:*),Bash(wget:*),Edit(.git/**),Edit(./.git/**),MultiEdit(.git/**)"
             --json-schema '{"type":"object","properties":{"decision":{"type":"string","enum":["fixed","needs_human"]},"reason":{"type":"string"},"root_cause":{"type":"string"},"summary":{"type":"string"},"test_evidence":{"type":"string"}},"required":["decision","reason"]}'
+      - name: Read what the Claude run cost (for the monthly budget in ops)
+        id: cost
+        if: always()
+        env:
+          # The action's documented output: a JSON list of the run's messages; the final {"type": "result"} entry
+          # carries total_cost_usd. Fallback: the file's fixed path, in case the step failed before setting the output.
+          EXECUTION_FILE: ${{ steps.claude.outputs.execution_file }}
+          CLAUDE_OUTCOME: ${{ steps.claude.outcome }}
+        run: |
+          set -uo pipefail
+          if [ "$CLAUDE_OUTCOME" = skipped ]; then
+            # Claude never ran (an earlier step failed): nothing was spent.
+            { echo "cost_usd=0"; echo "cost_unknown=false"; } >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          f="${EXECUTION_FILE:-$RUNNER_TEMP/claude-execution-output.json}"
+          cost=""
+          if [ -f "$f" ]; then
+            cost=$(jq -r '[.[]? | select(type == "object" and .type == "result") | .total_cost_usd | select(type == "number")] | last // empty' "$f" 2>/dev/null || true)
+          fi
+          if printf '%s' "$cost" | grep -Eq '^[0-9]+(\.[0-9]+)?([eE][-+]?[0-9]+)?$'; then
+            echo "Claude API cost of this run: \$$cost"
+            { echo "cost_usd=$cost"; echo "cost_unknown=false"; } >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning::Couldn't read the Claude API cost of this run; ops counts it as \$2.00."
+            { echo "cost_usd="; echo "cost_unknown=true"; } >> "$GITHUB_OUTPUT"
+          fi
       - name: Save the change as a patch (with the pristine git metadata)
         if: always()
         run: |
@@ -176,6 +213,9 @@ jobs:
           OPS_ID: ${{ needs.gate.outputs.ops_id }}
           FIX_RESULT: ${{ needs.fix.result }}
           RESULT: ${{ needs.fix.outputs.result }}
+          COST_USD: ${{ needs.fix.outputs.cost_usd }}
+          COST_UNKNOWN: ${{ needs.fix.outputs.cost_unknown }}
+          RUN_KEY: ${{ github.run_id }}-${{ github.run_attempt }}
           ISSUE: ${{ github.event.issue.number }}
           ISSUE_TITLE: ${{ github.event.issue.title }}
           REPO: ${{ github.repository }}
@@ -183,9 +223,18 @@ jobs:
         run: |
           set -uo pipefail
           PATCH="$RUNNER_TEMP/patch/autofix.patch"
+          # What the Claude run cost, reported with every outcome. No readable cost (the fix job failed or was cancelled
+          # before reading it) = unknown: ops counts $2.00.
+          if [ "${COST_UNKNOWN:-}" = false ] && printf '%s' "${COST_USD:-}" | grep -Eq '^[0-9]+(\.[0-9]+)?([eE][-+]?[0-9]+)?$'; then
+            cost_json="$COST_USD"; cost_unknown=false
+          else
+            cost_json=null; cost_unknown=true
+          fi
           report() { # status message [pr_url]
             jq -n --argjson id "$OPS_ID" --arg s "$1" --arg m "$2" --arg pr "${3:-}" \
-              '{id: $id, status: $s, actor: "github-actions", message: $m} + (if $pr == "" then {} else {pr_url: $pr} end)' |
+              --argjson cost "$cost_json" --argjson unknown "$cost_unknown" --arg run "$RUN_KEY" \
+              '{id: $id, status: $s, actor: "github-actions", message: $m, cost_usd: $cost, cost_unknown: $unknown, run_id: $run}
+               + (if $pr == "" then {} else {pr_url: $pr} end)' |
               curl -fsS --max-time 20 -X POST -H "X-Ops-Token: $OPS_TOKEN" -H 'content-type: application/json' --data-binary @- "$OPS_URL/api/autofix/events" > /dev/null \
               || echo "::warning::Couldn't report to ops"
           }
