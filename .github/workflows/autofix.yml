@@ -7,7 +7,7 @@
 #    Strangers can't add labels; comments, other labels and other people's issues never start it. AUTOFIX_ACTORS unset
 #    = nothing ever runs.
 #  - gate: reads the ops kill switch (`autofix_enabled`); off = stop. No checkout, no code.
-#  - fix: Claude Code with a READ-ONLY GITHUB_TOKEN and no secret but CLAUDE_CODE_OAUTH_TOKEN. It can read and edit
+#  - fix: Claude Code with a READ-ONLY GITHUB_TOKEN and no secret but ANTHROPIC_API_KEY. It can read and edit
 #    files and run the build, nothing else: no commit, push, gh, curl or web. Its change leaves the job as a patch.
 #  - publish: never runs Claude or repository code. Fresh checkout, checks the patch mechanically (forbidden paths,
 #    at most MAX_FILES files / MAX_LINES lines, no binaries/symlinks), then commits, pushes `autofix/ops-<id>` and
@@ -95,7 +95,8 @@ jobs:
         # Pinned to a release tag. Follow-up: pin the commit SHA 4411a9e9b0283becf4b924f7bce360fd7756c78c (v1.0.290).
         uses: anthropics/claude-code-action@v1.0.290
         with:
-          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          # Claude API key from Claude Console (org secret; owner sets a monthly spend limit there).
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           # The job's read-only token: Claude can't write to GitHub (the Claude GitHub App's token isn't used).
           github_token: ${{ secrets.GITHUB_TOKEN }}
           # Lets the ops account start this run when it is a bot (GitHub App) rather than a user with write access.
