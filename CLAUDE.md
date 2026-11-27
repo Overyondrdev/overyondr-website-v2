@@ -65,6 +65,14 @@ so the Worker here is the only thing keeping V2 private:
 Never force-push `main`. Never commit `dist/`, `node_modules/`, `.dev.vars`, `.env*`, `walkthrough/`, secrets or
 personal email addresses (this repository is public).
 
+## Auto-fix
+
+`.github/workflows/autofix.yml`, `autofix-guard.yml` and `autofix-report.yml` let Yondr Ops fix objective bugs from
+the feedback tool automatically (rules: V1's docs/OPERATIONS.md §6.3; flow, setup and security:
+`Overyondrdev/yondr-ops` README "Auto-fix"). Only issues labelled `autofix` by the ops account (variable
+`AUTOFIX_ACTORS`) start them; `worker/`, config, CI and dependencies are off limits to a fix. Keep `FORBIDDEN`
+identical in `autofix.yml` and `autofix-guard.yml`.
+
 ## Rules
 
 - Every page uses `Base.astro` with a `title` and `description`. Every image has `alt` text (`alt=""` if decorative).

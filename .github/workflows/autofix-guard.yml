@@ -1,0 +1,98 @@
+# Auto-fix guard: the mechanical guardrails for automatic-fix pull requests (label `autofix`), checked again on every
+# push to them. Fails if the change touches a forbidden path, has more than MAX_FILES files / MAX_LINES changed lines,
+# or adds binaries/symlinks/submodules. On success it turns on auto-merge (squash): GitHub then merges only once the
+# required checks (CI "build") pass. On failure it turns auto-merge off and tells Yondr Ops.
+# Nothing from the pull request is run: its files are only checked out to be compared with git.
+# Setup, and why AUTOFIX_PR_TOKEN (not GITHUB_TOKEN) enables auto-merge: Overyondrdev/yondr-ops README "Auto-fix".
+name: Auto-fix guard
+
+on:
+  pull_request:
+    types: [opened, labeled, synchronize, reopened]
+
+permissions: {}
+
+concurrency:
+  group: autofix-guard-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+env:
+  OPS_URL: https://ops.overyondrdev.com
+  MAX_FILES: '10'
+  MAX_LINES: '200'
+  # Keep in sync with autofix.yml.
+  FORBIDDEN: '^(worker/|\.github/|\.claude/|\.mcp\.json$|scripts/|migrations/|.*/migrations/|public/_headers$|public/_redirects$|(.*/)?wrangler\.(json|jsonc|toml)$|(.*/)?package(-lock)?\.json$|(.*/)?\.npmrc$|\.nvmrc$|(.*/)?[^/]*session\.js$|(.*/)?CLAUDE\.md$|(.*/)?AGENTS\.md$|(.*/)?\.env|(.*/)?\.dev\.vars|\.gitmodules$|(.*/)?\.gitattributes$|(.*/)?\.gitignore$|\.prettierrc\.json$|\.prettierignore$|tsconfig\.json$|astro\.config\.mjs$)'
+
+jobs:
+  guard:
+    # Only automatic-fix pull requests from this repository's own autofix/ops-<id> branches.
+    if: >-
+      contains(github.event.pull_request.labels.*.name, 'autofix') &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      startsWith(github.event.pull_request.head.ref, 'autofix/ops-')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - name: Check out the pull request (to compare only; nothing is run)
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Check paths, size and file types; then auto-merge
+        env:
+          PR_TOKEN: ${{ secrets.AUTOFIX_PR_TOKEN }}
+          OPS_TOKEN: ${{ secrets.OPS_INGEST_TOKEN }}
+          ACTORS: ${{ vars.AUTOFIX_ACTORS }}
+          AUTHOR: ${{ github.event.pull_request.user.login }}
+          SENDER: ${{ github.event.sender.login }}
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -uo pipefail
+          ops_id=$(printf '%s' "$HEAD_REF" | sed -nE 's#^autofix/ops-([0-9]{1,9})$#\1#p')
+          problems=()
+          case ",$ACTORS," in *",$AUTHOR,"*) ;; *) problems+=("opened by $AUTHOR, who is not in AUTOFIX_ACTORS");; esac
+          [ -n "$ops_id" ] || problems+=("branch $HEAD_REF is not autofix/ops-<id>")
+          git -c core.hooksPath=/dev/null fetch -q --no-tags origin "$BASE" 2>/dev/null || true
+          mb=$(git merge-base "$BASE" "$HEAD")
+          raw=$(git diff --no-renames --raw "$mb" "$HEAD")
+          stat=$(git diff --no-renames --numstat "$mb" "$HEAD")
+          if printf '%s\n' "$raw" | awk '{print $1 $2}' | grep -Eq '(120000|160000)'; then problems+=("adds or edits a symlink or submodule"); fi
+          if printf '%s\n' "$stat" | grep -Eq '^-\s+-\s'; then problems+=("contains a binary file"); fi
+          files=$(printf '%s\n' "$stat" | grep -c . || true)
+          lines=$(printf '%s\n' "$stat" | awk '{s += $1 + $2} END {print s + 0}')
+          bad=$(printf '%s\n' "$stat" | cut -f3- | grep -E "$FORBIDDEN" || true)
+          [ -z "$bad" ] || problems+=("touches protected paths: $(printf "%s " "$bad" | tr "\n" " ")")
+          [ "$files" -le "$MAX_FILES" ] || problems+=("$files files (limit $MAX_FILES)")
+          [ "$lines" -le "$MAX_LINES" ] || problems+=("$lines changed lines (limit $MAX_LINES)")
+          [ "$files" -ge 1 ] || problems+=("no changes")
+          echo "Files: $files, changed lines: $lines"
+          printf '%s\n' "$stat"
+
+          report() {
+            [ -n "$ops_id" ] && [ -n "$OPS_TOKEN" ] || return 0
+            jq -n --argjson id "$ops_id" --arg s "$1" --arg m "$2" --arg pr "$PR_URL" '{id: $id, status: $s, actor: "autofix-guard", message: $m, pr_url: $pr}' |
+              curl -fsS --max-time 20 -X POST -H "X-Ops-Token: $OPS_TOKEN" -H 'content-type: application/json' --data-binary @- "$OPS_URL/api/autofix/events" > /dev/null \
+              || echo "::warning::Couldn't report to ops"
+          }
+          if [ ${#problems[@]} -gt 0 ]; then
+            msg="Auto-fix guard failed: $(IFS='; '; echo "${problems[*]}")"
+            echo "::error::$msg"
+            [ -n "$PR_TOKEN" ] && GH_TOKEN="$PR_TOKEN" gh pr merge "$PR" --repo "$REPO" --disable-auto 2>/dev/null || true
+            report checks_failed "$msg. Auto-merge is off; a person decides."
+            exit 1
+          fi
+          if [ -z "$PR_TOKEN" ]; then echo "::error::AUTOFIX_PR_TOKEN is not set: can't turn on auto-merge."; report checks_failed "Guard passed, but AUTOFIX_PR_TOKEN is not set, so auto-merge is off."; exit 1; fi
+          # AUTOFIX_PR_TOKEN, not GITHUB_TOKEN: a merge done for GITHUB_TOKEN starts no workflows (no CI on main, no
+          # autofix-report), so ops would only learn about it from its own 5-minute backstop.
+          GH_TOKEN="$PR_TOKEN" gh pr merge "$PR" --repo "$REPO" --auto --squash \
+            || { report checks_failed "Guard passed, but auto-merge couldn't be turned on (is 'Allow auto-merge' on, and are the checks required?)."; exit 1; }
+          echo "Guard passed ($files files, $lines lines). Auto-merge (squash) is on: it merges once the required checks pass."
