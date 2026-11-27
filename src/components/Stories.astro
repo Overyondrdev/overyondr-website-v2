@@ -1,0 +1,145 @@
+---
+// Dark section with a heading and a carousel of quote cards (first card highlighted in lime).
+import Img from './Img.astro';
+import Icon from './Icon.astro';
+import CarouselNav from './CarouselNav.astro';
+import type { Quote } from '../data/spaces';
+
+interface Props {
+  id: string;
+  title: string;
+  text: string;
+  quotes: Quote[];
+}
+const { id, title, text, quotes } = Astro.props;
+---
+
+<section class="stories surface-charcoal section" aria-labelledby={`${id}-title`} data-carousel>
+  <div class="container stories-grid">
+    <div class="stories-head">
+      <h2 id={`${id}-title`} class="h2 text-accent" data-split>
+        {title}
+      </h2>
+      <p>{text}</p>
+      <CarouselNav label="story" />
+    </div>
+    <ul class="stories-track" data-track>
+      {quotes.map((q) => (
+        <li class="story">
+          {q.image && (
+            <div class="story-img">
+              <Img src={q.image} alt="" sizes="22rem" widths={[480, 800]} />
+            </div>
+          )}
+          <figure>
+            <blockquote>“{q.quote}”</blockquote>
+            <figcaption>
+              <strong>{q.name}</strong>
+              <span>{q.role}</span>
+            </figcaption>
+            {q.url && (
+              <a href={q.url} class="story-link" target="_blank" rel="noopener">
+                Source <Icon name="external" size={15} />
+                <span class="visually-hidden">(opens in a new tab)</span>
+              </a>
+            )}
+          </figure>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .stories-grid {
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 1000px) {
+    .stories-grid {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.5fr);
+      align-items: end;
+    }
+  }
+  .stories-head {
+    display: grid;
+    gap: 1.25rem;
+    justify-items: start;
+    align-self: start;
+  }
+  .stories-head p {
+    max-width: 38ch;
+    opacity: 0.85;
+  }
+  .stories-track {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: min(85%, 21rem);
+    gap: 1.25rem;
+    list-style: none;
+    padding: 0;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .stories-track::-webkit-scrollbar {
+    display: none;
+  }
+  .story {
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: #0f110d;
+    scroll-snap-align: start;
+    transition:
+      background 0.4s,
+      color 0.4s,
+      transform 0.5s var(--ease-out);
+  }
+  .story:first-child,
+  .story:hover {
+    background: var(--lime);
+    color: var(--forest);
+  }
+  .story:hover {
+    transform: translateY(-4px);
+  }
+  .story-img {
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+  }
+  .story-img :global(picture),
+  .story-img :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .story figure {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    flex: 1;
+    padding: 1.5rem;
+  }
+  blockquote {
+    font-weight: 600;
+    font-size: var(--step-1);
+    line-height: 1.3;
+  }
+  figcaption {
+    display: grid;
+    margin-top: auto;
+    font-size: 0.9rem;
+  }
+  figcaption span {
+    opacity: 0.75;
+  }
+  .story-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+</style>

@@ -1,0 +1,193 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Img from '../components/Img.astro';
+import Icon from '../components/Icon.astro';
+import StatsBar from '../components/StatsBar.astro';
+import SpacesCarousel from '../components/SpacesCarousel.astro';
+import PressSection from '../components/PressSection.astro';
+import WorldMap from '../components/WorldMap.astro';
+---
+
+<Base
+  title="About Us"
+  description="Yondr was founded in 2014 to create phone-free spaces. Today millions of people use Yondr every day in schools, venues and institutions worldwide."
+>
+  <PageHero
+    title="Phone-Free Is The Way Forward"
+    body="At Yondr, we believe in doing things differently. We choose to set aside devices because we know there’s a better way. We boldly embrace unplugged moments, making space for more. More laughter. More freedom. More connection. More moments fully lived."
+    image="hero-about.jpg"
+    alt="Hands unlocking a Yondr pouch on an unlocking base"
+    cta={{ label: 'Join Yondr', href: '/get-started' }}
+  />
+
+  <section class="section surface-cream" aria-labelledby="moments-title">
+    <div class="container split">
+      <div class="moments-art">
+        <div class="ma-photo media">
+          <Img
+            src="friends-bar.jpg"
+            alt="Two friends laughing together in a bar"
+            sizes="(min-width: 900px) 30vw, 70vw"
+          />
+        </div>
+        <div class="ma-pouch" aria-hidden="true">
+          <Img src="product-pouch.png" alt="" sizes="14vw" />
+        </div>
+      </div>
+      <div class="stack" style="--stack:1.25rem">
+        <h2 id="moments-title" class="h2" data-split>
+          Off For Better Moments
+        </h2>
+        <p>
+          Technology feels unavoidable these days. The buzz in your pocket. Notifications lighting up your
+          screen. An inbox that’s never empty. Between emails, texts, and online media, there is a constant
+          stream of interruptions demanding our immediate attention. Yondr was created to redefine the way we
+          live. By building phone-free spaces, we create a world where all that’s expected of you is to enjoy.
+        </p>
+        <a href="/how-it-works" class="btn">
+          Discover How <Icon name="arrow-right" class="btn-icon" />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="origin surface-forest" aria-labelledby="origin-title">
+    <div class="origin-img" data-reveal="clip">
+      <Img
+        src="phone-lying.jpg"
+        alt="A woman lying among clutter, looking at her phone"
+        sizes="(min-width: 900px) 30vw, 100vw"
+      />
+    </div>
+    <div class="origin-copy">
+      <p class="origin-kicker">In 2014, we noticed a problem…</p>
+      <h2 id="origin-title" class="h2 text-accent" data-split>
+        Technology Is Changing The Way We Interact
+      </h2>
+      <p>
+        It was the height of the San Francisco tech boom. Every moment was blocked by a screen. Every meal was
+        a photo op. Crowded spaces once alive with conversation were now filled by people staring down at
+        their devices. Your run wasn’t a workout. It was something you could track. Concerts were watched
+        through someone else’s camera app, and memories were measured in likes and views.
+      </p>
+      <p>
+        Yondr Founder Graham Dugoni noticed this shift in our culture and decided to shake up the status quo.
+        He saw a better path forward and decided to build it, sewing the first Yondr pouch prototypes by hand.
+        Going door to door in his camper van, he pitched the idea of phone-free spaces to local schools and
+        music venues in the Bay Area, and a revolution was born.
+      </p>
+      <a href="/timeline" class="btn">
+        Read Our Story <Icon name="arrow-right" class="btn-icon" />
+      </a>
+    </div>
+  </section>
+
+  <section class="section surface-cream" aria-labelledby="millions-title">
+    <div class="container stack" style="--stack:1.5rem">
+      <h2 id="millions-title" class="h2" data-split>
+        Used By Millions Every Day
+      </h2>
+      <p class="lead">
+        Today, Yondr is leading the phone-free movement, creating device-free spaces across the globe. A
+        first-of-its-kind invention, our lockable phone storage systems help schools, artists, performers, and
+        institutions create more meaningful moments.
+      </p>
+      <StatsBar
+        layout="stacked"
+        stats={[
+          { value: 2.5, decimals: 1, suffix: 'M', label: 'Students supported every day' },
+          { value: 20, suffix: 'M+', label: 'People have experienced a Yondr show' },
+          { value: 1, suffix: 'M', label: 'Court visitors served annually across 80+ jurisdictions' },
+        ]}
+      />
+    </div>
+    <div class="container world-wrap">
+      <WorldMap />
+    </div>
+  </section>
+
+  <section class="section surface-charcoal" aria-labelledby="occasion-title">
+    <div class="container occasion">
+      <div class="stack" style="--stack:1.25rem">
+        <h2 id="occasion-title" class="h2 text-accent" data-split>
+          Built For Every Occasion
+        </h2>
+        <p>
+          Yondr supports organizations across a wide range of expertise to create smartphone-free
+          environments. Our specialized programs are intentionally designed to accommodate your unique needs,
+          with tailored solutions to store devices without hassle.
+        </p>
+      </div>
+      <SpacesCarousel heading="card" />
+    </div>
+  </section>
+
+  <PressSection
+    variant="spotlight"
+    title="Off The Press"
+    text="As an industry leader in the device-free space, Yondr is recognized by major news networks and outlets internationally. Explore the conversation about our phone-free movement through the stories below."
+  />
+</Base>
+
+<style>
+  .moments-art {
+    position: relative;
+    max-width: 34rem;
+  }
+  .ma-photo {
+    width: 72%;
+    aspect-ratio: 4 / 5;
+  }
+  .ma-pouch {
+    position: absolute;
+    right: 0;
+    bottom: -6%;
+    width: 40%;
+    filter: drop-shadow(0 30px 30px rgb(20 24 17 / 0.35));
+    rotate: 6deg;
+  }
+  .origin {
+    display: grid;
+  }
+  @media (min-width: 900px) {
+    .origin {
+      grid-template-columns: minmax(0, 22rem) 1fr;
+    }
+  }
+  .origin-img {
+    min-height: 20rem;
+  }
+  .origin-img :global(picture),
+  .origin-img :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .origin-copy {
+    display: grid;
+    gap: 1.25rem;
+    justify-items: start;
+    padding: var(--section) var(--gutter);
+    max-width: 52rem;
+  }
+  .origin-kicker {
+    font-weight: 600;
+    font-size: var(--step-1);
+  }
+  .world-wrap {
+    margin-top: var(--section);
+    padding-top: var(--section);
+    border-top: 1px solid var(--line);
+  }
+  .occasion {
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 1100px) {
+    .occasion {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.4fr);
+      align-items: end;
+    }
+  }
+</style>

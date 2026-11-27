@@ -1,0 +1,108 @@
+---
+// Half image / half dark panel. The headline straddles the seam: "Built For | Better Learning".
+import Img from './Img.astro';
+import Icon from './Icon.astro';
+
+interface Props {
+  lead: string;
+  rest: string;
+  text: string;
+  image: string;
+  alt: string;
+  cta?: { label: string; href: string };
+}
+const { lead, rest, text, image, alt, cta } = Astro.props;
+---
+
+<section class="split-feature surface-charcoal" aria-label={`${lead} ${rest}`}>
+  <div class="sf-media media-zoom" data-reveal="clip">
+    <Img src={image} alt={alt} sizes="(min-width: 900px) 50vw, 100vw" />
+    <p class="sf-lead display" aria-hidden="true" data-reveal>
+      {lead}
+    </p>
+  </div>
+  <div class="sf-copy">
+    <h2 class="h2 text-accent">
+      <span class="sf-lead-mobile">{lead} </span>
+      {rest}
+    </h2>
+    <p>{text}</p>
+    {cta && (
+      <a href={cta.href} class="btn">
+        {cta.label} <Icon name="arrow-right" class="btn-icon" />
+      </a>
+    )}
+  </div>
+</section>
+
+<style>
+  .split-feature {
+    display: grid;
+  }
+  @media (min-width: 900px) {
+    .split-feature {
+      grid-template-columns: 1fr 1fr;
+      min-height: 38rem;
+    }
+  }
+  .sf-media {
+    position: relative;
+    min-height: 20rem;
+    overflow: hidden;
+  }
+  .sf-media :global(picture),
+  .sf-media :global(img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .sf-media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent 40%, rgb(10 12 8 / 0.5));
+  }
+  .sf-lead {
+    position: absolute;
+    right: 1.25rem;
+    top: 50%;
+    z-index: 1;
+    translate: 0 -50%;
+    font-size: var(--step-4);
+    line-height: 1;
+    color: var(--lime);
+    text-align: right;
+    text-shadow: 0 2px 30px rgb(0 0 0 / 0.4);
+  }
+  .sf-copy {
+    display: grid;
+    align-content: center;
+    justify-items: start;
+    gap: 1.5rem;
+    padding: clamp(3rem, 6vw, 5rem) var(--gutter);
+  }
+  .sf-copy p {
+    max-width: 44ch;
+  }
+  .sf-copy h2 {
+    font-size: var(--step-4);
+  }
+  .sf-lead-mobile {
+    display: none;
+  }
+  @media (max-width: 899px) {
+    .sf-lead {
+      display: none;
+    }
+    .sf-lead-mobile {
+      display: inline;
+    }
+  }
+  @media (min-width: 900px) {
+    .sf-copy {
+      padding-left: 1.25rem;
+    }
+  }
+</style>

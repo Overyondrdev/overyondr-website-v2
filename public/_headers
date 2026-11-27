@@ -1,0 +1,14 @@
+# Applied by the Worker (worker/index.js) to every response; Cloudflare doesn't apply this file to Worker responses.
+# noindex for the dev domain is set in the Worker, not here, so overyondr.com stays indexable at cutover.
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=()
+  X-Frame-Options: SAMEORIGIN
+
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable

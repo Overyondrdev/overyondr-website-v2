@@ -1,0 +1,5 @@
+# Day-to-day site changes (pages, components, styles, content) need no code-owner review.
+# Deploy, sign-in, domain and CI config need a web admin's review.
+/wrangler.jsonc   @Yondr-Chad
+/worker/          @Yondr-Chad
+/.github/         @Yondr-Chad
