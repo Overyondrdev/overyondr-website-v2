@@ -92,6 +92,26 @@ responses), and on the dev domain adds `X-Robots-Tag: noindex` and the team feed
 To try it locally: put `DEV_EMAIL="someone@overyondr.com"` in `.dev.vars` (git-ignored; honoured on localhost only),
 then `npm run build && npm run preview`. Without `.dev.vars` you get the redirect to the sign-in page.
 
+## Launch quality
+
+`npm run quality` (after `npm run build`) runs the checks V2 must pass before it becomes overyondr.com. They serve
+`dist/` with a small static server (`scripts/quality/lib.mjs`), not the Worker, so there is no sign-in and no dev-domain
+`X-Robots-Tag: noindex`: results reflect production. Each check also runs on its own:
+
+| Script               | Checks                                                                                                                                                                                                                                                                              | Fails on                                                                                                    |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `quality:seo`        | Every page: unique `<title>` and meta description, exactly one `<h1>`, canonical `https://www.overyondr.com<path>`, no `noindex`; the sitemap lists exactly the built pages; `robots.txt` allows crawling and names the sitemap; the Worker still sends `noindex` on the dev domain | any problem (description length is only a note)                                                             |
+| `quality:redirects`  | Every `public/_redirects` rule ends (within 5 hops) on a page in `dist/`; every old overyondr.com URL in `scripts/quality/legacy-urls.txt` that hits a rule lands on a page                                                                                                         | a broken redirect. Old URLs with no page and no redirect are listed, not failed: decide each before cutover |
+| `quality:a11y`       | axe-core (WCAG 2.0/2.1/2.2 A and AA) on every page in headless Chromium at 1280px and 375px; horizontal scroll at 375px                                                                                                                                                             | serious or critical violations, horizontal scroll. Moderate/minor are listed                                |
+| `quality:lighthouse` | Lighthouse CI (desktop, median of 3) on `/`, `/how-it-works`, `/find-your-space`, `/spaces/education`, `/blog`, `/get-started`, `/faq` (`lighthouserc.cjs`)                                                                                                                         | performance < 0.9, accessibility < 0.95, SEO < 0.95 (best practices < 0.9 warns)                            |
+
+Lighthouse reports are written to `.lighthouseci/` (git-ignored) and kept as the `lighthouse-reports` artifact of the
+CI job; they are never uploaded to a public server. Locally the checks use the preinstalled Chromium/Chrome; in CI the
+`quality` job installs Chromium with `npx playwright install --with-deps chromium`. The `quality` job is non-blocking
+(`continue-on-error: true`) for now; make it blocking before launch. Dev dependencies: `playwright`,
+`@axe-core/playwright`, `@lhci/cli`. `legacy-urls.txt` is a snapshot of the old site's URLs (from V1's
+`src/v1/pages`); refresh it if the live site gains pages before cutover.
+
 ## Deploys
 
 Worker `overyondr-website-v2` (`wrangler.jsonc`). Once Cloudflare Workers Builds is connected to this repo, merges to

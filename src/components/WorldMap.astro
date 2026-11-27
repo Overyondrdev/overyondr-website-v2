@@ -51,7 +51,6 @@ const regions = [
           id={`region-${r.id}`}
           aria-controls={`region-panel-${r.id}`}
           aria-selected={i === 0 ? 'true' : 'false'}
-          aria-pressed={i === 0 ? 'true' : 'false'}
           tabindex={i === 0 ? 0 : -1}
           data-region-tab={r.id}
         >
@@ -137,9 +136,6 @@ const regions = [
     const sync = () => {
       const active = root.querySelector('[aria-selected="true"]') as HTMLElement | null;
       const id = active?.dataset.regionTab;
-      root
-        .querySelectorAll<HTMLButtonElement>('[data-region-tab]')
-        .forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.regionTab === id)));
       root
         .querySelectorAll<SVGGElement>('.pin')
         .forEach((p) => p.classList.toggle('is-active', p.dataset.region === id));

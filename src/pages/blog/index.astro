@@ -38,7 +38,8 @@ const categories = [...new Set(posts.map((p) => p.data.category))];
         <p class="bh-desc">{lead.data.description}</p>
       </div>
       <a href={`/blog/${lead.id}`} class="btn">
-        Read More <Icon name="arrow-right" class="btn-icon" />
+        Read More<span class="visually-hidden">: {lead.data.title}</span>
+        <Icon name="arrow-right" class="btn-icon" />
       </a>
     </div>
   </section>
