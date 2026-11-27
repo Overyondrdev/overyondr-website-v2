@@ -16,6 +16,7 @@
     "check": "astro check",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "check:secrets": "node scripts/secret-scan.mjs",
     "check:links": "linkinator dist --recurse --clean-urls --skip \"^(mailto:|tel:|https?://(?!(localhost|127\\\\.0\\\\.0\\\\.1)[:/]))\"",
     "screenshots": "node scripts/walkthrough.mjs",
     "check:links:external": "linkinator dist --recurse --clean-urls --skip \"linkedin\\\\.com|ashbyhq\\\\.com|^mailto:|^tel:\"",
