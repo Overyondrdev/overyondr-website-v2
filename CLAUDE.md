@@ -46,7 +46,7 @@ so the Worker here is the only thing keeping V2 private:
    `*` and `:placeholder` patterns for headers; no `!` detach). Trailing slashes (`/about/` → `/about`) and the 404
    page come from the ASSETS binding (`html_handling`, `not_found_handling`).
 3. On `*.overyondrdev.com` (and localhost): `X-Robots-Tag: noindex` on every response, and the feedback widget
-   `<script src="https://feedback.overyondrdev.com/widget.js" data-project="v2" defer></script>` before `</body>` on
+   `<script src="https://feedback.overyondrdev.com/widget.js" data-project="v2" data-toolbar="website" defer></script>` before `</body>` on
    HTML pages. Never on overyondr.com.
 
 ## How to ship a change
