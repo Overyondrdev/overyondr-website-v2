@@ -1,5 +1,10 @@
 # overyondr.com V2 — instructions for Claude
 
+**Start with the [overyondrdev.com Handbook](https://github.com/Overyondrdev/overyondr-website-v1/blob/main/docs/handbook/README.md)**:
+the single source of truth for the whole platform (what runs where, sign-in without Cloudflare seats, portals, people
+directory, operations, auto-fix, how we work, runbooks, decisions). If your change alters what it says, update it in
+the same work (a PR in overyondr-website-v1).
+
 This repository is the home of **V2**, the redesigned Yondr marketing site (the Loba redesign, built from the V3
 prototype). V2 will become the public overyondr.com, so it lives here on its own, separate from V1. V1 (the faithful
 Squarespace replica, the portal, the feedback tool and the sign-in) lives in
